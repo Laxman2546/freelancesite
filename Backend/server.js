@@ -1,14 +1,14 @@
-const express = require("express");
+import express from "express";
+import dotenv from "dotenv";
+import authRoute from "./Routes/authRoute.js";
+
 const app = express();
-const dotenv = require("dotenv");
 dotenv.config();
 
 app.get("/", (req, res) => {
   res.send("hello it's working");
 });
-app.get("/auth", (req, res) => {
-  res.send("login successfully ");
-});
+app.use("/admin", authRoute);
 
 const port = process.env.PORT_NUMBER;
 
