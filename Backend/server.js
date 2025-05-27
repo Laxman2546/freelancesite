@@ -1,14 +1,13 @@
 import express from "express";
 import dotenv from "dotenv";
-import authRoute from "./Routes/authRoute.js";
-
+import authRoute from "./routes/authRoute.js";
+import db from "./Config/mongooseConnection.js";
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 dotenv.config();
 
-app.get("/", (req, res) => {
-  res.send("hello it's working");
-});
-app.use("/admin", authRoute);
+app.use("/", authRoute);
 
 const port = process.env.PORT_NUMBER;
 

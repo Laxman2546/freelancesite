@@ -1,9 +1,12 @@
 import express from "express";
-import { registerUser } from "../Controllers/registration.js";
+import {
+  registerUser,
+  loginUser,
+  logoutUser,
+} from "../controllers/registration.js";
 const router = express.Router();
-router.get("/", async (req, res) => {
-  res.send("hello");
-});
-router.get("/register", registerUser);
+router.post("/create", registerUser);
+router.post("/login", loginUser);
+router.post("/logout", logoutUser);
 
 export default router;
