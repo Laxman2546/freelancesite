@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-  userName: { type: String, required: true, trim: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, required: true },
+  userName: { type: String, trim: true },
   emailId: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  role: { type: String, enum: ["client", "freelancer"], required: true },
+  role: { type: String, enum: ["client", "freelancer"] },
   createdAt: { type: Date, default: Date.now },
 });
 

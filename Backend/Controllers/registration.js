@@ -16,7 +16,6 @@ export const registerUser = async (req, res) => {
     });
     const token = generateToken(createUser);
     res.cookie("token", token);
-    console.log(token);
     return res.status(200).json(createUser);
   } catch (error) {
     console.error("Registration error:", error);
