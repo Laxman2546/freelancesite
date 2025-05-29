@@ -1,9 +1,10 @@
 import userModel from "../models/registrationModel.js";
 import bcrypt from "bcrypt";
 import generateToken from "../utils/generateToken.js";
+import mongoose from "mongoose";
 export const registerUser = async (req, res) => {
   try {
-    const { emailId, password } = req.body;
+    const { emailId, password, userName } = req.body;
     const existedUser = await userModel.findOne({ emailId });
     if (existedUser) {
       console.log("user already exist");
@@ -11,6 +12,7 @@ export const registerUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     const createUser = await userModel.create({
+      userId: new mongoose.Types.ObjectId(),
       emailId,
       password: hashedPassword,
     });

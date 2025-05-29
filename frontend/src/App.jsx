@@ -3,6 +3,10 @@ import Login from "./pages/Login.jsx";
 import { Routes, Route } from "react-router-dom";
 import Register from "./pages/Register.jsx";
 import Home from "./pages/Home.jsx";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+gsap.registerPlugin(useGSAP);
+
 const App = () => {
   return (
     <Routes>
