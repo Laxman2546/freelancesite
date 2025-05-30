@@ -1,20 +1,24 @@
-import React, { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useRef, useState, useEffect } from "react";
+import { Link, Navigate, Router, useNavigate } from "react-router-dom";
 import loginImage from "../assets/images/login.png";
 import { themeColors } from "../../theme.js";
+import Errors from "../components/Errors.jsx";
 import Button from "../components/Button.jsx";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import axios from "axios";
 import { EyeOutline, EyeOffSharp } from "react-ionicons";
+
 const Login = () => {
   const [registerOpen, setRegisterOpen] = useState(true);
   const [showPassword, setshowPassword] = useState(false);
+  const [showError, setshowError] = useState(false);
+  const [error, setError] = useState("");
   const [username, setuserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setpassword] = useState("");
   const imageRef = useRef(null);
-
+  const Navigate = useNavigate();
   useGSAP(() => {
     if (imageRef.current) {
       gsap.fromTo(
@@ -34,17 +38,37 @@ const Login = () => {
       );
     }
   }, [registerOpen]);
-
+  useEffect(() => {
+    if (!showError) return;
+    const timer = setTimeout(() => {
+      setshowError(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [showError, error]);
   const handelRegisterSubmit = (e) => {
     e.preventDefault();
+    if (!email && email == "") {
+      setError("Email field is required");
+      setshowError(true);
+      return;
+    }
     const submitData = axios
-      .post(`${process.env.BACKEND_URI}/create`, {
-        emailId: email,
-        userName: username,
-        password: password,
-      })
+      .post(
+        `${process.env.BACKEND_URI}/create`,
+        {
+          emailId: email,
+          userName: username,
+          password: password,
+        },
+        {
+          withCredentials: true,
+        }
+      )
       .then((result) => {
         console.log(result);
+        if (result.status === 200) {
+          Navigate("/");
+        }
       })
       .catch((e) => console.log(e));
     console.log(submitData);
@@ -57,16 +81,26 @@ const Login = () => {
         password,
       })
       .then((result) => {
-        console.log(result);
+        if (result.status === "200") {
+          Navigate("/");
+        }
       })
       .catch((e) => console.log(e));
     console.log(submitData);
+  };
+
+  const handlePageshift = () => {
+    setRegisterOpen(!registerOpen);
+    setEmail("");
+    setpassword("");
+    setuserName("");
   };
 
   return (
     <main className="w-full h-screen flex flex-col md:flex-row">
       {registerOpen && (
         <div className="w-full h-screen md:w-1/2 flex flex-col items-center justify-center">
+          <Errors isError={showError} errorText={error} />
           <div className="w-full flex justify-center md:justify-start md:items-start pl-1 md:pl-24">
             <h1 className="font-medium text-[25px]">Get Started Now</h1>
           </div>
@@ -144,7 +178,7 @@ const Login = () => {
               Have an account?&nbsp;
               <Link
                 style={{ color: themeColors.text.secondary }}
-                onClick={() => setRegisterOpen(false)}
+                onClick={() => handlePageshift()}
               >
                 Signin
               </Link>
@@ -207,7 +241,7 @@ const Login = () => {
                 />
               )}
             </label>
-            <div className="w-[90%] md:w-[70%] flex justify-end">
+            <div className="w-[90%] md:w-[70%] flex justify-end select-none">
               <button
                 className="cursor-pointer"
                 style={{ color: themeColors.text.secondary }}
@@ -226,7 +260,9 @@ const Login = () => {
               Don't have an account yet?&nbsp;
               <Link
                 style={{ color: themeColors.text.secondary }}
-                onClick={() => setRegisterOpen(true)}
+                onClick={() => {
+                  handlePageshift();
+                }}
               >
                 Signup
               </Link>
