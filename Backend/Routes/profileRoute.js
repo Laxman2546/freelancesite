@@ -5,8 +5,10 @@ import {
   freelanceProfile,
   freelanceUpdateprofile,
   getfreelanceProfile,
+  Usertype,
 } from "../controllers/profile.js";
-router.post("/", isloggedin, getfreelanceProfile);
+router.get("/", isloggedin, getfreelanceProfile);
+router.post("/userType", isloggedin, Usertype);
 router.post("/freelanceProfile", isloggedin, freelanceProfile);
 router.post("/update", isloggedin, freelanceUpdateprofile);
 

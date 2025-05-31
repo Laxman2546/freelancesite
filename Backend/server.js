@@ -4,9 +4,11 @@ import authRoute from "./routes/authRoute.js";
 import profileRoute from "./routes/profileRoute.js";
 import cors from "cors";
 import db from "./Config/mongooseConnection.js";
+import cookieParser from "cookie-parser";
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 dotenv.config();
 app.use(
   cors({

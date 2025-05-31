@@ -10,7 +10,7 @@ import axios from "axios";
 import { EyeOutline, EyeOffSharp } from "react-ionicons";
 
 const Login = () => {
-  const [registerOpen, setRegisterOpen] = useState(true);
+  const [registerOpen, setRegisterOpen] = useState(false);
   const [showPassword, setshowPassword] = useState(false);
   const [showError, setshowError] = useState(false);
   const [error, setError] = useState("");
@@ -86,7 +86,7 @@ const Login = () => {
       .then((result) => {
         console.log(result);
         if (result.status === 200) {
-          Navigate("/profile");
+          Navigate("/userhome");
         }
       })
       .catch((e) => {
@@ -102,16 +102,19 @@ const Login = () => {
     e.preventDefault();
     if (checkFields()) return;
     const submitData = axios
-      .post(`${process.env.BACKEND_URI}/login`, {
-        emailId: email,
-        password,
-      })
+      .post(
+        `${process.env.BACKEND_URI}/login`,
+        {
+          emailId: email,
+          password,
+        },
+        {
+          withCredentials: true,
+        }
+      )
       .then((result) => {
-        console.log(result);
-        console.log(result.status);
-        console.log(result.data.error);
         if (result.status === 200) {
-          Navigate("/profile");
+          Navigate("/userhome");
         } else if (result.status === 400) {
           setError(result.data.error);
           setshowError(true);

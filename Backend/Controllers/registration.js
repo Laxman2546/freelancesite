@@ -7,7 +7,7 @@ export const registerUser = async (req, res) => {
     const { emailId, password, userName } = req.body;
     const existedUser = await userModel.findOne({ emailId });
     if (existedUser) {
-      console.log("user already exist");
+      return res.status(400).json({ error: "Emailid already exists" });
     }
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -37,17 +37,17 @@ export const loginUser = async (req, res) => {
   const { emailId, password } = req.body;
   try {
     const userData = await userModel.findOne({ emailId });
-    if (!userData) res.status(401).json({ error: "user not exists" });
-    const passwordMatch = bcrypt.compare(password, userData.password);
+    if (!userData) res.status(400).json({ error: "user not exists" });
+    const passwordMatch = await bcrypt.compare(password, userData.password);
     if (!passwordMatch)
-      res.status(402).json({ error: "email or password error" });
+      res.status(400).json({ error: "email or password wrong" });
     console.log(userData);
     const token = generateToken(userData);
     console.log(token);
     res.cookie("token", token);
     return res.status(200).json("login succesful");
   } catch (error) {
-    return res.status(500).json({ error: "something went wrong", error });
+    return res.status(500).json({ error: "something went wrong" });
   }
 };
 

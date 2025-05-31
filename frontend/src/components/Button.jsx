@@ -1,11 +1,11 @@
 import React from "react";
 import { themeColors } from "../../theme.js";
 
-const Button = ({ children, styles, type, text }) => {
+const Button = ({ children, styles, type, text, onClick }) => {
   return (
     <button
       type={type}
-      className={`${styles} shadow-md transition duration-300`}
+      className={`${styles} shadow-md`}
       style={{
         backgroundColor: themeColors.button.secondary,
         color: themeColors.button.text,
@@ -16,6 +16,7 @@ const Button = ({ children, styles, type, text }) => {
       onMouseOut={(e) => {
         e.target.style.backgroundColor = themeColors.button.base;
       }}
+      onClick={onClick}
     >
       {text}
     </button>
