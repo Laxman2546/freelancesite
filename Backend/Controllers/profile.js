@@ -60,9 +60,12 @@ export const Usertype = async (req, res) => {
     const { role } = req.body;
     const fetchUser = await userModel.findOne({ userId });
     if (!fetchUser) return res.status(500).json({ error: "user not found" });
-    const userType = await userModel.create({
-      role,
-    });
+    const userType = await userModel.findOneAndUpdate(
+      {
+        userId,
+      },
+      { role }
+    );
     return res.status(200).json({ success: "setted user type", userType });
   } catch (e) {
     return res

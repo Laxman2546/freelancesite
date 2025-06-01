@@ -1,5 +1,5 @@
 import React from "react";
-import { themeColors } from "../../theme.js";
+import { themeColors } from "../hooks/theme.js";
 
 const Button = ({ children, styles, type, text, onClick }) => {
   return (

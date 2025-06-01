@@ -8,7 +8,7 @@ import {
   Usertype,
 } from "../controllers/profile.js";
 router.get("/", isloggedin, getfreelanceProfile);
-router.post("/userType", isloggedin, Usertype);
+router.post("/usertype", isloggedin, Usertype);
 router.post("/freelanceProfile", isloggedin, freelanceProfile);
 router.post("/update", isloggedin, freelanceUpdateprofile);
 

@@ -1,30 +1,49 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Usertype from "../components/Usertype";
-import axios from "axios";
+import { useAuth } from "../hooks/useAuth";
+
 const Userhome = () => {
   const [showPopup, setshowPopup] = useState(false);
-  const [username, setuserName] = useState("");
-  const requestProfile = () => {
-    axios
-      .get(`${process.env.BACKEND_URI}/profile`, {
-        withCredentials: true,
-      })
-      .then((result) => {
-        console.log(result);
-        setuserName(result.data.fetchUser.userName);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+  const { user, loading, checkAuth } = useAuth();
+
+  const handlePopupComplete = () => {
+    setshowPopup(false);
+    // Refresh user data after role selection
+    checkAuth();
   };
-  useEffect(() => {
-    requestProfile();
-  }, []);
+
+  // Show loading while checking authentication
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex justify-center items-center">
+        <div>Loading...</div>
+      </div>
+    );
+  }
+
+  // Show popup if user exists but has no role
+  if (user && !user.role && !showPopup) {
+    setshowPopup(true);
+  }
+
   return (
     <main className="w-full h-full">
-      <div className="w-full h-screen flex justify-center items-center bg-[#00000080]">
-        <Usertype username={username} />
-      </div>
+      {showPopup && (
+        <div className="w-full h-screen flex justify-center items-center bg-[#00000080] fixed top-0 left-0 z-50">
+          <Usertype
+            username={user?.userName}
+            onComplete={handlePopupComplete}
+          />
+        </div>
+      )}
+
+      {/* Your main content here */}
+      {user && user.role && (
+        <div>
+          <h1>Welcome, {user.userName}!</h1>
+          <p>You are a {user.role}</p>
+        </div>
+      )}
     </main>
   );
 };

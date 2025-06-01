@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from "react";
-import { themeColors } from "../../theme";
+import { themeColors } from "../hooks/theme.js";
+
 import gsap from "gsap";
 
 const Errors = ({ isError, errorText }) => {

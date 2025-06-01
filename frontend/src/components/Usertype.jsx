@@ -3,13 +3,20 @@ import axios from "axios";
 import freelanceImg from "./../assets/images/freelancer.png";
 import clientImg from "./../assets/images/client.png";
 import Button from "./../components/Button.jsx";
-const Usertype = ({ username }) => {
+
+const Usertype = ({ username, onComplete }) => {
   const [userType, setuserType] = useState("");
   const [clickActive, setclickActive] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const requestProfile = () => {
-    const submitData = axios
+    if (!userType) return;
+
+    setIsSubmitting(true);
+
+    axios
       .post(
-        `${process.env.BACKEND_URI}/userType`,
+        `${process.env.REACT_APP_BACKEND_URI}/profile/usertype`,
         {
           role: userType,
         },
@@ -18,31 +25,33 @@ const Usertype = ({ username }) => {
         }
       )
       .then((result) => {
-        console.log(result);
+        console.log("User type updated successfully:", result);
+
+        if (onComplete) {
+          onComplete();
+        }
       })
       .catch((e) => {
-        console.log(e);
+        console.error("Error updating user type:", e);
+        setIsSubmitting(false);
       });
-    console.log(submitData);
   };
-  useEffect(() => {
-    // requestProfile();
-  }, []);
+
   const handleUsertype = (userIs) => {
-    console.log(userIs);
     setclickActive(true);
     setuserType(userIs);
   };
+
   return (
     <main>
-      <div className=" flex flex-col bg-white shadow-2xl text-center p-[80px] rounded-2xl gap-11 relative">
+      <div className="flex flex-col bg-white shadow-2xl text-center p-[80px] rounded-2xl gap-11 relative">
         <div className="flex flex-col gap-4">
           <h1 className="text-lg font-medium w-[500px]">
-            Welcome, {username || "user"} Your account is all set. Let us know
+            Welcome, {username || "user"}! Your account is all set. Let us know
             how you'd like to get started.
           </h1>
           <h1 className="text-md font-medium text-[#a6a4a4]">
-            We’ll tailor your journey to fit your goals.
+            We'll tailor your journey to fit your goals.
           </h1>
         </div>
         <div className="w-full flex flex-row gap-5">
@@ -90,11 +99,14 @@ const Usertype = ({ username }) => {
           </div>
         </div>
         <div className="absolute right-14 bottom-5 flex flex-row">
-          <Button
-            styles={"text-white p-3 rounded-2xl cursor-pointer font-medium"}
-            text={"continue"}
-            onClick={() => requestProfile()}
-          />
+          {userType && (
+            <Button
+              styles={"text-white p-3 rounded-2xl cursor-pointer font-medium"}
+              text={isSubmitting ? "Submitting..." : "Continue"}
+              onClick={requestProfile}
+              disabled={isSubmitting}
+            />
+          )}
         </div>
       </div>
     </main>
