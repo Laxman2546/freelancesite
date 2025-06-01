@@ -73,7 +73,7 @@ const Login = () => {
     if (checkFields(type)) return;
     const submitData = axios
       .post(
-        `${process.env.BACKEND_URI}/create`,
+        `${process.env.REACT_APP_BACKEND_URI}/create`,
         {
           emailId: email,
           userName: username,
@@ -103,7 +103,7 @@ const Login = () => {
     if (checkFields()) return;
     const submitData = axios
       .post(
-        `${process.env.BACKEND_URI}/login`,
+        `${process.env.REACT_APP_BACKEND_URI}/login`,
         {
           emailId: email,
           password,

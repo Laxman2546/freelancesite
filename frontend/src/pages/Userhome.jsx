@@ -8,11 +8,9 @@ const Userhome = () => {
 
   const handlePopupComplete = () => {
     setshowPopup(false);
-    // Refresh user data after role selection
     checkAuth();
   };
 
-  // Show loading while checking authentication
   if (loading) {
     return (
       <div className="w-full h-screen flex justify-center items-center">
@@ -20,8 +18,6 @@ const Userhome = () => {
       </div>
     );
   }
-
-  // Show popup if user exists but has no role
   if (user && !user.role && !showPopup) {
     setshowPopup(true);
   }
@@ -29,19 +25,11 @@ const Userhome = () => {
   return (
     <main className="w-full h-full">
       {showPopup && (
-        <div className="w-full h-screen flex justify-center items-center bg-[#00000080] fixed top-0 left-0 z-50">
+        <div className="w-full min-h-full md:h-screen flex justify-center items-center bg-[#00000080] absolute top-0  left-0 z-50">
           <Usertype
             username={user?.userName}
             onComplete={handlePopupComplete}
           />
-        </div>
-      )}
-
-      {/* Your main content here */}
-      {user && user.role && (
-        <div>
-          <h1>Welcome, {user.userName}!</h1>
-          <p>You are a {user.role}</p>
         </div>
       )}
     </main>
