@@ -3,7 +3,7 @@ import { themeColors } from "../hooks/theme.js";
 
 import gsap from "gsap";
 
-const Errors = ({ isError, errorText }) => {
+const Errors = ({ isError, errorText, errorStyles }) => {
   const errorRef = useRef();
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const Errors = ({ isError, errorText }) => {
   return (
     <div
       style={{ minHeight: 56 }}
-      className="w-[100%] flex justify-center items-start mb-10"
+      className={`w-[100%] flex justify-center items-start mb-10 ${errorStyles}`}
     >
       <div
         ref={errorRef}
