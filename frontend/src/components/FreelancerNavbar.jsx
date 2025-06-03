@@ -31,6 +31,75 @@ const FreelancerNavbar = () => {
       href: "#",
     },
   ];
+  const recentMessages = [
+    {
+      senderName: "John Doe",
+      avatar: "/avatars/john.png",
+      message: "Hey! Are you available to work on a landing page?",
+      time: "10:45 AM",
+      isRead: false,
+      chatId: "chat123",
+    },
+    {
+      senderName: "Sarah Williams",
+      avatar: "/avatars/sarah.png",
+      message: "Can you help me with React Native?",
+      time: "Yesterday",
+      isRead: true,
+      chatId: "chat456",
+    },
+  ];
+
+  const notificationData = [
+    {
+      id: 1,
+      type: "message",
+      title: "New Message",
+      content:
+        "John Doe sent you a new message: 'Hey, I liked your profile. Are you available?'",
+      timestamp: "2025-05-26T12:30:00Z",
+      isRead: false,
+    },
+    {
+      id: 2,
+      type: "order",
+      title: "New Job Request",
+      content:
+        "You received a new job request from Sarah Williams for 'Build a Portfolio Website'.",
+      timestamp: "2025-05-25T17:45:00Z",
+      isRead: false,
+    },
+    {
+      id: 3,
+      type: "review",
+      title: "Client Review",
+      content: "Alex Smith left a 5-star review on your recent project.",
+      timestamp: "2025-05-25T08:20:00Z",
+      isRead: true,
+    },
+    {
+      id: 4,
+      type: "system",
+      title: "Withdrawal Successful",
+      content:
+        "Your ₹4,000 withdrawal to UPI ID xxxxx@okaxis has been processed.",
+      timestamp: "2025-05-24T15:05:00Z",
+      isRead: true,
+    },
+    {
+      id: 5,
+      type: "warning",
+      title: "Profile Incomplete",
+      content: "Complete your profile to appear in more search results.",
+      timestamp: "2025-05-23T11:10:00Z",
+      isRead: false,
+    },
+  ];
+
+  useEffect(() => {
+    setnotifications(notificationData);
+    setMesssages(recentMessages);
+  }, []);
   const handleLogout = async () => {
     const result = await userLogout();
     if (result === 201) {
@@ -53,10 +122,23 @@ const FreelancerNavbar = () => {
         errorStyles={"absolute top-25"}
       />
       <nav className="w-full p-8 flex items-center justify-between">
-        <div>
+        <div
+          onClick={() => {
+            setMessageIsOpen(false);
+            setNotifcationopen(false);
+            setIsOpen(false);
+          }}
+        >
           <h1 className="text-2xl font-bold">GigConnect</h1>
         </div>
-        <div className="w-full flex items-center justify-center">
+        <div
+          className="w-full flex items-center justify-center"
+          onClick={() => {
+            setMessageIsOpen(false);
+            setNotifcationopen(false);
+            setIsOpen(false);
+          }}
+        >
           <ul className="flex flex-row gap-5">
             <GooeyNav
               items={navItems}
@@ -82,20 +164,7 @@ const FreelancerNavbar = () => {
                 }}
               />
               {isMessageOpen && (
-                <div className="absolute right-25 top-18 z-20 bg-white rounded-lg shadow-lg border w-48 animate-fade-in">
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "-10px",
-                      right: "20px",
-                      width: 0,
-                      height: 0,
-                      borderLeft: "10px solid transparent",
-                      borderRight: "10px solid transparent",
-                      borderBottom: "10px solid black",
-                      zIndex: 21,
-                    }}
-                  />
+                <div className="absolute right-25 top-18 z-20 bg-white rounded-lg shadow-lg border w-80 animate-fade-in">
                   {messages.length < 1 ? (
                     <div className="flex flex-col items-center justify-center p-8 ">
                       <img src={noMessages} />
@@ -104,7 +173,50 @@ const FreelancerNavbar = () => {
                       </h1>
                     </div>
                   ) : (
-                    <div></div>
+                    <div>
+                      <div className="px-4 py-3 border-b border-gray-100 text-lg font-semibold text-[#3A5B22]">
+                        💬 Messages
+                      </div>
+
+                      <ul className="messages max-h-80 overflow-y-auto">
+                        {messages.map((msg, idx) => (
+                          <li
+                            key={idx}
+                            className="flex gap-3 items-start px-4 py-3 hover:bg-green-50 cursor-pointer"
+                            onClick={() => navigate(`/messages/${msg.chatId}`)}
+                          >
+                            <img
+                              src={msg.avatar}
+                              alt={msg.senderName}
+                              className="w-10 h-10 rounded-full object-cover"
+                            />
+                            <div className="flex-1">
+                              <p className="font-semibold text-sm text-gray-800 ">
+                                {msg.senderName}
+                              </p>
+                              <p className="text-sm text-gray-600 truncate w-[180px]">
+                                {msg.message}
+                              </p>
+                              <div className="flex justify-between items-center text-xs text-gray-400">
+                                <span>{msg.time}</span>
+                                {!msg.isRead && (
+                                  <span className="text-green-600 font-bold relative bottom-10">
+                                    ●
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <div
+                        className="text-center py-2 border-t border-gray-100 text-sm text-[#3A5B22] hover:underline cursor-pointer"
+                        onClick={() => navigate("/messages")}
+                      >
+                        See All Messages
+                      </div>
+                    </div>
                   )}
                 </div>
               )}
@@ -119,20 +231,7 @@ const FreelancerNavbar = () => {
                 }}
               />
               {isnotificationopen && (
-                <div className="absolute right-20 top-20 z-20 bg-white rounded-lg shadow-lg border w-48 animate-fade-in">
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "-10px",
-                      right: "0px",
-                      width: 0,
-                      height: 0,
-                      borderLeft: "10px solid transparent",
-                      borderRight: "10px solid transparent",
-                      borderBottom: "10px solid black",
-                      zIndex: 21,
-                    }}
-                  />
+                <div className="notifications absolute right-18 top-20 z-20 bg-white rounded-lg shadow-lg border w-78 max-h-96 overflow-scroll animate-fade-in">
                   {notifications.length < 1 ? (
                     <div className="flex flex-col items-center justify-center p-8">
                       <img src={noNotifications} />
@@ -141,7 +240,24 @@ const FreelancerNavbar = () => {
                       </h1>
                     </div>
                   ) : (
-                    <div></div>
+                    <div>
+                      {notifications.map((note) => (
+                        <div
+                          key={note.id}
+                          className={`p-3 border-b ${
+                            note.isRead ? "bg-white" : "bg-green-50"
+                          }`}
+                        >
+                          <h4 className="font-semibold">{note.title}</h4>
+                          <p className="text-sm text-gray-600 ">
+                            {note.content}
+                          </p>
+                          <span className="text-xs text-gray-400">
+                            {new Date(note.timestamp).toLocaleString()}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </div>
               )}
@@ -157,19 +273,6 @@ const FreelancerNavbar = () => {
               />
               {isOpen && (
                 <div className="absolute right-0 top-8 z-20 bg-white rounded-lg shadow-lg border w-48 animate-fade-in">
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "-10px",
-                      right: "0px",
-                      width: 0,
-                      height: 0,
-                      borderLeft: "10px solid transparent",
-                      borderRight: "10px solid transparent",
-                      borderBottom: "10px solid black",
-                      zIndex: 21,
-                    }}
-                  />
                   <ul className="flex flex-col py-2">
                     <li className="hover:bg-gray-100 px-4 py-2 rounded-t transition-colors cursor-pointer">
                       <span className="font-medium">Profile</span>
@@ -203,6 +306,20 @@ const FreelancerNavbar = () => {
         </div>
       </nav>
       <style>{`
+        .notifications::-webkit-scrollbar {
+          display: none;
+        }
+        .notifications {
+          -ms-overflow-style: none;  /* IE and Edge */
+          scrollbar-width: none;  /* Firefox */
+        }
+        .messages::-webkit-scrollbar {
+          display: none;
+        }
+        .messages {
+          -ms-overflow-style: none;  /* IE and Edge */
+          scrollbar-width: none;  /* Firefox */
+        }
         @keyframes fade-in {
           from { opacity: 0; transform: translateY(-10px);}
           to { opacity: 1; transform: translateY(0);}
