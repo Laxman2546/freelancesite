@@ -15,6 +15,7 @@
     "@tailwindcss/vite": "^4.1.8",
     "axios": "^1.9.0",
     "dotenv": "^16.5.0",
+    "hamburger-react": "^2.5.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-ionicons": "^4.2.1",

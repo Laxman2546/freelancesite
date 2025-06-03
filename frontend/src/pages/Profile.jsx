@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import FreelancerNavbar from "../components/FreelancerNavbar";
 const Profile = () => {
   const [username, setuserName] = useState("");
   const requestProfile = () => {
@@ -20,6 +21,7 @@ const Profile = () => {
   }, []);
   return (
     <main>
+      <FreelancerNavbar />
       <h1>{username} profile page</h1>
     </main>
   );

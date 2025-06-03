@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { EnvelopeIcon } from "@heroicons/react/24/outline";
+import { Fade as Hamburger } from "hamburger-react";
 import { BellIcon } from "@heroicons/react/24/outline";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import GooeyNav from "./GooeyNav";
@@ -8,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import Errors from "./Errors";
 import noNotifications from "../assets/images/download.svg";
 import noMessages from "../assets/images/messages.svg";
+
 const FreelancerNavbar = () => {
   const Navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -122,7 +124,11 @@ const FreelancerNavbar = () => {
         errorStyles={"absolute top-25"}
       />
       <nav className="w-full p-8 flex items-center justify-between">
+        <div className="flex items-center mr-[30px] md:hidden">
+          <Hamburger />
+        </div>
         <div
+          className="mx-auto md:mx-0"
           onClick={() => {
             setMessageIsOpen(false);
             setNotifcationopen(false);
@@ -139,7 +145,7 @@ const FreelancerNavbar = () => {
             setIsOpen(false);
           }}
         >
-          <ul className="flex flex-row gap-5">
+          <ul className="hidden flex-row gap-5 md:flex">
             <GooeyNav
               items={navItems}
               particleCount={15}
@@ -152,7 +158,7 @@ const FreelancerNavbar = () => {
             />
           </ul>
         </div>
-        <div className="flex items-center justify-end">
+        <div className="hidden md:flex items-center justify-end">
           <ul className="flex flex-row gap-5">
             <li className="cursor-pointer">
               <EnvelopeIcon
@@ -277,13 +283,7 @@ const FreelancerNavbar = () => {
                     <li className="hover:bg-gray-100 px-4 py-2 rounded-t transition-colors cursor-pointer">
                       <span className="font-medium">Profile</span>
                       <div className="text-xs text-gray-500">
-                        View your profile
-                      </div>
-                    </li>
-                    <li className="hover:bg-gray-100 px-4 py-2 transition-colors cursor-pointer">
-                      <span className="font-medium">Edit profile</span>
-                      <div className="text-xs text-gray-500">
-                        Edit your Details
+                        View and update your profile
                       </div>
                     </li>
                     <li className="hover:bg-gray-100 px-4 py-2 transition-colors cursor-pointer">
