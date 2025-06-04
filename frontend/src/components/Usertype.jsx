@@ -36,7 +36,7 @@ const Usertype = ({ username, onComplete }) => {
   };
 
   return (
-    <main className="p-4 flex justify-center items-center   ">
+    <main className="p-4 flex justify-center items-center ">
       <div className="flex flex-col bg-white  shadow-sm dark:bg-gray-700 text-center p-6 md:p-14 rounded-2xl gap-8 w-full max-w-4xl relative">
         <div className="flex flex-col gap-2">
           <h1 className="text-lg font-medium mx-auto w-full max-w-md">

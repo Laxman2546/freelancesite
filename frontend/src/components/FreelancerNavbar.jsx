@@ -5,7 +5,7 @@ import { BellIcon } from "@heroicons/react/24/outline";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import GooeyNav from "./GooeyNav";
 import { userLogout } from "../utils/userLogout";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Errors from "./Errors";
 import noNotifications from "../assets/images/download.svg";
 import noMessages from "../assets/images/messages.svg";
@@ -18,6 +18,7 @@ const FreelancerNavbar = () => {
   const [notifications, setnotifications] = useState([]);
   const [messages, setMesssages] = useState([]);
   const [isError, setisError] = useState(false);
+  const [menuOpen, setmenuOpen] = useState(false);
   const [error, seterror] = useState("");
   const navItems = [
     {
@@ -102,6 +103,7 @@ const FreelancerNavbar = () => {
     setnotifications(notificationData);
     setMesssages(recentMessages);
   }, []);
+
   const handleLogout = async () => {
     const result = await userLogout();
     if (result === 201) {
@@ -110,33 +112,192 @@ const FreelancerNavbar = () => {
     seterror(result);
     setisError(true);
   };
+
   useEffect(() => {
     const ShowError = setTimeout(() => {
       setisError(false);
     }, 2000);
     return () => clearTimeout(ShowError);
   }, [error]);
+
+  const [closingMenu, setClosingMenu] = useState(false);
+  const [closingMessages, setClosingMessages] = useState(false);
+  const [closingNotifications, setClosingNotifications] = useState(false);
+
+  const handleMenuToggle = () => {
+    if (isOpen) {
+      setClosingMenu(true);
+      setTimeout(() => {
+        setIsOpen(false);
+        setClosingMenu(false);
+      }, 200);
+    } else {
+      setIsOpen(true);
+    }
+    setMessageIsOpen(false);
+    setNotifcationopen(false);
+  };
+
+  const handleMessagesToggle = () => {
+    if (isMessageOpen) {
+      setClosingMessages(true);
+      setTimeout(() => {
+        setMessageIsOpen(false);
+        setClosingMessages(false);
+      }, 200);
+    } else {
+      setMessageIsOpen(true);
+    }
+    setNotifcationopen(false);
+    setIsOpen(false);
+  };
+  const handleNotificationsToggle = () => {
+    if (isnotificationopen) {
+      setClosingNotifications(true);
+      setTimeout(() => {
+        setNotifcationopen(false);
+        setClosingNotifications(false);
+      }, 200);
+    } else {
+      setNotifcationopen(true);
+    }
+    setIsOpen(false);
+    setMessageIsOpen(false);
+  };
+
+  const handleNavItemClick = (href) => {
+    setClosingMenu(true);
+    setTimeout(() => {
+      setIsOpen(false);
+      setClosingMenu(false);
+      if (href !== "#") {
+        Navigate(href);
+      }
+    }, 200);
+  };
+
   return (
-    <header className="w-full h-full flex flex-col">
+    <header className="w-full h-full flex flex-col items-center relative">
       <Errors
         errorText={error}
         isError={isError}
-        errorStyles={"absolute top-25"}
+        errorStyles={"absolute top-25 z-50"}
       />
-      <nav className="w-full p-8 flex items-center justify-between">
-        <div className="flex items-center mr-[30px] md:hidden">
-          <Hamburger />
-        </div>
+      {(isOpen || closingMenu) && (
         <div
-          className="mx-auto md:mx-0"
+          className={`fixed inset-0 bg-[#00000080] bg-opacity-50 z-30 md:hidden ${
+            closingMenu ? "animate-fade-out" : "animate-fade-in"
+          }`}
+          onClick={handleMenuToggle}
+        />
+      )}
+
+      <nav className="w-full p-5 pl-0 md:p-8 flex flex-row md:flex-row items-center justify-center md:justify-between relative z-40">
+        <div className="absoulte z-[80] flex flex-col mr-[20px] md:hidden">
+          <Hamburger
+            easing="ease-in"
+            toggled={isOpen}
+            onToggle={handleMenuToggle}
+            color="#3A5B22"
+            size={24}
+          />
+          {(isOpen || closingMenu) && (
+            <div
+              className={`fixed top-0 left-0 w-[280px] bg-white h-full shadow-xl z-40 mr-[40px] ${
+                closingMenu ? "animate-slideOut" : "animate-slideIn"
+              }`}
+            >
+              <div className="absolute top-5">
+                <Hamburger
+                  easing="ease-in"
+                  toggled={isOpen}
+                  onToggle={handleMenuToggle}
+                  color="#3A5B22"
+                  size={24}
+                />
+              </div>
+              <div className="h-full flex flex-col">
+                <div className="flex flex-row items-center justify-center mt-[80px] gap-3 p-6 border-b border-gray-200">
+                  <UserCircleIcon className="size-8 text-[#3A5B22]" />
+                  <h1 className="text-lg font-semibold text-gray-800">
+                    Lakshman
+                  </h1>
+                </div>
+
+                <div className="flex-1 py-6">
+                  <ul className="space-y-2 px-4">
+                    {navItems.map((item, index) => (
+                      <li key={index}>
+                        <button
+                          onClick={() => handleNavItemClick(item.href)}
+                          className="w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium"
+                        >
+                          {item.label}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="border-t border-gray-200 my-6 mx-4"></div>
+
+                  <ul className="space-y-2 px-4">
+                    <li>
+                      <button
+                        onClick={() => handleNavItemClick("/messages")}
+                        className="w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium flex items-center gap-3"
+                      >
+                        <EnvelopeIcon className="size-5" />
+                        Messages
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => handleNavItemClick("/notifications")}
+                        className="w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium flex items-center gap-3"
+                      >
+                        <BellIcon className="size-5" />
+                        Notifications
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => handleNavItemClick("/profile")}
+                        className="w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium flex items-center gap-3"
+                      >
+                        <UserCircleIcon className="size-5" />
+                        Profile
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="p-4 border-t border-gray-200">
+                  <button
+                    onClick={handleLogout}
+                    className="w-full px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200 font-medium text-left"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div
           onClick={() => {
             setMessageIsOpen(false);
             setNotifcationopen(false);
             setIsOpen(false);
           }}
         >
-          <h1 className="text-2xl font-bold">GigConnect</h1>
+          <Link to={"/userhome"}>
+            <h1 className="text-2xl font-bold text-center text-[#3A5B22]">
+              GigConnect
+            </h1>
+          </Link>
         </div>
+
         <div
           className="w-full flex items-center justify-center"
           onClick={() => {
@@ -158,24 +319,29 @@ const FreelancerNavbar = () => {
             />
           </ul>
         </div>
+
         <div className="hidden md:flex items-center justify-end">
           <ul className="flex flex-row gap-5">
-            <li className="cursor-pointer">
+            <li className="cursor-pointer relative">
               <EnvelopeIcon
-                className="size-6"
-                onClick={() => {
-                  setMessageIsOpen(!isMessageOpen);
-                  setNotifcationopen(false);
-                  setIsOpen(false);
-                }}
+                className="size-6  transition-colors"
+                onClick={handleMessagesToggle}
               />
-              {isMessageOpen && (
-                <div className="absolute right-25 top-18 z-20 bg-white rounded-lg shadow-lg border w-80 animate-fade-in">
+              {(isMessageOpen || closingMessages) && (
+                <div
+                  className={`absolute right-0 top-8 z-20 bg-white rounded-lg shadow-lg border w-80 ${
+                    closingMessages ? "animate-fade-out" : "animate-fade-in"
+                  }`}
+                >
                   {messages.length < 1 ? (
                     <div className="flex flex-col items-center justify-center p-8 ">
-                      <img src={noMessages} />
-                      <h1 className="text-center font-medium w-full">
-                        no new Messages
+                      <img
+                        src={noMessages}
+                        alt="No messages"
+                        className="w-16 h-16 opacity-50"
+                      />
+                      <h1 className="text-center font-medium w-full text-gray-600 mt-2">
+                        No new messages
                       </h1>
                     </div>
                   ) : (
@@ -188,8 +354,8 @@ const FreelancerNavbar = () => {
                         {messages.map((msg, idx) => (
                           <li
                             key={idx}
-                            className="flex gap-3 items-start px-4 py-3 hover:bg-green-50 cursor-pointer"
-                            onClick={() => navigate(`/messages/${msg.chatId}`)}
+                            className="flex gap-3 items-start px-4 py-3 hover:bg-green-50 cursor-pointer transition-colors"
+                            onClick={() => Navigate(`/messages/${msg.chatId}`)}
                           >
                             <img
                               src={msg.avatar}
@@ -218,7 +384,7 @@ const FreelancerNavbar = () => {
 
                       <div
                         className="text-center py-2 border-t border-gray-100 text-sm text-[#3A5B22] hover:underline cursor-pointer"
-                        onClick={() => navigate("/messages")}
+                        onClick={() => Navigate("/messages")}
                       >
                         See All Messages
                       </div>
@@ -227,38 +393,49 @@ const FreelancerNavbar = () => {
                 </div>
               )}
             </li>
-            <li className="cursor-pointer">
+            <li className="cursor-pointer relative">
               <BellIcon
-                className="size-6"
-                onClick={() => {
-                  setIsOpen(false);
-                  setMessageIsOpen(false);
-                  setNotifcationopen(!isnotificationopen);
-                }}
+                className="size-6  transition-colors"
+                onClick={handleNotificationsToggle}
               />
-              {isnotificationopen && (
-                <div className="notifications absolute right-18 top-20 z-20 bg-white rounded-lg shadow-lg border w-78 max-h-96 overflow-scroll animate-fade-in">
+              {(isnotificationopen || closingNotifications) && (
+                <div
+                  className={`notifications absolute right-0 top-8 z-20 bg-white rounded-lg shadow-lg border w-80 max-h-96 overflow-y-auto ${
+                    closingNotifications
+                      ? "animate-fade-out"
+                      : "animate-fade-in"
+                  }`}
+                >
                   {notifications.length < 1 ? (
                     <div className="flex flex-col items-center justify-center p-8">
-                      <img src={noNotifications} />
-                      <h1 className="text-center font-medium w-full">
-                        no new notifications
+                      <img
+                        src={noNotifications}
+                        alt="No notifications"
+                        className="w-16 h-16 opacity-50"
+                      />
+                      <h1 className="text-center font-medium w-full text-gray-600 mt-2">
+                        No new notifications
                       </h1>
                     </div>
                   ) : (
                     <div>
+                      <div className="px-4 py-3 border-b border-gray-100 text-lg font-semibold text-[#3A5B22]">
+                        🔔 Notifications
+                      </div>
                       {notifications.map((note) => (
                         <div
                           key={note.id}
-                          className={`p-3 border-b ${
+                          className={`p-4 border-b hover:bg-gray-50 cursor-pointer transition-colors ${
                             note.isRead ? "bg-white" : "bg-green-50"
                           }`}
                         >
-                          <h4 className="font-semibold">{note.title}</h4>
-                          <p className="text-sm text-gray-600 ">
+                          <h4 className="font-semibold text-gray-800">
+                            {note.title}
+                          </h4>
+                          <p className="text-sm text-gray-600 mt-1">
                             {note.content}
                           </p>
-                          <span className="text-xs text-gray-400">
+                          <span className="text-xs text-gray-400 mt-2 block">
                             {new Date(note.timestamp).toLocaleString()}
                           </span>
                         </div>
@@ -270,22 +447,26 @@ const FreelancerNavbar = () => {
             </li>
             <li className="cursor-pointer relative">
               <UserCircleIcon
-                className="size-6"
-                onClick={() => {
-                  setIsOpen(!isOpen);
-                  setMessageIsOpen(false);
-                  setNotifcationopen(false);
-                }}
+                className="size-6  transition-colors"
+                onClick={handleMenuToggle}
               />
-              {isOpen && (
-                <div className="absolute right-0 top-8 z-20 bg-white rounded-lg shadow-lg border w-48 animate-fade-in">
+              {(isOpen || closingMenu) && (
+                <div
+                  className={`absolute right-0 top-8 z-20 bg-white rounded-lg shadow-lg border w-48 ${
+                    closingMenu ? "animate-fade-out" : "animate-fade-in"
+                  }`}
+                >
                   <ul className="flex flex-col py-2">
-                    <li className="hover:bg-gray-100 px-4 py-2 rounded-t transition-colors cursor-pointer">
-                      <span className="font-medium">Profile</span>
-                      <div className="text-xs text-gray-500">
-                        View and update your profile
-                      </div>
-                    </li>
+                    <Link to={"/profile"}>
+                      <li className="hover:bg-gray-100 px-4 py-2 transition-colors cursor-pointer">
+                        <span className="font-medium cursor-pointer">
+                          Profile
+                        </span>
+                        <div className="text-xs text-gray-500">
+                          View and update your profile
+                        </div>
+                      </li>
+                    </Link>
                     <li className="hover:bg-gray-100 px-4 py-2 transition-colors cursor-pointer">
                       <span className="font-medium">Account Settings</span>
                       <div className="text-xs text-gray-500">
@@ -305,6 +486,7 @@ const FreelancerNavbar = () => {
           </ul>
         </div>
       </nav>
+
       <style>{`
         .notifications::-webkit-scrollbar {
           display: none;
@@ -324,8 +506,29 @@ const FreelancerNavbar = () => {
           from { opacity: 0; transform: translateY(-10px);}
           to { opacity: 1; transform: translateY(0);}
         }
+        @keyframes fade-out {
+          from { opacity: 1; transform: translateY(0);}
+          to { opacity: 0; transform: translateY(-10px);}
+        }
         .animate-fade-in {
           animation: fade-in 0.2s ease;
+        }
+        .animate-fade-out {
+          animation: fade-out 0.2s ease;
+        }
+        @keyframes slideIn {
+          from { opacity: 0; transform: translateX(-100%);}
+          to { opacity: 1; transform: translateX(0);}
+        }
+        @keyframes slideOut {
+          from { opacity: 1; transform: translateX(0);}
+          to { opacity: 0; transform: translateX(-100%);}
+        }
+        .animate-slideIn {
+          animation: slideIn 0.3s ease-out;
+        }
+        .animate-slideOut {
+          animation: slideOut 0.2s ease-in;
         }
       `}</style>
     </header>
@@ -334,7 +537,6 @@ const FreelancerNavbar = () => {
 
 export default FreelancerNavbar;
 
-// Remove invalid StyleSheet usage; use this object for inline styles if needed
 export const arrowStyle = {
   border: "solid black",
   borderWidth: "0 3px 3px 0",
