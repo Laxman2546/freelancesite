@@ -30,8 +30,22 @@ const freelancerProfileSchema = new mongoose.Schema({
     type: Number,
     default: "",
   },
-  portfolioLinks: {
+  languagesKnown: {
     type: [String],
+  },
+  avaliabilty: {
+    type: String,
+  },
+  socialLinks: {
+    type: [String],
+    default: "",
+  },
+  certifications: {
+    type: [String],
+    default: "",
+  },
+  education: {
+    type: String,
     default: "",
   },
 });

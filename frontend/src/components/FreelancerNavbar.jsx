@@ -458,12 +458,22 @@ const FreelancerNavbar = () => {
                 >
                   <ul className="flex flex-col py-2">
                     <Link to={"/profile"}>
-                      <li className="hover:bg-gray-100 px-4 py-2 transition-colors cursor-pointer">
+                      <li className=" px-4 py-2 transition-colors cursor-pointer hover:bg-gray-100">
                         <span className="font-medium cursor-pointer">
                           Profile
                         </span>
                         <div className="text-xs text-gray-500">
-                          View and update your profile
+                          View your profile
+                        </div>
+                      </li>
+                    </Link>
+                    <Link to={"/profileupdate"}>
+                      <li className=" px-4 py-2 transition-colors cursor-pointer hover:bg-gray-100">
+                        <span className="font-medium cursor-pointer">
+                          Update Profile
+                        </span>
+                        <div className="text-xs text-gray-500">
+                          update your profile
                         </div>
                       </li>
                     </Link>

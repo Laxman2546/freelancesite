@@ -1,16 +1,29 @@
-import freelanceModel from "../models/freelanceModel.js";
+import freelanceprofileModel from "../models/freelanceprofileModel.js";
 import userModel from "../models/registrationModel.js";
 export const freelanceProfile = async (req, res) => {
-  const { bio, skills, portfolioLinks, experience } = req.body;
+  const {
+    bio,
+    skills,
+    socialLinks,
+    experience,
+    avaliability,
+    languagesKnown,
+    certifications,
+    education,
+  } = req.body;
   try {
     const { userId } = req.user;
     const fetchUser = await userModel.findOne({ userId });
     if (!fetchUser) return res.status(500).json({ error: "user not found" });
-    const createProfile = await freelanceModel.create({
+    const createProfile = await freelanceprofileModel.create({
       bio,
       skills,
-      portfolioLinks,
+      socialLinks,
       experience,
+      avaliability,
+      languagesKnown,
+      certifications,
+      education,
     });
     return res.status(200).json("your data created suceesfully", createProfile);
   } catch (e) {
@@ -18,18 +31,31 @@ export const freelanceProfile = async (req, res) => {
   }
 };
 export const freelanceUpdateprofile = async (req, res) => {
-  const { bio, skills, portfolioLinks, experience } = req.body;
+  const {
+    bio,
+    skills,
+    socialLinks,
+    experience,
+    avaliability,
+    languagesKnown,
+    certifications,
+    education,
+  } = req.body;
   try {
     const { userId } = req.user;
     const fetchUser = await userModel.findOne({ userId });
     if (!fetchUser) return res.status(500).json({ error: "user not found" });
-    const createProfile = await freelanceModel.findOneAndUpdate(
+    const createProfile = await freelanceprofileModel.findOneAndUpdate(
       { userId },
       {
         bio,
         skills,
-        portfolioLinks,
+        socialLinks,
         experience,
+        avaliability,
+        languagesKnown,
+        certifications,
+        education,
       },
       { new: true, upsert: true }
     );
@@ -44,7 +70,12 @@ export const getfreelanceProfile = async (req, res) => {
     console.log(req.user);
     const fetchUser = await userModel.findOne({ userId });
     if (!fetchUser) return res.status(500).json({ error: "user not found" });
-    return res.status(200).json({ success: "user Found", fetchUser });
+    const fetchUserProfile = await freelanceprofileModel.findOne({ userId });
+    if (!fetchUserProfile)
+      return res.status(500).json({ error: "user not found" });
+    return res
+      .status(200)
+      .json({ success: "user Found", fetchUser, fetchUserProfile });
   } catch (e) {
     return res
       .status(500)
