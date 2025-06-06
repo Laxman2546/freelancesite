@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import FreelanceNavbar from "../components/FreelancerNavbar.jsx";
 import skillsList from "../utils/skills.js";
+import languages from "../utils/languages.js";
 const profileUpdate = () => {
   const [userName, setuserName] = useState("Lakshman");
   const [emailId, setemailId] = useState("Laxman@gmail.com");
@@ -8,16 +9,26 @@ const profileUpdate = () => {
   const [job, setJob] = useState("");
   const [experience, setExperience] = useState("");
   const [selectedSkills, setSelectedSkills] = useState([]);
+  const [languagesKnown, setLanguagesKnown] = useState([]);
 
   const handleSkillSelect = (skill) => {
     if (!selectedSkills.includes(skill)) {
       setSelectedSkills([...selectedSkills, skill]);
     }
   };
+  const handleLanguageSelect = (language) => {
+    if (!languagesKnown.includes(language)) {
+      setLanguagesKnown([...languagesKnown, language]);
+    }
+  };
 
   const handleSkillRemove = (skill) => {
     setSelectedSkills(selectedSkills.filter((s) => s !== skill));
   };
+  const handleLanguageRemove = (language) => {
+    setLanguagesKnown(languagesKnown.filter((s) => s !== language));
+  };
+  console.log(languagesKnown);
 
   return (
     <main className="w-full h-full">
@@ -76,7 +87,7 @@ const profileUpdate = () => {
             ></textarea>
           </div>
           <div className="w-3/4 flex flex-col gap-3 ">
-            <label>Skills</label>
+            <label>Add your Skills</label>
             <div className="flex flex-wrap gap-2 mb-2">
               {selectedSkills.map((skill) => (
                 <span
@@ -119,6 +130,43 @@ const profileUpdate = () => {
               onChange={(e) => setJob(e.target.value)}
               className="pr-2 pl-3 pt-3 pb-3 rounded-[20px] bg-[#d9d9d9] outline-none font-normal p-4"
             />
+          </div>
+          <div className="w-3/4 flex flex-col gap-3">
+            <label htmlFor="languages">Languages Known</label>
+            <select
+              name="languages"
+              id="languages"
+              onChange={(e) => handleLanguageSelect(e.target.value)}
+            >
+              <option disabled defaultValue="">
+                Select a language
+              </option>
+              {languages
+                .filter((language) => !languagesKnown.includes(language))
+                .map((language, index) => (
+                  <option value={language} key={index}>
+                    {language}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <div className="mt-5 w-1/2">
+            {languagesKnown.map((language) => (
+              <span
+                key={language}
+                className="flex items-center bg-[#3A5B22] text-white px-3 py-1 rounded-full text-sm mr-2 border-2"
+              >
+                {language}
+                <button
+                  type="button"
+                  className="ml-2 text-[#84C318] hover:text-red-600 cursor-pointer"
+                  onClick={() => handleLanguageRemove(language)}
+                  aria-label={`Remove ${language}`}
+                >
+                  &times;
+                </button>
+              </span>
+            ))}
           </div>
         </div>
       </div>
