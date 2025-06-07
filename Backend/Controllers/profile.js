@@ -8,8 +8,7 @@ export const freelanceProfile = async (req, res) => {
     experience,
     avaliability,
     languagesKnown,
-    certifications,
-    education,
+    job,
   } = req.body;
   try {
     const { userId } = req.user;
@@ -22,8 +21,7 @@ export const freelanceProfile = async (req, res) => {
       experience,
       avaliability,
       languagesKnown,
-      certifications,
-      education,
+      job,
     });
     return res.status(200).json("your data created suceesfully", createProfile);
   } catch (e) {
@@ -38,8 +36,7 @@ export const freelanceUpdateprofile = async (req, res) => {
     experience,
     avaliability,
     languagesKnown,
-    certifications,
-    education,
+    job,
   } = req.body;
   try {
     const { userId } = req.user;
@@ -54,8 +51,7 @@ export const freelanceUpdateprofile = async (req, res) => {
         experience,
         avaliability,
         languagesKnown,
-        certifications,
-        education,
+        job,
       },
       { new: true, upsert: true }
     );
@@ -67,22 +63,37 @@ export const freelanceUpdateprofile = async (req, res) => {
 export const getfreelanceProfile = async (req, res) => {
   try {
     const { userId } = req.user;
-    console.log(req.user);
+
+    if (!userId) {
+      return res.status(400).json({ error: "Invalid user ID in token" });
+    }
+
     const fetchUser = await userModel.findOne({ userId });
-    if (!fetchUser) return res.status(500).json({ error: "user not found" });
+    if (!fetchUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
     const fetchUserProfile = await freelanceprofileModel.findOne({ userId });
-    if (!fetchUserProfile)
-      return res.status(500).json({ error: "user not found" });
-    return res
-      .status(200)
-      .json({ success: "user Found", fetchUser, fetchUserProfile });
+    // If no profile exists yet, return just the user data
+    if (!fetchUserProfile) {
+      return res.status(200).json({
+        success: true,
+        fetchUser: fetchUser,
+        profile: null,
+        message: "User found but profile not created yet",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      fetchUser: fetchUser,
+      profile: fetchUserProfile,
+    });
   } catch (e) {
-    return res
-      .status(500)
-      .json(
-        { error: "something went wrong", e },
-        console.log(e, "this is error")
-      );
+    console.error("Profile fetch error:", e);
+    return res.status(500).json({
+      error: "Internal server error",
+      message: e.message,
+    });
   }
 };
 export const Usertype = async (req, res) => {

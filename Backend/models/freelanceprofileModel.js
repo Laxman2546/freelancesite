@@ -19,13 +19,6 @@ const freelancerProfileSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
-  reviews: [
-    {
-      from: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
-      comment: String,
-      rating: Number,
-    },
-  ],
   experience: {
     type: Number,
     default: "",
@@ -40,13 +33,8 @@ const freelancerProfileSchema = new mongoose.Schema({
     type: [String],
     default: "",
   },
-  certifications: {
-    type: [String],
-    default: "",
-  },
-  education: {
+  job: {
     type: String,
-    default: "",
   },
 });
 

@@ -37,16 +37,27 @@ export const loginUser = async (req, res) => {
   const { emailId, password } = req.body;
   try {
     const userData = await userModel.findOne({ emailId });
-    if (!userData) res.status(400).json({ error: "user not exists" });
+    if (!userData) {
+      return res.status(400).json({ error: "user not exists" });
+    }
+
     const passwordMatch = await bcrypt.compare(password, userData.password);
-    if (!passwordMatch)
-      res.status(400).json({ error: "email or password wrong" });
-    console.log(userData);
+    if (!passwordMatch) {
+      return res.status(400).json({ error: "email or password wrong" });
+    }
+
     const token = generateToken(userData);
-    console.log(token);
-    res.cookie("token", token);
-    return res.status(200).json("login succesful");
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Lax",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    return res.status(200).json({ message: "login successful" });
   } catch (error) {
+    console.error("Login error:", error);
     return res.status(500).json({ error: "something went wrong" });
   }
 };

@@ -16,11 +16,16 @@ export const useAuth = () => {
 
       const response = await axios.get(
         `${process.env.REACT_APP_BACKEND_URI}/profile`,
-        { withCredentials: true }
-      );
 
-      if (response.data && response.data.fetchUser) {
-        setUser(response.data.fetchUser);
+        {
+          withCredentials: true,
+        }
+      );
+      if (response.data && response.data.success) {
+        setUser({
+          ...response.data.fetchUser,
+          profile: response.data.profile,
+        });
       } else {
         throw new Error("Invalid response format");
       }
@@ -28,24 +33,47 @@ export const useAuth = () => {
       console.error("Auth check failed:", err);
       setError(err);
 
-      const statusCode = err.response?.status;
-      if (statusCode === 401) {
-        setUser(null);
-        navigate("/login", { replace: true });
-      } else if (statusCode === 403) {
-        setUser(null);
-        navigate("/", { replace: true });
+      if (err.response) {
+        // Handle specific HTTP error responses
+        switch (err.response.status) {
+          case 401:
+            setUser(null);
+            navigate("/login", { replace: true });
+            break;
+          case 403:
+            setUser(null);
+            navigate("/", { replace: true });
+            break;
+          case 500:
+            console.error("Server error:", err.response.data);
+            break;
+          default:
+            console.error("Unexpected error:", err);
+        }
+      } else if (err.request) {
+        // Handle network errors
+        console.error("Network error:", err.request);
+      } else {
+        console.error("Error:", err.message);
       }
     } finally {
       setLoading(false);
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    // Optional: Call logout API endpoint
-    // axios.post(`${process.env.REACT_APP_BACKEND_URI}/logout`, {}, { withCredentials: true });
-    navigate("/login", { replace: true });
+  const logout = async () => {
+    try {
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_URI}/logout`,
+        {},
+        { withCredentials: true }
+      );
+    } catch (err) {
+      console.error("Logout failed:", err);
+    } finally {
+      setUser(null);
+      navigate("/login", { replace: true });
+    }
   };
 
   useEffect(() => {

@@ -1,14 +1,14 @@
 import jwt from "jsonwebtoken";
 
-const generateToken = (user, req, res) => {
+const generateToken = (user) => {
   try {
     const token = jwt.sign(
-      { emailId: user.emaiId, userId: user.userId },
+      { emailId: user.emailId, userId: user.userId },
       process.env.SECRET_KEY
     );
     return token;
   } catch (e) {
-    return res.status(500).json({ error: "something went wrong" });
+    throw new Error("Token generation failed");
   }
 };
 

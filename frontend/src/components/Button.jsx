@@ -1,24 +1,38 @@
 import React from "react";
 import { themeColors } from "../hooks/theme.js";
 
-const Button = ({ children, styles, type, text, onClick }) => {
+const Button = ({
+  children,
+  styles,
+  type = "button",
+  text,
+  onClick = () => {},
+  isDisabled,
+}) => {
   return (
     <button
       type={type}
-      className={`${styles} shadow-md`}
+      disabled={isDisabled}
+      className={`${styles} shadow-md transition duration-300 ${
+        isDisabled ? "opacity-50 cursor-not-allowed" : ""
+      }`}
       style={{
         backgroundColor: themeColors.button.secondary,
         color: themeColors.button.text,
       }}
       onMouseOver={(e) => {
-        e.target.style.backgroundColor = themeColors.button.hover;
+        if (!isDisabled) {
+          e.target.style.backgroundColor = themeColors.button.hover;
+        }
       }}
       onMouseOut={(e) => {
-        e.target.style.backgroundColor = themeColors.button.base;
+        if (!isDisabled) {
+          e.target.style.backgroundColor = themeColors.button.base;
+        }
       }}
-      onClick={onClick}
+      onClick={isDisabled || !onClick ? () => {} : onClick}
     >
-      {text}
+      {text || children}
     </button>
   );
 };

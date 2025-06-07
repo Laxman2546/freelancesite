@@ -3,6 +3,7 @@ import { EnvelopeIcon } from "@heroicons/react/24/outline";
 import { Fade as Hamburger } from "hamburger-react";
 import { BellIcon } from "@heroicons/react/24/outline";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
+import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import GooeyNav from "./GooeyNav";
 import { userLogout } from "../utils/userLogout";
 import { Link, useNavigate } from "react-router-dom";
@@ -203,7 +204,7 @@ const FreelancerNavbar = () => {
           />
           {(isOpen || closingMenu) && (
             <div
-              className={`fixed top-0 left-0 w-[280px] bg-white h-full shadow-xl z-40 mr-[40px] ${
+              className={`fixed top-0 left-0 w-[280px]  bg-white h-full shadow-xl overflow-scroll  z-40 mr-[40px] ${
                 closingMenu ? "animate-slideOut" : "animate-slideIn"
               }`}
             >
@@ -266,6 +267,15 @@ const FreelancerNavbar = () => {
                       >
                         <UserCircleIcon className="size-5" />
                         Profile
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => handleNavItemClick("/profileupdate")}
+                        className="w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium flex items-center gap-3"
+                      >
+                        <PencilSquareIcon className="size-5" />
+                        Update Profile
                       </button>
                     </li>
                   </ul>
