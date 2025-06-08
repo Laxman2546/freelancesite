@@ -24,8 +24,6 @@ export const registerUser = async (req, res) => {
       sameSite: "Lax",
       maxAge: 24 * 60 * 60 * 1000,
     });
-    res.status(200).json({ success: "user logged in" });
-
     return res.status(200).json(createUser);
   } catch (error) {
     console.error("Registration error:", error);
