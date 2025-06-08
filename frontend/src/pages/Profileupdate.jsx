@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 import FreelanceNavbar from "../components/FreelancerNavbar.jsx";
 import skillsList from "../utils/skills.js";
 import languages from "../utils/languages.js";
@@ -19,27 +20,30 @@ const profileUpdate = () => {
   const [isFormChanged, setIsFormChanged] = useState(false);
 
   // const requestData = axios.get(`${process.env.REACT_APP_BACKEND_URI}/`);
-  const updateData = axios.post(
-    `${process.env.REACT_APP_BACKEND_URI}/profile/update`,
-    {
-      bio: bio,
-      skill: selectedSkills,
-      job: job,
-      socialLinks: socialLinks,
-      experience: experience,
-      avaliability: avaliability,
-      languagesKnown: languagesKnown,
-    },
-    {
-      withCredentials: true,
-    }
+  const updateData = () => {
+    axios
+      .post(
+        `${process.env.REACT_APP_BACKEND_URI}/profile/update`,
+        {
+          bio: bio,
+          skill: selectedSkills,
+          job: job,
+          socialLinks: socialLinks,
+          experience: experience,
+          avaliability: avaliability,
+          languagesKnown: languagesKnown,
+        },
+        {
+          withCredentials: true,
+        }
+      )
       .then((result) => {
         console.log(result);
       })
       .catch((e) => {
         console.log(e);
-      })
-  );
+      });
+  };
 
   const initialState = {
     userName: "Lakshman",
@@ -101,7 +105,6 @@ const profileUpdate = () => {
   const handleLanguageRemove = (language) => {
     setLanguagesKnown(languagesKnown.filter((s) => s !== language));
   };
-  console.log(socialLinks);
   return (
     <main className="w-full h-full">
       <div className="w-full bg-white shadow-sm  fixed top-0 z-40">
@@ -304,7 +307,7 @@ const profileUpdate = () => {
             </select>
           </div>
           {isFormChanged && (
-            <div>
+            <div onClick={() => updateData()}>
               <button className="p-4 bg-[#3A5B22] hover:bg-[#2E471A] cursor-pointer rounded-4xl text-white">
                 Save Details
               </button>

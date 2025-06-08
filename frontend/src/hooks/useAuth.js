@@ -16,7 +16,7 @@ export const useAuth = () => {
 
       const response = await axios.get(
         `${process.env.REACT_APP_BACKEND_URI}/profile`,
-
+        {},
         {
           withCredentials: true,
         }
@@ -34,7 +34,6 @@ export const useAuth = () => {
       setError(err);
 
       if (err.response) {
-        // Handle specific HTTP error responses
         switch (err.response.status) {
           case 401:
             setUser(null);
