@@ -157,7 +157,7 @@ const profileUpdate = () => {
                   />
                 </div>
               </div>
-              <div className="w-[50px] h-[50px] bg-gray-600 relative overflow-hidden">
+              <div className="w-[150px] h-[150px] bg-gray-600 relative rounded-full">
                 <input
                   type="file"
                   accept=".png, .jpg, .jpeg"
