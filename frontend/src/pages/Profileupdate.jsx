@@ -5,6 +5,7 @@ import skillsList from "../utils/skills.js";
 import languages from "../utils/languages.js";
 import { XCircleIcon } from "@heroicons/react/24/solid";
 import { ArrowTurnDownLeftIcon } from "@heroicons/react/24/solid";
+import defaultImg from "../assets/images/freelancer.png";
 import Button from "../components/Button.jsx";
 const profileUpdate = () => {
   const [userName, setuserName] = useState("Lakshman");
@@ -121,7 +122,7 @@ const profileUpdate = () => {
         </div>
         <form onSubmit={updateData} encType="multipart/form-data">
           <div className="w-full h-full flex flex-col gap-8 mt-5">
-            <div className="w-[90%] flex flex-row  justify-between">
+            <div className="w-[90%] flex flex-col-reverse md:flex-row  items-center justify-between">
               <div className="w-full flex flex-col gap-10">
                 <div className="flex flex-col md:flex-row gap-15 w-full items-center  ">
                   <div className="w-full md:w-1/3 flex flex-col gap-3">
@@ -157,14 +158,8 @@ const profileUpdate = () => {
                   />
                 </div>
               </div>
-              <div className="w-[150px] h-[150px] bg-gray-600 relative rounded-full">
-                <input
-                  type="file"
-                  accept=".png, .jpg, .jpeg"
-                  name="profilePic"
-                  onChange={(e) => setPhoto(e.target.files[0])}
-                  className="hidden"
-                />
+              <div className="min-w-[150px] min-h-[150px] bg-gray-600  rounded-full relative">
+                <img src={defaultImg} width={150} height={150} />
               </div>
             </div>
             <div className="w-full md:w-3/4 flex flex-col gap-3 ">
