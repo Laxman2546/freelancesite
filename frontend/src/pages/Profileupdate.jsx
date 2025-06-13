@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import FreelanceNavbar from "../components/FreelancerNavbar.jsx";
 import skillsList from "../utils/skills.js";
 import languages from "../utils/languages.js";
 import { XCircleIcon } from "@heroicons/react/24/solid";
 import { ArrowTurnDownLeftIcon } from "@heroicons/react/24/solid";
+import { PencilIcon } from "@heroicons/react/24/solid";
 import defaultImg from "../assets/images/freelancer.png";
 import Button from "../components/Button.jsx";
 const profileUpdate = () => {
@@ -19,7 +20,7 @@ const profileUpdate = () => {
   const [socialLinksInput, setsocialLinksInput] = useState("");
   const [avaliability, setAvaliability] = useState("");
   const [isFormChanged, setIsFormChanged] = useState(false);
-  const [photo, setPhoto] = useState(null);
+  const [photo, setPhoto] = useState(defaultImg);
   const requestData = () => {
     axios.get(`${process.env.REACT_APP_BACKEND_URI}/`);
   };
@@ -109,6 +110,18 @@ const profileUpdate = () => {
   const handleLanguageRemove = (language) => {
     setLanguagesKnown(languagesKnown.filter((s) => s !== language));
   };
+  const fileUpload = useRef();
+
+  const imageUpload = (e) => {
+    e.preventDefault();
+    const createUrl = fileUpload.current.click();
+  };
+  const uploadimage = async () => {
+    const uploadedFile = fileUpload.current.files[0];
+    const cachedURL = URL.createObjectURL(uploadedFile);
+    setPhoto(cachedURL);
+  };
+
   return (
     <main className="w-full h-full">
       <div className="w-full bg-white shadow-sm  fixed top-0 z-40">
@@ -158,8 +171,30 @@ const profileUpdate = () => {
                   />
                 </div>
               </div>
-              <div className="min-w-[150px] min-h-[150px] bg-gray-600  rounded-full relative">
-                <img src={defaultImg} width={150} height={150} />
+              <div className="flex flex-col gap-5">
+                <img
+                  src={defaultImg}
+                  width={150}
+                  height={150}
+                  className="bg-gray-600 rounded-full"
+                />
+                <input
+                  type="file"
+                  id="fileInput"
+                  name="profileImage"
+                  ref={fileUpload}
+                  onChange={uploadimage}
+                  className="hidden"
+                  accept=".jpg, .jpeg, .PNG"
+                />
+                <label
+                  for="fileInput"
+                  type="submit"
+                  onClick={imageUpload}
+                  className="cursor-pointer bg-[#d9d9d9] p-2 text-center rounded-2xl hover:bg-[#3A5B22] hover:text-white"
+                >
+                  update Image
+                </label>
               </div>
             </div>
             <div className="w-full md:w-3/4 flex flex-col gap-3 ">
