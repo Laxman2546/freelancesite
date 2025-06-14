@@ -8,9 +8,10 @@ import { ArrowTurnDownLeftIcon } from "@heroicons/react/24/solid";
 import { PencilIcon } from "@heroicons/react/24/solid";
 import defaultImg from "../assets/images/freelancer.png";
 import Button from "../components/Button.jsx";
+
 const profileUpdate = () => {
-  const [userName, setuserName] = useState("Lakshman");
-  const [emailId] = useState("Laxman@gmail.com");
+  const [userName, setuserName] = useState("");
+  const [emailId, setEmailID] = useState("");
   const [bio, setBio] = useState("");
   const [job, setJob] = useState("");
   const [experience, setExperience] = useState("");
@@ -21,9 +22,77 @@ const profileUpdate = () => {
   const [avaliability, setAvaliability] = useState("");
   const [isFormChanged, setIsFormChanged] = useState(false);
   const [photo, setPhoto] = useState(defaultImg);
-  const requestData = () => {
-    axios.get(`${process.env.REACT_APP_BACKEND_URI}/`);
+  const [initialState, setInitialState] = useState(null);
+
+  const requestData = async () => {
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URI}/profile`,
+        { withCredentials: true }
+      );
+      if (!result) {
+        throw new Error("something went wrong");
+      }
+      setUserdata(result.data.profile, result.data.fetchUser);
+      setuserName(fetchUser.userName);
+      setEmailID(fetchUser.emailId);
+      console.log(result);
+    } catch (e) {
+      console.log(e, "error while fetching user profile data");
+    }
   };
+
+  const setUserdata = (profile, fetchUser) => {
+    if (!profile || !fetchUser) {
+      console.error("Profile or user data is missing", { profile, fetchUser });
+      return;
+    }
+
+    const skills = Array.isArray(profile.skills) ? profile.skills : [];
+    const langs = Array.isArray(profile.languagesKnown)
+      ? profile.languagesKnown
+      : [];
+    const social = Array.isArray(profile.socialLinks)
+      ? profile.socialLinks
+      : [];
+
+    const userData = {
+      userName: fetchUser.userName || "",
+      emailId: fetchUser.emailId || "",
+      bio: profile.bio || "",
+      job: profile.job || "",
+      experience: profile.experience || "",
+      selectedSkills: skills,
+      languagesKnown: langs,
+      socialLinks: social,
+      avaliability: profile.avaliability || "",
+    };
+
+    setuserName(userData.userName);
+    setEmailID(userData.emailId);
+    setBio(userData.bio);
+    setJob(userData.job);
+    setExperience(userData.experience);
+    setSelectedSkills(userData.selectedSkills);
+    setLanguagesKnown(userData.languagesKnown);
+    setsocialLinks(userData.socialLinks);
+    setAvaliability(userData.avaliability);
+
+    if (profile.profilePic) {
+      setPhoto(
+        `${process.env.REACT_APP_BACKEND_URI}/profilePics/${profile.profilePic}`
+      );
+    } else {
+      setPhoto(defaultImg);
+    }
+
+    setInitialState(userData);
+  };
+
+  useEffect(() => {
+    requestData();
+  }, []);
+
   const updateData = async (e) => {
     e.preventDefault();
 
@@ -35,7 +104,9 @@ const profileUpdate = () => {
     formData.append("experience", experience);
     formData.append("avaliability", avaliability);
     formData.append("languagesKnown", JSON.stringify(languagesKnown));
-    formData.append("profilePic", fileUpload.current.files[0]); 
+    if (fileUpload.current.files[0]) {
+      formData.append("profilePic", fileUpload.current.files[0]);
+    }
 
     try {
       const result = await axios.post(
@@ -49,28 +120,32 @@ const profileUpdate = () => {
         }
       );
       console.log(result);
+      if (initialState) {
+        setInitialState({
+          userName,
+          bio,
+          job,
+          experience,
+          selectedSkills: [...selectedSkills],
+          languagesKnown: [...languagesKnown],
+          socialLinks: [...socialLinks],
+          photo,
+          avaliability,
+        });
+      }
     } catch (e) {
       console.log(e);
     }
   };
 
-  const initialState = {
-    userName: "Lakshman",
-    emailId: "Laxman@gmail.com",
-    bio: "",
-    job: "",
-    experience: "",
-    selectedSkills: [],
-    languagesKnown: [],
-    socialLinks: [],
-    avaliability: "",
-  };
-
   useEffect(() => {
+    if (!initialState) return;
+
     const hasChanged =
       userName !== initialState.userName ||
       bio !== initialState.bio ||
       job !== initialState.job ||
+      photo !== initialState.photo ||
       experience !== initialState.experience ||
       avaliability !== initialState.avaliability ||
       JSON.stringify(selectedSkills) !==
@@ -89,6 +164,7 @@ const profileUpdate = () => {
     languagesKnown,
     socialLinks,
     avaliability,
+    initialState,
   ]);
 
   const handleSkillSelect = (skill) => {
@@ -96,11 +172,16 @@ const profileUpdate = () => {
       setSelectedSkills([...selectedSkills, skill]);
     }
   };
+
   const handleLanguageSelect = (language) => {
-    if (!languagesKnown.includes(language) && language != "Select a language") {
+    if (
+      !languagesKnown.includes(language) &&
+      language !== "Select a language"
+    ) {
       setLanguagesKnown([...languagesKnown, language]);
     }
   };
+
   const handleaddSociallinks = () => {
     const trimmed = socialLinksInput.trim();
     if (trimmed && !socialLinks.includes(trimmed)) {
@@ -108,27 +189,34 @@ const profileUpdate = () => {
       setsocialLinksInput("");
     }
   };
+
   const handleSkillRemove = (skill) => {
     setSelectedSkills(selectedSkills.filter((s) => s !== skill));
   };
+
   const handleLanguageRemove = (language) => {
     setLanguagesKnown(languagesKnown.filter((s) => s !== language));
   };
+
   const fileUpload = useRef();
 
   const imageUpload = (e) => {
     e.preventDefault();
-    const createUrl = fileUpload.current.click();
+    fileUpload.current.click();
   };
+
   const uploadimage = async () => {
     const uploadedFile = fileUpload.current.files[0];
-    const cachedURL = URL.createObjectURL(uploadedFile);
-    setPhoto(cachedURL);
+    if (uploadedFile) {
+      const cachedURL = URL.createObjectURL(uploadedFile);
+      setPhoto(cachedURL);
+      setIsFormChanged(true);
+    }
   };
 
   return (
     <main className="w-full h-full">
-      <div className="w-full bg-white shadow-sm  fixed top-0 z-40">
+      <div className="w-full bg-white shadow-sm fixed top-0 z-40">
         <div className="container mx-auto">
           <FreelanceNavbar />
         </div>
@@ -139,9 +227,9 @@ const profileUpdate = () => {
         </div>
         <form onSubmit={updateData} encType="multipart/form-data" method="post">
           <div className="w-full h-full flex flex-col gap-8 mt-5">
-            <div className="w-[90%] flex flex-col-reverse md:flex-row  items-center justify-between">
+            <div className="w-[90%] flex flex-col-reverse md:flex-row items-center justify-between">
               <div className="w-full flex flex-col gap-10">
-                <div className="flex flex-col md:flex-row gap-15 w-full items-center  ">
+                <div className="flex flex-col md:flex-row gap-15 w-full items-center">
                   <div className="w-full md:w-1/3 flex flex-col gap-3">
                     <label>Name</label>
                     <input
@@ -158,13 +246,13 @@ const profileUpdate = () => {
                     <input
                       type="text"
                       disabled
-                      placeholder="Enter your name"
+                      placeholder="Enter your email"
                       value={emailId}
                       className="pr-2 pl-3 pt-3 pb-3 rounded-[20px] bg-[#ced4da] outline-none font-normal"
                     />
                   </div>
                 </div>
-                <div className=" w-full md:w-3/4 flex flex-col gap-3">
+                <div className="w-full md:w-3/4 flex flex-col gap-3">
                   <label>Job Details</label>
                   <input
                     type="text"
@@ -178,7 +266,8 @@ const profileUpdate = () => {
               <div className="flex flex-col gap-5">
                 <img
                   src={photo}
-                  className="max-w-[150px] max-h-[150px] min-w-[150px] min-h-[150px] bg-[#d9d9d9] rounded-full"
+                  alt="Profile"
+                  className="max-w-[150px] max-h-[150px] min-w-[150px] min-h-[150px] bg-[#d9d9d9] rounded-full object-cover"
                 />
                 <input
                   type="file"
@@ -190,45 +279,46 @@ const profileUpdate = () => {
                   accept="image/*"
                 />
                 <label
-                  for="fileInput"
-                  type="submit"
+                  htmlFor="fileInput"
                   onClick={imageUpload}
                   className="cursor-pointer bg-[#d9d9d9] p-2 text-center rounded-2xl hover:bg-[#3A5B22] hover:text-white"
                 >
-                  update Image
+                  Update Image
                 </label>
               </div>
             </div>
-            <div className="w-full md:w-3/4 flex flex-col gap-3 ">
+            <div className="w-full md:w-3/4 flex flex-col gap-3">
               <label>Bio</label>
               <textarea
-                className="max-h-[180px] min-h-[180px] resize-none bg-[#d9d9d9] p-5 overflow-y-hidden outline-none rounded-2xl"
+                className="max-h-[180px] min-h-[180px] resize-none bg-[#d9d9d9] p-5 overflow-y-auto outline-none rounded-2xl"
                 name="bio"
-                placeholder="Tell us about your self (Max 500 words)"
+                placeholder="Tell us about yourself (Max 500 words)"
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
               ></textarea>
             </div>
-            <div className="w-full md:w-3/4 flex flex-col gap-3 ">
+            <div className="w-full md:w-3/4 flex flex-col gap-3">
               <label>Add your Skills</label>
-              <div className="flex flex-wrap gap-2 ">
-                {selectedSkills.map((skill) => (
-                  <span
-                    key={skill}
-                    className="flex items-center bg-[#3A5B22] text-white px-3 py-1 rounded-full text-sm mr-2 border-2"
-                  >
-                    {skill}
-                    <button
-                      type="button"
-                      className="ml-2 text-[#84C318] hover:text-red-600 cursor-pointer"
-                      onClick={() => handleSkillRemove(skill)}
-                      aria-label={`Remove ${skill}`}
+              {selectedSkills.length > 0 && selectedSkills != "[]" && (
+                <div className="flex flex-wrap gap-2">
+                  {selectedSkills.map((skill) => (
+                    <span
+                      key={skill}
+                      className="flex items-center bg-[#3A5B22] text-white px-3 py-1 rounded-full text-sm mr-2 border-2"
                     >
-                      &times;
-                    </button>
-                  </span>
-                ))}
-              </div>
+                      {skill}
+                      <button
+                        type="button"
+                        className="ml-2 text-[#84C318] hover:text-red-600 cursor-pointer"
+                        onClick={() => handleSkillRemove(skill)}
+                        aria-label={`Remove ${skill}`}
+                      >
+                        &times;
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
               <div className="flex flex-wrap gap-2">
                 {skillsList
                   .filter((skill) => !selectedSkills.includes(skill))
@@ -249,7 +339,7 @@ const profileUpdate = () => {
                 <label>Experience</label>
                 <input
                   type="number"
-                  placeholder="no of years experience"
+                  placeholder="Number of years experience"
                   className="pr-2 pl-3 pt-3 pb-3 rounded-[20px] bg-[#d9d9d9] outline-none font-normal p-4"
                   value={experience}
                   onChange={(e) => setExperience(e.target.value)}
@@ -260,6 +350,7 @@ const profileUpdate = () => {
                 className="bg-[#d9d9d9] p-3 rounded-[15px]"
                 name="languages"
                 id="languages"
+                value="Select a language"
                 onChange={(e) => handleLanguageSelect(e.target.value)}
               >
                 <option>Select a language</option>
@@ -270,30 +361,34 @@ const profileUpdate = () => {
                 ))}
               </select>
             </div>
-            <div className=" w-full md:max-w-3/4 flex flex-wrap gap-2">
-              {languagesKnown.map((language) => (
-                <span
-                  key={language}
-                  className="flex items-center bg-[#3A5B22] text-white px-3 py-1 rounded-full text-sm mr-2 border-2"
-                >
-                  {language}
-                  <button
-                    type="button"
-                    className="ml-2 text-[#84C318] hover:text-red-600 cursor-pointer"
-                    onClick={() => handleLanguageRemove(language)}
-                    aria-label={`Remove ${language}`}
-                  >
-                    &times;
-                  </button>
-                </span>
-              ))}
-            </div>
+            {languagesKnown.length > 0 &&
+              languagesKnown != "[]" &&
+              languagesKnown != [] && (
+                <div className="w-full md:max-w-3/4 flex flex-wrap gap-2">
+                  {languagesKnown.map((language) => (
+                    <span
+                      key={language}
+                      className="flex items-center bg-[#3A5B22] text-white px-3 py-1 rounded-full text-sm mr-2 border-2"
+                    >
+                      {language}
+                      <button
+                        type="button"
+                        className="ml-2 text-[#84C318] hover:text-red-600 cursor-pointer"
+                        onClick={() => handleLanguageRemove(language)}
+                        aria-label={`Remove ${language}`}
+                      >
+                        &times;
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
             <div className="w-full md:w-3/4 flex flex-col gap-3">
               <label>Social links</label>
               <div className="relative w-full">
                 <input
                   type="text"
-                  placeholder="Ex: portfolio links,Linkedin,Github"
+                  placeholder="Ex: portfolio links, LinkedIn, Github"
                   value={socialLinksInput}
                   onChange={(e) => setsocialLinksInput(e.target.value)}
                   onKeyUp={(e) => {
@@ -301,64 +396,70 @@ const profileUpdate = () => {
                       handleaddSociallinks();
                     }
                   }}
-                  className="w-full pr-2 pl-3 pt-3 pb-3 rounded-[20px] bg-[#d9d9d9] outline-none font-normal p-4 relative"
+                  className="w-full pr-16 pl-3 pt-3 pb-3 rounded-[20px] bg-[#d9d9d9] outline-none font-normal"
                 />
                 {socialLinksInput.length > 0 && (
                   <>
                     <div
-                      className="w-[25px] h-[25px] absolute top-3 right-5 cursor-pointer"
+                      className="w-[25px] h-[25px] absolute top-3 right-12 cursor-pointer"
                       onClick={() => setsocialLinksInput("")}
                     >
-                      <XCircleIcon size={5} />
+                      <XCircleIcon className="w-5 h-5" />
                     </div>
                     <div
-                      className="w-[25px] h-[25px] absolute top-3 right-15 cursor-pointer"
+                      className="w-[25px] h-[25px] absolute top-3 right-3 cursor-pointer"
                       onClick={handleaddSociallinks}
                     >
-                      <ArrowTurnDownLeftIcon size={5} />
+                      <ArrowTurnDownLeftIcon className="w-5 h-5" />
                     </div>
                   </>
                 )}
               </div>
             </div>
-            <div className="w-1/3 bg-slate-200 rounded-2xl">
-              {socialLinks.map((links, idx) => (
-                <span
-                  key={idx}
-                  className="w-full md:w-1/3  flex items-center  text-blue-500 px-3 py-2 rounded-full text-sm mr-2  outline-none"
-                >
-                  {links}
-                  <button
-                    type="button"
-                    className="ml-2 text-[#84C318] hover:text-red-600 cursor-pointer"
-                    onClick={() =>
-                      setsocialLinks(socialLinks.filter((l) => l != links))
-                    }
-                    aria-label={`Remove ${links}`}
-                  >
-                    &times;
-                  </button>
-                </span>
-              ))}
-            </div>
+            {socialLinks.length > 0 &&
+              socialLinks != "[]" &&
+              socialLinks != [] && (
+                <div className="w-full md:w-3/4 bg-slate-200 rounded-2xl p-2">
+                  {socialLinks.map((links, idx) => (
+                    <span
+                      key={idx}
+                      className="flex items-center text-blue-500 px-3 py-2 rounded-full text-sm mr-2 outline-none"
+                    >
+                      {links}
+                      <button
+                        type="button"
+                        className="ml-2 text-[#84C318] hover:text-red-600 cursor-pointer"
+                        onClick={() =>
+                          setsocialLinks(socialLinks.filter((l) => l !== links))
+                        }
+                        aria-label={`Remove ${links}`}
+                      >
+                        &times;
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
             <div className="w-full md:w-3/4 flex flex-col mb-[30px]">
-              <label htmlFor="avaliability">Avaliability Status</label>
+              <label htmlFor="avaliability">Availability Status</label>
               <select
                 className="bg-[#d9d9d9] p-3 rounded-[15px] mt-2"
                 name="avaliability"
                 id="avaliability"
+                value={avaliability}
                 onChange={(e) => setAvaliability(e.target.value)}
               >
-                <option>Avaliable Now</option>
-                <option>Busy</option>
-                <option>Avaliable Soon</option>
+                <option value="">Select availability</option>
+                <option value="Available Now">Available Now</option>
+                <option value="Busy">Busy</option>
+                <option value="Available Soon">Available Soon</option>
               </select>
             </div>
             {isFormChanged && (
               <div>
                 <button
                   type="submit"
-                  className="p-4 bg-[#3A5B22] hover:bg-[#2E471A] cursor-pointer rounded-4xl text-white"
+                  className="p-4 bg-[#3A5B22] hover:bg-[#2E471A] cursor-pointer rounded-xl text-white"
                 >
                   Save Details
                 </button>

@@ -26,7 +26,9 @@ export const freelanceProfile = async (req, res) => {
       profilePic: req.file?.filename,
       job,
     });
-    return res.status(200).json("your data created suceesfully", createProfile);
+    return res
+      .status(200)
+      .json("your data created suceesfully", createProfile, fetchUser);
   } catch (e) {
     return res.status(500).json({ error: "something went wrong" });
   }
@@ -45,22 +47,32 @@ export const freelanceUpdateprofile = async (req, res) => {
     const { userId } = req.user;
     const fetchUser = await userModel.findOne({ userId });
     if (!fetchUser) return res.status(500).json({ error: "user not found" });
+
+    const parsedSkills = JSON.parse(skills || "[]");
+    const parsedSocialLinks = JSON.parse(socialLinks || "[]");
+    const parsedLanguagesKnown = JSON.parse(languagesKnown || "[]");
+
     const createProfile = await freelanceprofileModel.findOneAndUpdate(
       { userId },
       {
         bio,
-        skills,
-        socialLinks,
+        skills: parsedSkills,
+        socialLinks: parsedSocialLinks,
         experience,
         avaliability,
-        languagesKnown,
+        languagesKnown: parsedLanguagesKnown,
         profilePic: req.file?.filename,
         job,
       },
       { new: true, upsert: true }
     );
-    return res.status(200).json("your data updated suceesfully", createProfile);
+    return res.status(200).json({
+      message: "your data updated successfully",
+      profile: createProfile,
+      user: fetchUser,
+    });
   } catch (e) {
+    console.error("Profile update error:", e);
     return res.status(500).json({ error: "something went wrong" });
   }
 };
@@ -83,7 +95,7 @@ export const getfreelanceProfile = async (req, res) => {
         success: true,
         fetchUser: fetchUser,
         profile: null,
-        message: "User found but profile not created yet",
+        message: "Add Your profile photo",
       });
     }
     return res.status(200).json({

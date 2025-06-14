@@ -8,8 +8,7 @@ const freelancerProfileSchema = new mongoose.Schema({
     unique: true,
   },
   skills: {
-    type: [String],
-    default: [],
+    type: [],
   },
   bio: {
     type: String,
@@ -24,13 +23,13 @@ const freelancerProfileSchema = new mongoose.Schema({
     default: "",
   },
   languagesKnown: {
-    type: [String],
+    type: [],
   },
-  avaliabilty: {
+  avaliability: {
     type: String,
   },
   socialLinks: {
-    type: [String],
+    type: [],
     default: "",
   },
   job: {
