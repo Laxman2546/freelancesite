@@ -24,30 +24,34 @@ const profileUpdate = () => {
   const requestData = () => {
     axios.get(`${process.env.REACT_APP_BACKEND_URI}/`);
   };
-  const updateData = (e) => {
+  const updateData = async (e) => {
     e.preventDefault();
-    const result = axios
-      .post(
+
+    const formData = new FormData();
+    formData.append("bio", bio);
+    formData.append("skills", JSON.stringify(selectedSkills));
+    formData.append("job", job);
+    formData.append("socialLinks", JSON.stringify(socialLinks));
+    formData.append("experience", experience);
+    formData.append("avaliability", avaliability);
+    formData.append("languagesKnown", JSON.stringify(languagesKnown));
+    formData.append("profilePic", fileUpload.current.files[0]); 
+
+    try {
+      const result = await axios.post(
         `${process.env.REACT_APP_BACKEND_URI}/profile/update`,
-        {
-          bio: bio,
-          skill: selectedSkills,
-          job: job,
-          socialLinks: socialLinks,
-          experience: experience,
-          avaliability: avaliability,
-          languagesKnown: languagesKnown,
-        },
+        formData,
         {
           withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
-      )
-      .then((result) => {
-        console.log(result);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+      );
+      console.log(result);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const initialState = {
@@ -133,7 +137,7 @@ const profileUpdate = () => {
         <div>
           <h1 className="text-2xl font-medium">Let's Update your profile</h1>
         </div>
-        <form onSubmit={updateData} encType="multipart/form-data">
+        <form onSubmit={updateData} encType="multipart/form-data" method="post">
           <div className="w-full h-full flex flex-col gap-8 mt-5">
             <div className="w-[90%] flex flex-col-reverse md:flex-row  items-center justify-between">
               <div className="w-full flex flex-col gap-10">
@@ -173,19 +177,17 @@ const profileUpdate = () => {
               </div>
               <div className="flex flex-col gap-5">
                 <img
-                  src={defaultImg}
-                  width={150}
-                  height={150}
-                  className="bg-gray-600 rounded-full"
+                  src={photo}
+                  className="max-w-[150px] max-h-[150px] min-w-[150px] min-h-[150px] bg-[#d9d9d9] rounded-full"
                 />
                 <input
                   type="file"
                   id="fileInput"
-                  name="profileImage"
+                  name="profilePic"
                   ref={fileUpload}
                   onChange={uploadimage}
                   className="hidden"
-                  accept=".jpg, .jpeg, .PNG"
+                  accept="image/*"
                 />
                 <label
                   for="fileInput"

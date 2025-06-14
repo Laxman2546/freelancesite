@@ -1,5 +1,7 @@
 import freelanceprofileModel from "../models/freelanceprofileModel.js";
 import userModel from "../models/registrationModel.js";
+import multer from "multer";
+
 export const freelanceProfile = async (req, res) => {
   const {
     bio,
@@ -21,6 +23,7 @@ export const freelanceProfile = async (req, res) => {
       experience,
       avaliability,
       languagesKnown,
+      profilePic: req.file?.filename,
       job,
     });
     return res.status(200).json("your data created suceesfully", createProfile);
@@ -51,6 +54,7 @@ export const freelanceUpdateprofile = async (req, res) => {
         experience,
         avaliability,
         languagesKnown,
+        profilePic: req.file?.filename,
         job,
       },
       { new: true, upsert: true }
@@ -74,7 +78,6 @@ export const getfreelanceProfile = async (req, res) => {
     }
 
     const fetchUserProfile = await freelanceprofileModel.findOne({ userId });
-    // If no profile exists yet, return just the user data
     if (!fetchUserProfile) {
       return res.status(200).json({
         success: true,
