@@ -10,6 +10,7 @@ export const freelanceProfile = async (req, res) => {
     experience,
     avaliability,
     languagesKnown,
+    mobilenumber,
     job,
   } = req.body;
   try {
@@ -23,6 +24,7 @@ export const freelanceProfile = async (req, res) => {
       experience,
       avaliability,
       languagesKnown,
+      mobilenumber,
       profilePic: req.file?.filename,
       job,
     });
@@ -40,6 +42,7 @@ export const freelanceUpdateprofile = async (req, res) => {
     socialLinks,
     experience,
     avaliability,
+    mobilenumber,
     languagesKnown,
     job,
   } = req.body;
@@ -59,6 +62,7 @@ export const freelanceUpdateprofile = async (req, res) => {
         skills: parsedSkills,
         socialLinks: parsedSocialLinks,
         experience,
+        mobilenumber,
         avaliability,
         languagesKnown: parsedLanguagesKnown,
         profilePic: req.file?.filename,

@@ -35,6 +35,9 @@ const freelancerProfileSchema = new mongoose.Schema({
   job: {
     type: String,
   },
+  mobilenumber: {
+    type: Number,
+  },
 });
 
 export default mongoose.model("freelancerProfile", freelancerProfileSchema);
