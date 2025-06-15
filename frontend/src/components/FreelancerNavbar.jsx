@@ -10,7 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Errors from "./Errors";
 import noNotifications from "../assets/images/download.svg";
 import noMessages from "../assets/images/messages.svg";
-
+import axios from "axios";
 const FreelancerNavbar = () => {
   const Navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -21,6 +21,7 @@ const FreelancerNavbar = () => {
   const [isError, setisError] = useState(false);
   const [menuOpen, setmenuOpen] = useState(false);
   const [error, seterror] = useState("");
+  const [userPic, setuserPic] = useState("");
   const navItems = [
     {
       label: "My Services",
@@ -99,6 +100,27 @@ const FreelancerNavbar = () => {
       isRead: false,
     },
   ];
+
+  const requestData = async () => {
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URI}/profile`,
+        { withCredentials: true }
+      );
+      if (!result) {
+        throw new Error("something went wrong");
+      }
+
+      console.log(result);
+      const profilePic = `${process.env.REACT_APP_BACKEND_URI}/profilePics/${result.data.profile.profilePic}`;
+      setuserPic(profilePic);
+    } catch (e) {
+      console.log(e, "error while fetching user profile data");
+    }
+  };
+  useEffect(() => {
+    requestData();
+  }, []);
 
   useEffect(() => {
     setnotifications(notificationData);
@@ -265,7 +287,14 @@ const FreelancerNavbar = () => {
                         onClick={() => handleNavItemClick("/profile")}
                         className="w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium flex items-center gap-3"
                       >
-                        <UserCircleIcon className="size-5" />
+                        {userPic ? (
+                          <img src={userPic} />
+                        ) : (
+                          <UserCircleIcon
+                            className="size-6  transition-colors"
+                            onClick={handleMenuToggle}
+                          />
+                        )}
                         Profile
                       </button>
                     </li>
@@ -456,10 +485,14 @@ const FreelancerNavbar = () => {
               )}
             </li>
             <li className="cursor-pointer relative">
-              <UserCircleIcon
-                className="size-6  transition-colors"
-                onClick={handleMenuToggle}
-              />
+              {userPic ? (
+                <img src={userPic} className="w-[25px] h-[25px]" />
+              ) : (
+                <UserCircleIcon
+                  className="size-6  transition-colors"
+                  onClick={handleMenuToggle}
+                />
+              )}
               {(isOpen || closingMenu) && (
                 <div
                   className={`absolute right-0 top-8 z-20 bg-white rounded-lg shadow-lg border w-48 ${
