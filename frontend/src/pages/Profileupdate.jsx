@@ -8,6 +8,7 @@ import { ArrowTurnDownLeftIcon } from "@heroicons/react/24/solid";
 import { PencilIcon } from "@heroicons/react/24/solid";
 import defaultImg from "../assets/images/freelancer.png";
 import Button from "../components/Button.jsx";
+import Errors from "../components/Errors.jsx";
 
 const profileUpdate = () => {
   const [userName, setuserName] = useState("");
@@ -23,7 +24,8 @@ const profileUpdate = () => {
   const [isFormChanged, setIsFormChanged] = useState(false);
   const [photo, setPhoto] = useState(defaultImg);
   const [initialState, setInitialState] = useState(null);
-
+  const [showError, setshowError] = useState(false);
+  const [error, setError] = useState("");
   const requestData = async () => {
     try {
       const result = await axios.get(
@@ -33,18 +35,26 @@ const profileUpdate = () => {
       if (!result) {
         throw new Error("something went wrong");
       }
+      setuserName(result.data.fetchUser.userName);
+      setEmailID(result.data.fetchUser.emailId);
       setUserdata(result.data.profile, result.data.fetchUser);
-      setuserName(fetchUser.userName);
-      setEmailID(fetchUser.emailId);
       console.log(result);
     } catch (e) {
       console.log(e, "error while fetching user profile data");
     }
   };
+  useEffect(() => {
+    if (!showError) return;
+    const timer = setTimeout(() => {
+      setshowError(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [showError, error]);
 
   const setUserdata = (profile, fetchUser) => {
     if (!profile || !fetchUser) {
-      console.error("Profile or user data is missing", { profile, fetchUser });
+      setshowError(true);
+      setError("update your profile pic to save details");
       return;
     }
 
@@ -133,6 +143,7 @@ const profileUpdate = () => {
           avaliability,
         });
       }
+      setIsFormChanged(false);
     } catch (e) {
       console.log(e);
     }
@@ -221,7 +232,13 @@ const profileUpdate = () => {
           <FreelanceNavbar />
         </div>
       </div>
+
       <div className="w-full min-h-screen p-8 bg-[#F4F2EE] mt-24">
+        <Errors
+          isError={showError}
+          errorText={error}
+          errorStyles={`absoulte`}
+        />
         <div>
           <h1 className="text-2xl font-medium">Let's Update your profile</h1>
         </div>

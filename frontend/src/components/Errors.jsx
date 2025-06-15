@@ -27,7 +27,7 @@ const Errors = ({ isError, errorText, errorStyles }) => {
   return (
     <div
       style={{ minHeight: 56 }}
-      className={`w-[100%] flex justify-center items-start mb-10 ${errorStyles}`}
+      className={`w-[100%] flex justify-center items-start  ${errorStyles}`}
     >
       <div
         ref={errorRef}

@@ -97,7 +97,7 @@ const Usertype = ({ username, onComplete }) => {
             styles="text-white p-3 rounded-2xl cursor-pointer font-medium"
             text={isSubmitting ? "Submitting..." : "Continue"}
             onClick={requestProfile}
-            isDisabled={userType ? true : false}
+
           />
         </div>
       </div>

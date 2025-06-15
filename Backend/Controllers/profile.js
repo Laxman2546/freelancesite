@@ -94,7 +94,6 @@ export const getfreelanceProfile = async (req, res) => {
       return res.status(200).json({
         success: true,
         fetchUser: fetchUser,
-        profile: null,
         message: "Add Your profile photo",
       });
     }

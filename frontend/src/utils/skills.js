@@ -13,6 +13,8 @@ const skillsList = [
   "HTML",
   "CSS",
   "Sass",
+  "AIML",
+  "GenerativeAI",
   "Less",
   "React",
   "Vue.js",
