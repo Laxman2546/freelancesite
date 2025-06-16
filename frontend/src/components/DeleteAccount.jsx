@@ -1,16 +1,19 @@
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import React, { useState } from "react";
 import { AlertCircleOutline } from "react-ionicons";
-const DeleteAccount = () => {
+const DeleteAccount = ({ showPopup, deleteAccount }) => {
   const [text, setText] = useState("");
   const [disabled, setDisabled] = useState(true);
   return (
-    <main className=" flex  rounded-3xl bg-[#F4F2EE] p-9 relative">
-      <div className="absolute top-5 right-5 cursor-pointer p-2 hover:bg-gray-700 hover:rounded-4xl  hover:text-white ">
+    <main className=" flex  rounded-3xl bg-[#F4F2EE] p-4 md:p-9 relative">
+      <div
+        className="absolute top-2 right-2 cursor-pointer p-2 hover:bg-[#d9d9d9] hover:rounded-4xl"
+        onClick={() => showPopup()}
+      >
         <XMarkIcon className="size-6" />
       </div>
-      <div className="w-full flex flex-row gap-2">
-        <div>
+      <div className="w-full flex flex-row gap-2 ">
+        <div className="hidden md:flex">
           <AlertCircleOutline color={"#e50606"} height="50px" width="50px" />
         </div>
         <div className=" flex flex-col gap-5">
@@ -30,12 +33,19 @@ const DeleteAccount = () => {
             />
           </div>
           <div className="w-full flex flex-row justify-end gap-3">
-            <button className="p-3 rounded-xl bg-gray-700 cursor-pointer text-white">
+            <button
+              className="p-3 rounded-xl bg-gray-600 cursor-pointer text-white"
+              onClick={() => showPopup()}
+            >
               Cancel
             </button>
             <button
               className="p-3 rounded-xl bg-red-500 text-white cursor-pointer disabled:bg-[#d9d9d9] disabled:text-gray-600 disabled:cursor-not-allowed"
               disabled={disabled && text !== "delete"}
+              onClick={() => {
+                deleteAccount();
+                showPopup();
+              }}
             >
               Delete
             </button>

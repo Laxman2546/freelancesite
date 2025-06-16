@@ -1,6 +1,23 @@
 import freelanceprofileModel from "../models/freelanceprofileModel.js";
 import userModel from "../models/registrationModel.js";
 import multer from "multer";
+import fs from "fs";
+import path from "path";
+
+// Utility function to delete profile picture
+const deleteProfilePicture = async (filename) => {
+  if (!filename) return;
+
+  const filePath = path.join(__dirname, "..", "profilePics", filename);
+  try {
+    await fs.promises.unlink(filePath);
+    console.log("Profile image deleted successfully");
+    return true;
+  } catch (err) {
+    console.error("Failed to delete profile image:", err);
+    return false;
+  }
+};
 
 export const freelanceProfile = async (req, res) => {
   const {
@@ -54,6 +71,12 @@ export const freelanceUpdateprofile = async (req, res) => {
     const parsedSkills = JSON.parse(skills || "[]");
     const parsedSocialLinks = JSON.parse(socialLinks || "[]");
     const parsedLanguagesKnown = JSON.parse(languagesKnown || "[]");
+
+    const existingProfile = await freelanceprofileModel.findOne({ userId });
+
+    if (req.file?.filename && existingProfile?.profilePic) {
+      await deleteProfilePicture(existingProfile.profilePic);
+    }
 
     const createProfile = await freelanceprofileModel.findOneAndUpdate(
       { userId },
@@ -134,5 +157,46 @@ export const Usertype = async (req, res) => {
         { error: "something went wrong", e },
         console.log(e, "this is error")
       );
+  }
+};
+export const removeAccount = async (req, res) => {
+  try {
+    const { userId } = req.user;
+
+    const deletedUser = await userModel.findOneAndDelete({ userId });
+
+    if (!deletedUser) {
+      return res
+        .status(404)
+        .json({ error: "User not found. Please login again." });
+    }
+
+    const deletedProfile = await freelanceprofileModel.findOneAndDelete({
+      userId,
+    });
+
+    if (!deletedProfile) {
+      return res.status(200).json({
+        success: true,
+        user: deletedUser,
+        message: "User deleted, but profile was not found.",
+      });
+    }
+
+    if (deletedProfile?.profilePic) {
+      await deleteProfilePicture(deletedProfile.profilePic);
+    }
+
+    return res.status(200).json({
+      success: true,
+      user: deletedUser,
+      profile: deletedProfile,
+      message: "User and profile deleted successfully.",
+    });
+  } catch (error) {
+    console.error("An error occurred while deleting the account:", error);
+    return res
+      .status(500)
+      .json({ error: "Internal server error. Please try again later." });
   }
 };

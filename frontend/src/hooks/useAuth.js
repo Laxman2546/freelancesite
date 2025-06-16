@@ -1,4 +1,3 @@
-// src/hooks/useAuth.js
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -49,7 +48,6 @@ export const useAuth = () => {
             console.error("Unexpected error:", err);
         }
       } else if (err.request) {
-        // Handle network errors
         console.error("Network error:", err.request);
       } else {
         console.error("Error:", err.message);

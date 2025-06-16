@@ -3,6 +3,7 @@ import {
   registerUser,
   loginUser,
   logoutUser,
+
 } from "../controllers/registration.js";
 const router = express.Router();
 router.post("/create", registerUser);

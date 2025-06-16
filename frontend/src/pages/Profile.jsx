@@ -185,8 +185,8 @@ const Profile = () => {
             <div className="bg-white w-full md:min-w-[900px] p-5 md:p-10  rounded-2xl flex flex-col  gap-5">
               <div className="flex flex-col items-start justify-items-start gap-8 pr-5">
                 <h1 className="font-bold">Professional Information</h1>
-                <div className="w-full flex flex-col gap-9">
-                  <div className="w-full md:w-[80%] flex flex-col md:flex-row gap-10 md:justify-between pl-5 ">
+                <div className="w-full flex flex-col md:flex-row gap-9">
+                  <div className="w-full md:w-[80%] flex flex-col md:flex-col gap-10 md:justify-between pl-5 ">
                     <div className="flex flex-row items-center gap-3">
                       <div className="bg-[#CDEBC1] p-3 rounded-2xl">
                         <BriefcaseIcon className="size-6 text-[#5D7154]" />
@@ -214,7 +214,7 @@ const Profile = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="w-full md:w-[91%] flex flex-col md:flex-row gap-10 md:justify-between pl-5">
+                  <div className="w-full md:w-[91%] flex flex-col md:flex-col gap-10 md:justify-between pl-5">
                     <div className="flex flex-row items-center gap-3">
                       <div className="bg-[#CDEBC1] p-3 rounded-2xl">
                         <CheckCircleIcon className="size-6 text-[#5D7154]" />

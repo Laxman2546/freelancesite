@@ -490,16 +490,15 @@ const profileUpdate = () => {
                 <option value="Unavaliable">Unavaliable</option>
               </select>
             </div>
-            {isFormChanged && (
-              <div>
-                <button
-                  type="submit"
-                  className="p-4 bg-[#3A5B22] hover:bg-[#2E471A] cursor-pointer rounded-xl text-white"
-                >
-                  Save Details
-                </button>
-              </div>
-            )}
+
+            <div>
+              <button
+                type="submit"
+                className="p-4 bg-[#3A5B22] hover:bg-[#2E471A] cursor-pointer rounded-xl text-white"
+              >
+                Save Details
+              </button>
+            </div>
           </div>
         </form>
       </div>

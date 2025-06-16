@@ -7,6 +7,7 @@ import {
   freelanceUpdateprofile,
   getfreelanceProfile,
   Usertype,
+  removeAccount,
 } from "../controllers/profile.js";
 
 const storage = multer.diskStorage({
@@ -35,5 +36,5 @@ router.post(
   upload.single("profilePic"),
   freelanceUpdateprofile
 );
-
+router.post("/removeaccount", isloggedin, removeAccount);
 export default router;
