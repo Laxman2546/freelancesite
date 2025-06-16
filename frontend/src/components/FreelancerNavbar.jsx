@@ -108,10 +108,8 @@ const FreelancerNavbar = () => {
         { withCredentials: true }
       );
       if (!result) {
-        throw new Error("something went wrong");
+        return;
       }
-
-      console.log(result);
       const profilePic = `${process.env.REACT_APP_BACKEND_URI}/profilePics/${result.data.profile.profilePic}`;
       setuserPic(profilePic);
     } catch (e) {
@@ -120,7 +118,7 @@ const FreelancerNavbar = () => {
   };
   useEffect(() => {
     requestData();
-  }, []);
+  }, [requestData]);
 
   useEffect(() => {
     setnotifications(notificationData);
@@ -241,7 +239,19 @@ const FreelancerNavbar = () => {
               </div>
               <div className="h-full flex flex-col">
                 <div className="flex flex-row items-center justify-center mt-[80px] gap-3 p-6 border-b border-gray-200">
-                  <UserCircleIcon className="size-8 text-[#3A5B22]" />
+                  {userPic ? (
+                    <div className="w-[25px] h-[25px]">
+                      <img
+                        src={userPic}
+                        className="w-[50px] h-[25px] rounded-full"
+                      />
+                    </div>
+                  ) : (
+                    <UserCircleIcon
+                      className="size-6  transition-colors"
+                      onClick={handleMenuToggle}
+                    />
+                  )}
                   <h1 className="text-lg font-semibold text-gray-800">
                     Lakshman
                   </h1>
@@ -288,7 +298,12 @@ const FreelancerNavbar = () => {
                         className="w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium flex items-center gap-3"
                       >
                         {userPic ? (
-                          <img src={userPic} />
+                          <div className="w-[25px] h-[25px]">
+                            <img
+                              src={userPic}
+                              className="w-[50px] h-[25px] rounded-full"
+                            />
+                          </div>
                         ) : (
                           <UserCircleIcon
                             className="size-6  transition-colors"
@@ -486,7 +501,12 @@ const FreelancerNavbar = () => {
             </li>
             <li className="cursor-pointer relative">
               {userPic ? (
-                <img src={userPic} className="w-[25px] h-[25px]" />
+                <div className="w-[25px] h-[25px] " onClick={handleMenuToggle}>
+                  <img
+                    src={userPic}
+                    className="w-[50px] h-[25px] rounded-full"
+                  />
+                </div>
               ) : (
                 <UserCircleIcon
                   className="size-6  transition-colors"

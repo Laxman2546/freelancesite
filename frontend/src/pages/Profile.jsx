@@ -2,6 +2,13 @@ import React, { useEffect, useState } from "react";
 import FreelancerNavbar from "../components/FreelancerNavbar";
 import axios from "axios";
 import defaultImg from "../assets/images/freelancer.png";
+import { themeColors } from "../hooks/theme";
+import { EnvelopeIcon, PhoneIcon } from "@heroicons/react/24/outline";
+import {
+  BriefcaseIcon,
+  CalendarIcon,
+  CheckCircleIcon,
+} from "@heroicons/react/24/solid";
 const Profile = () => {
   const [userName, setuserName] = useState("");
   const [emailId, setEmailID] = useState("");
@@ -12,6 +19,7 @@ const Profile = () => {
   const [languagesKnown, setLanguagesKnown] = useState([]);
   const [socialLinks, setsocialLinks] = useState([]);
   const [socialLinksInput, setsocialLinksInput] = useState("");
+  const [mobileNumber, setmobileNumber] = useState("");
   const [avaliability, setAvaliability] = useState("");
   const [photo, setPhoto] = useState(defaultImg);
 
@@ -56,7 +64,8 @@ const Profile = () => {
       emailId: fetchUser.emailId || "",
       bio: profile.bio || "",
       job: profile.job || "",
-      experience: profile.experience || "",
+      mobilenumber: profile.mobilenumber || "No mobile number",
+      experience: profile.experience || 0,
       selectedSkills: skills,
       languagesKnown: langs,
       socialLinks: social,
@@ -72,6 +81,7 @@ const Profile = () => {
     setLanguagesKnown(userData.languagesKnown);
     setsocialLinks(userData.socialLinks);
     setAvaliability(userData.avaliability);
+    setmobileNumber(userData.mobilenumber);
 
     if (profile.profilePic) {
       setPhoto(
@@ -86,6 +96,163 @@ const Profile = () => {
     <main className="w-full h-full">
       <div>
         <FreelancerNavbar />
+      </div>
+      <div className="w-full min-h-screen p-8  pt-5 flex bg-[#F4F2EE]">
+        <div className="w-full flex flex-col md:flex-row gap-2">
+          <div className="w-full flex flex-col gap-5">
+            <div className="bg-white  w-full md:min-w-[300px]  max-h-[280px] p-2 md:p-10 rounded-2xl flex flex-col justify-center items-center text-center gap-5">
+              <div className="w-[130px] h-[130px] p-1  rounded-full flex  ">
+                <img
+                  src={photo}
+                  className="w-[120px] h-[120px]  rounded-full"
+                />
+              </div>
+              <div className="flex flex-col items-center  gap-2">
+                <h1 className="text-lg font-medium">{userName}</h1>
+                <h1 className="text-wrap max-w-[300px] font-light">{job}</h1>
+                <div className="flex flex-row gap-2 items-center">
+                  {avaliability === "Busy" ? (
+                    <>
+                      <div className="w-[13px] h-[13px]  rounded-full bg-amber-400 "></div>
+                      <div>
+                        <h1 className="text-amber-400 font-bold">
+                          {avaliability}
+                        </h1>
+                      </div>
+                    </>
+                  ) : avaliability === "Available Now" ? (
+                    <>
+                      <div className="w-[13px] h-[13px]  rounded-full bg-green-400"></div>
+                      <div>
+                        <h1 className="text-green-400 font-bold">
+                          {avaliability}
+                        </h1>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="w-[13px] h-[13px]  rounded-full bg-red-500 "></div>
+                      <div>
+                        <h1 className="text-red-500 font-bold">
+                          {avaliability}
+                        </h1>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="bg-white   w-full md:min-w-[300px]  max-h-[280px] p-5  rounded-2xl flex flex-col  gap-5">
+              <h1 className="font-bold">contact Infromation</h1>
+              <div className="flex flex-row gap-2">
+                <EnvelopeIcon className="size-6" />
+                <h1>{emailId}</h1>
+              </div>
+              <div className="flex flex-row gap-2">
+                <PhoneIcon className="size-6" />
+                <h1>{mobileNumber}</h1>
+              </div>
+            </div>
+            <div className="bg-white   w-full md:min-w-[300px]  max-h-[280px] p-5  rounded-2xl flex flex-col  gap-5">
+              <h1 className="font-bold">Top Skills</h1>
+              <div className="flex flex-row flex-1 flex-wrap gap-2">
+                {selectedSkills.slice(0, 3).map((skill, index) => (
+                  <>
+                    <div
+                      className="bg-[#3A5B22] text-white mb-2 p-2  rounded-2xl"
+                      key={index}
+                    >
+                      <h1>{skill}</h1>
+                    </div>
+                  </>
+                ))}
+              </div>
+            </div>
+            <div className="bg-white  w-full md:min-w-[300px]  max-h-[280px] p-5  rounded-2xl flex flex-col  gap-5">
+              <h1 className="font-bold">Languages Known</h1>
+              <div className="flex flex-col gap-2">
+                {languagesKnown.map((language, index) => (
+                  <h1>{language}</h1>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="w-full flex flex-col gap-3">
+            <div className="bg-white w-full md:min-w-[900px] p-5 md:p-10  rounded-2xl flex flex-col justify-center items-center  gap-5">
+              <div className="flex flex-col items-start gap-2 pr-5">
+                <h1 className="font-bold">About Me</h1>
+                <h1>{bio}</h1>
+              </div>
+            </div>
+            <div className="bg-white w-full md:min-w-[900px] p-5 md:p-10  rounded-2xl flex flex-col  gap-5">
+              <div className="flex flex-col items-start justify-items-start gap-8 pr-5">
+                <h1 className="font-bold">Professional Information</h1>
+                <div className="w-full flex flex-col gap-9">
+                  <div className="w-[80%] flex flex-col md:flex-row gap-10 md:justify-between pl-5 ">
+                    <div className="flex flex-row items-center gap-3">
+                      <div className="bg-[#CDEBC1] p-3 rounded-2xl">
+                        <BriefcaseIcon className="size-6 text-[#5D7154]" />
+                      </div>
+                      <div>
+                        <h1>Current Role</h1>
+                        <h1 className="font-bold">{job}</h1>
+                      </div>
+                    </div>
+                    <div className="flex flex-row items-center gap-3">
+                      <div className="bg-[#CDEBC1] p-3 rounded-2xl">
+                        <CalendarIcon className="size-6 text-[#5D7154]" />
+                      </div>
+                      <div>
+                        <h1>Experience</h1>
+                        <h1 className="font-bold">
+                          {experience === 0
+                            ? "beginner"
+                            : `${experience}${experience > 1 ? "+" : ""} year${
+                                experience > 1 ? "s" : ""
+                              }`}
+                        </h1>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="w-[90%] flex flex-col md:flex-row gap-10 md:justify-between pl-5">
+                    <div className="flex flex-row items-center gap-3">
+                      <div className="bg-[#CDEBC1] p-3 rounded-2xl">
+                        <CheckCircleIcon className="size-6 text-[#5D7154]" />
+                      </div>
+                      <div>
+                        <h1>Avaliability</h1>
+                        <h1 className="font-bold">{avaliability}</h1>
+                      </div>
+                    </div>
+                    <div className="flex flex-row items-center gap-3">
+                      <div className="bg-[#CDEBC1] p-3 rounded-2xl">
+                        <EnvelopeIcon className="size-6 text-[#5D7154]" />
+                      </div>
+                      <div>
+                        <h1>EmailId</h1>
+                        <h1 className="font-bold">{emailId}</h1>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white w-full md:min-w-[900px] p-5 md:p-10  rounded-2xl flex flex-col  gap-5">
+              <div className="flex flex-col items-start gap-2 pr-5">
+                <h1 className="font-bold">Skills and Expertise</h1>
+                <div className="flex flex-row flex-wrap gap-3">
+                  {selectedSkills.map((skills, index) => (
+                    <div className="p-3  bg-[#CDEBC1] rounded-2xl">
+                      <h1 key={index} className="text-[#294018]">
+                        {skills}
+                      </h1>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   );

@@ -15,6 +15,7 @@ const profileUpdate = () => {
   const [emailId, setEmailID] = useState("");
   const [bio, setBio] = useState("");
   const [job, setJob] = useState("");
+  const [mobileNumber, setMobilenumber] = useState("");
   const [experience, setExperience] = useState("");
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [languagesKnown, setLanguagesKnown] = useState([]);
@@ -74,6 +75,7 @@ const profileUpdate = () => {
       experience: profile.experience || "",
       selectedSkills: skills,
       languagesKnown: langs,
+      mobilenumber: profile.mobilenumber || "",
       socialLinks: social,
       avaliability: profile.avaliability || "",
     };
@@ -87,6 +89,7 @@ const profileUpdate = () => {
     setLanguagesKnown(userData.languagesKnown);
     setsocialLinks(userData.socialLinks);
     setAvaliability(userData.avaliability);
+    setMobilenumber(userData.mobilenumber);
 
     if (profile.profilePic) {
       setPhoto(
@@ -110,6 +113,7 @@ const profileUpdate = () => {
     formData.append("bio", bio);
     formData.append("skills", JSON.stringify(selectedSkills));
     formData.append("job", job);
+    formData.append("mobilenumber", mobileNumber);
     formData.append("socialLinks", JSON.stringify(socialLinks));
     formData.append("experience", experience);
     formData.append("avaliability", avaliability);
@@ -135,6 +139,7 @@ const profileUpdate = () => {
           userName,
           bio,
           job,
+          mobileNumber,
           experience,
           selectedSkills: [...selectedSkills],
           languagesKnown: [...languagesKnown],
@@ -156,6 +161,7 @@ const profileUpdate = () => {
       userName !== initialState.userName ||
       bio !== initialState.bio ||
       job !== initialState.job ||
+      mobileNumber !== initialState.mobileNumber ||
       photo !== initialState.photo ||
       experience !== initialState.experience ||
       avaliability !== initialState.avaliability ||
@@ -175,6 +181,7 @@ const profileUpdate = () => {
     languagesKnown,
     socialLinks,
     avaliability,
+    mobileNumber,
     initialState,
   ]);
 
@@ -270,6 +277,16 @@ const profileUpdate = () => {
                   </div>
                 </div>
                 <div className="w-full md:w-3/4 flex flex-col gap-3">
+                  <label>Conatct Information</label>
+                  <input
+                    type="number"
+                    placeholder="Enter your mobile number"
+                    value={mobileNumber}
+                    onChange={(e) => setMobilenumber(e.target.value)}
+                    className="pr-2 pl-3 pt-3 pb-3 rounded-[20px] bg-[#d9d9d9] outline-none font-normal p-4"
+                  />
+                </div>
+                <div className="w-full md:w-3/4 flex flex-col gap-3">
                   <label>Job Details</label>
                   <input
                     type="text"
@@ -356,6 +373,7 @@ const profileUpdate = () => {
                 <label>Experience</label>
                 <input
                   type="number"
+                  min={0}
                   placeholder="Number of years experience"
                   className="pr-2 pl-3 pt-3 pb-3 rounded-[20px] bg-[#d9d9d9] outline-none font-normal p-4"
                   value={experience}
@@ -469,7 +487,7 @@ const profileUpdate = () => {
                 <option value="">Select availability</option>
                 <option value="Available Now">Available Now</option>
                 <option value="Busy">Busy</option>
-                <option value="Available Soon">Available Soon</option>
+                <option value="Unavaliable">Unavaliable</option>
               </select>
             </div>
             {isFormChanged && (
