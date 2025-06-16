@@ -97,7 +97,7 @@ const Profile = () => {
       <div>
         <FreelancerNavbar />
       </div>
-      <div className="w-full min-h-screen p-8  pt-5 flex bg-[#F4F2EE]">
+      <div className="w-full min-h-screen p-2 md:p-8  pt-5 flex bg-[#F4F2EE]">
         <div className="w-full flex flex-col md:flex-row gap-2">
           <div className="w-full flex flex-col gap-5">
             <div className="bg-white  w-full md:min-w-[300px]  max-h-[280px] p-2 md:p-10 rounded-2xl flex flex-col justify-center items-center text-center gap-5">
@@ -157,14 +157,12 @@ const Profile = () => {
               <h1 className="font-bold">Top Skills</h1>
               <div className="flex flex-row flex-1 flex-wrap gap-2">
                 {selectedSkills.slice(0, 3).map((skill, index) => (
-                  <>
-                    <div
-                      className="bg-[#3A5B22] text-white mb-2 p-2  rounded-2xl"
-                      key={index}
-                    >
-                      <h1>{skill}</h1>
-                    </div>
-                  </>
+                  <div
+                    className="bg-[#3A5B22] text-white mb-2 p-2  rounded-2xl"
+                    key={index}
+                  >
+                    <h1>{skill}</h1>
+                  </div>
                 ))}
               </div>
             </div>
@@ -172,7 +170,7 @@ const Profile = () => {
               <h1 className="font-bold">Languages Known</h1>
               <div className="flex flex-col gap-2">
                 {languagesKnown.map((language, index) => (
-                  <h1>{language}</h1>
+                  <h1 key={index}>{language}</h1>
                 ))}
               </div>
             </div>
@@ -188,14 +186,16 @@ const Profile = () => {
               <div className="flex flex-col items-start justify-items-start gap-8 pr-5">
                 <h1 className="font-bold">Professional Information</h1>
                 <div className="w-full flex flex-col gap-9">
-                  <div className="w-[80%] flex flex-col md:flex-row gap-10 md:justify-between pl-5 ">
+                  <div className="w-full md:w-[80%] flex flex-col md:flex-row gap-10 md:justify-between pl-5 ">
                     <div className="flex flex-row items-center gap-3">
                       <div className="bg-[#CDEBC1] p-3 rounded-2xl">
                         <BriefcaseIcon className="size-6 text-[#5D7154]" />
                       </div>
                       <div>
                         <h1>Current Role</h1>
-                        <h1 className="font-bold">{job}</h1>
+                        <h1 className="font-bold break-all  text-[15px]">
+                          {job}
+                        </h1>
                       </div>
                     </div>
                     <div className="flex flex-row items-center gap-3">
@@ -214,7 +214,7 @@ const Profile = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="w-[90%] flex flex-col md:flex-row gap-10 md:justify-between pl-5">
+                  <div className="w-full md:w-[91%] flex flex-col md:flex-row gap-10 md:justify-between pl-5">
                     <div className="flex flex-row items-center gap-3">
                       <div className="bg-[#CDEBC1] p-3 rounded-2xl">
                         <CheckCircleIcon className="size-6 text-[#5D7154]" />
@@ -230,7 +230,9 @@ const Profile = () => {
                       </div>
                       <div>
                         <h1>EmailId</h1>
-                        <h1 className="font-bold">{emailId}</h1>
+                        <h1 className="font-bold break-all  text-[15px]">
+                          {emailId}
+                        </h1>
                       </div>
                     </div>
                   </div>
@@ -242,10 +244,27 @@ const Profile = () => {
                 <h1 className="font-bold">Skills and Expertise</h1>
                 <div className="flex flex-row flex-wrap gap-3">
                   {selectedSkills.map((skills, index) => (
-                    <div className="p-3  bg-[#CDEBC1] rounded-2xl">
-                      <h1 key={index} className="text-[#294018]">
-                        {skills}
-                      </h1>
+                    <div key={index} className="p-3  bg-[#CDEBC1] rounded-2xl">
+                      <h1 className="text-[#294018] font-medium">{skills}</h1>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="bg-white w-full md:min-w-[900px] p-5 md:p-10  rounded-2xl flex flex-col  gap-5">
+              <div className="flex flex-col items-start gap-2 pr-5">
+                <h1 className="font-bold">Social Links</h1>
+                <div className="flex flex-row flex-wrap gap-3">
+                  {socialLinks.map((links, index) => (
+                    <div key={index} className="p-3  bg-[#C0E6FB] rounded-2xl">
+                      <a
+                        href={links}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#36ADF2] font-medium break-all"
+                      >
+                        {links}
+                      </a>
                     </div>
                   ))}
                 </div>

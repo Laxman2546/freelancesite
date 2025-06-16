@@ -540,12 +540,14 @@ const FreelancerNavbar = () => {
                         </div>
                       </li>
                     </Link>
-                    <li className="hover:bg-gray-100 px-4 py-2 transition-colors cursor-pointer">
-                      <span className="font-medium">Account Settings</span>
-                      <div className="text-xs text-gray-500">
-                        Manage your account
-                      </div>
-                    </li>
+                    <Link to={"/account"}>
+                      <li className="hover:bg-gray-100 px-4 py-2 transition-colors cursor-pointer">
+                        <span className="font-medium">Account Settings</span>
+                        <div className="text-xs text-gray-500">
+                          Manage your account
+                        </div>
+                      </li>
+                    </Link>
                     <li
                       className="hover:bg-gray-100 px-4 py-2 rounded-b transition-colors cursor-pointer text-red-600"
                       onClick={handleLogout}
