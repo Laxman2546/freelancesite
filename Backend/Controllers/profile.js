@@ -3,8 +3,11 @@ import userModel from "../models/registrationModel.js";
 import multer from "multer";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 
-// Utility function to delete profile picture
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const deleteProfilePicture = async (filename) => {
   if (!filename) return;
 

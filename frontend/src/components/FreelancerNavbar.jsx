@@ -4,9 +4,8 @@ import { Fade as Hamburger } from "hamburger-react";
 import { BellIcon } from "@heroicons/react/24/outline";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
-import GooeyNav from "./GooeyNav";
 import { userLogout } from "../utils/userLogout";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Errors from "./Errors";
 import noNotifications from "../assets/images/download.svg";
 import noMessages from "../assets/images/messages.svg";
@@ -22,20 +21,11 @@ const FreelancerNavbar = () => {
   const [menuOpen, setmenuOpen] = useState(false);
   const [error, seterror] = useState("");
   const [userPic, setuserPic] = useState("");
-  const navItems = [
-    {
-      label: "My Services",
-      href: "#",
-    },
-    {
-      label: "Post a Service",
-      href: "#",
-    },
-    {
-      label: "Orders",
-      href: "#",
-    },
-  ];
+  const [activeNav, setActiveNav] = useState("");
+  const [closingMenu, setClosingMenu] = useState(false);
+  const [closingMessages, setClosingMessages] = useState(false);
+  const [closingNotifications, setClosingNotifications] = useState(false);
+  const location = useLocation();
   const recentMessages = [
     {
       senderName: "John Doe",
@@ -113,7 +103,7 @@ const FreelancerNavbar = () => {
       const profilePic = `${process.env.REACT_APP_BACKEND_URI}/profilePics/${result.data.profile.profilePic}`;
       setuserPic(profilePic);
     } catch (e) {
-      console.log(e, "error while fetching user profile data");
+      console.warn(e, "error while fetching user profile data");
     }
   };
   useEffect(() => {
@@ -140,10 +130,6 @@ const FreelancerNavbar = () => {
     }, 2000);
     return () => clearTimeout(ShowError);
   }, [error]);
-
-  const [closingMenu, setClosingMenu] = useState(false);
-  const [closingMessages, setClosingMessages] = useState(false);
-  const [closingNotifications, setClosingNotifications] = useState(false);
 
   const handleMenuToggle = () => {
     if (isOpen) {
@@ -196,7 +182,15 @@ const FreelancerNavbar = () => {
       }
     }, 200);
   };
-
+  useEffect(() => {
+    if (location.pathname.includes("userhome")) {
+      setActiveNav("MyGigs");
+    } else if (location.pathname.includes("postgig")) {
+      setActiveNav("Post a Gig");
+    } else if (location.pathname.includes("orders")) {
+      setActiveNav("Orders");
+    }
+  }, [location.pathname]);
   return (
     <header className="w-full h-full flex flex-col items-center relative">
       <Errors
@@ -258,7 +252,7 @@ const FreelancerNavbar = () => {
                 </div>
 
                 <div className="flex-1 py-6">
-                  <ul className="space-y-2 px-4">
+                  {/* <ul className="space-y-2 px-4">
                     {navItems.map((item, index) => (
                       <li key={index}>
                         <button
@@ -269,7 +263,7 @@ const FreelancerNavbar = () => {
                         </button>
                       </li>
                     ))}
-                  </ul>
+                  </ul> */}
 
                   <div className="border-t border-gray-200 my-6 mx-4"></div>
 
@@ -360,17 +354,34 @@ const FreelancerNavbar = () => {
             setIsOpen(false);
           }}
         >
-          <ul className="hidden flex-row gap-5 md:flex">
-            <GooeyNav
-              items={navItems}
-              particleCount={15}
-              particleDistances={[90, 10]}
-              particleR={100}
-              initialActiveIndex={0}
-              animationTime={600}
-              timeVariance={300}
-              colors={[1, 1, 1, 1, 1, 1, 1, 1]}
-            />
+          <ul className="hidden flex-row gap-8 md:flex">
+            <Link to={"/userhome"}>
+              <li
+                className={`font-semibold text-lg p-3  rounded-xl cursor-pointer ${
+                  activeNav === "MyGigs" && `bg-[#3A5B22] text-white`
+                }`}
+              >
+                MyGigs
+              </li>
+            </Link>
+            <Link to={"/postgig"}>
+              <li
+                className={`font-semibold text-lg p-3  rounded-xl cursor-pointer ${
+                  activeNav === "Post a Gig" && `bg-[#3A5B22] text-white`
+                }`}
+              >
+                Post a Gig
+              </li>
+            </Link>
+            <Link to={"/orders"}>
+              <li
+                className={`font-semibold text-lg p-3  rounded-xl cursor-pointer ${
+                  activeNav === "Orders" && `bg-[#3A5B22] text-white`
+                }`}
+              >
+                Orders
+              </li>
+            </Link>
           </ul>
         </div>
 

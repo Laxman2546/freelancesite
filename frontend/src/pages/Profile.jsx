@@ -4,10 +4,12 @@ import axios from "axios";
 import defaultImg from "../assets/images/freelancer.png";
 import { themeColors } from "../hooks/theme";
 import { EnvelopeIcon, PhoneIcon } from "@heroicons/react/24/outline";
+import { RemoveCircleOutline } from "react-ionicons";
 import {
   BriefcaseIcon,
   CalendarIcon,
   CheckCircleIcon,
+  NoSymbolIcon,
 } from "@heroicons/react/24/solid";
 const Profile = () => {
   const [userName, setuserName] = useState("");
@@ -217,7 +219,17 @@ const Profile = () => {
                   <div className="w-full md:w-[91%] flex flex-col md:flex-col gap-10 md:justify-between pl-5">
                     <div className="flex flex-row items-center gap-3">
                       <div className="bg-[#CDEBC1] p-3 rounded-2xl">
-                        <CheckCircleIcon className="size-6 text-[#5D7154]" />
+                        {avaliability === "Available Now" ? (
+                          <CheckCircleIcon className="size-6 text-[#5D7154]" />
+                        ) : avaliability === "Busy" ? (
+                          <RemoveCircleOutline
+                            color={"#5D7154"}
+                            width={"25px"}
+                            height={"25px"}
+                          />
+                        ) : (
+                          <NoSymbolIcon className="size-6 text-[#5D7154]" />
+                        )}
                       </div>
                       <div>
                         <h1>Avaliability</h1>

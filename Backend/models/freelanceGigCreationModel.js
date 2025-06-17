@@ -6,7 +6,7 @@ const freelancerJobSchema = new mongoose.Schema({
     ref: "user",
     required: true,
   },
-  title: {
+  gigTitle: {
     type: String,
     required: true,
   },
@@ -22,15 +22,15 @@ const freelancerJobSchema = new mongoose.Schema({
     required: true,
   },
   deliveryTime: {
-    type: Number, 
+    type: Number,
     required: true,
   },
   images: {
-    type: [String], 
+    type: [String],
     default: [],
   },
   category: {
-    type: String, 
+    type: String,
     required: true,
   },
   createdAt: {
