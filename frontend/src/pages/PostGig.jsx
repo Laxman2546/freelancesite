@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FreelancerNavbar from "../components/FreelancerNavbar";
 import Steps from "../components/Steps";
 import freelancerCategories from "../utils/categories";
@@ -12,6 +12,7 @@ const PostGig = () => {
   const [category, setCategory] = useState("");
   const [searchTags, setsearchTags] = useState([]);
   const [selectedsearchTags, setselectedsearchTags] = useState([]);
+  const [nextDisable, setNextDisable] = useState(true);
 
   const handleTags = () => {
     const trimmed = searchTags.trim();
@@ -26,6 +27,24 @@ const PostGig = () => {
     }
   };
 
+  const checkNextPage = () => {
+    if (
+      currentStep === 0 &&
+      title.length > 19 &&
+      category != "" &&
+      selectedsearchTags.length > 0
+    ) {
+      setNextDisable(false);
+    }
+  };
+
+  useEffect(() => {
+    checkNextPage();
+  }, [checkNextPage]);
+
+  const handleRemoveTags = (tags) => {
+    setselectedsearchTags(selectedsearchTags.filter((s) => s !== tags));
+  };
   return (
     <main className="w-full min-h-screen">
       <FreelancerNavbar />
@@ -123,9 +142,9 @@ const PostGig = () => {
                   )}
                   <span
                     className={` text-sm ${
-                      selectedsearchTags.length > 4 && !searchTags
-                        ? "text-gray-500"
-                        : "text-red-500"
+                      selectedsearchTags.length > 4 && searchTags
+                        ? "text-red-500"
+                        : "text-gray-500"
                     }`}
                   >
                     maximum 5 tags and 12 letters use numbers and letters only
@@ -133,11 +152,14 @@ const PostGig = () => {
                   <div className="w-full grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-5  mt-8">
                     {selectedsearchTags.length > 0 &&
                       selectedsearchTags.map((search, index) => (
-                        <div className="max-w-[150px] bg-green-400 relative">
-                          <h1 className="p-3 max-w-[150px] min-w-[150px] text-center bg-amber-400 rounded-2xl">
-                            {search}
+                        <div className="w-full  relative">
+                          <h1 className="p-4  min-w-[150px] text-center bg-lime-900 text-white rounded-2xl font-medium">
+                            #{search}
                           </h1>
-                          <XMarkIcon className="size-5 absolute right-2 top-3" />
+                          <XMarkIcon
+                            className="size-5 absolute right-1.5 top-4.5 hover:bg-[#d7d7d7] hover:text-black rounded-full cursor-pointer text-white"
+                            onClick={() => handleRemoveTags(search)}
+                          />
                         </div>
                       ))}
                   </div>
@@ -165,7 +187,12 @@ const PostGig = () => {
             onClick={() =>
               setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1))
             }
-            className="px-5 py-2 rounded text-white bg-lime-900 hover:bg-lime-800"
+            className={`px-5 py-2 rounded text-white ${
+              nextDisable
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-lime-900 hover:bg-lime-800 cursor-pointer"
+            } `}
+            disabled={nextDisable}
           >
             {currentStep === steps.length - 1 ? "Post Gig" : "Next"}
           </button>
