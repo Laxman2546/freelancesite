@@ -68,4 +68,3 @@ export const logoutUser = async (req, res) => {
     return res.status(500).json({ error: "internal server error,try again!" });
   }
 };
-

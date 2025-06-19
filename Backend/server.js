@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import authRoute from "./routes/authRoute.js";
 import profileRoute from "./routes/profileRoute.js";
+import gigRoute from "./routes/gigRoute.js";
 import cors from "cors";
 import db from "./Config/mongooseConnection.js";
 import cookieParser from "cookie-parser";
@@ -24,6 +25,7 @@ app.use(
 );
 app.use("/", authRoute);
 app.use("/profile", profileRoute);
+app.use("/gig", gigRoute);
 
 const port = process.env.PORT_NUMBER;
 

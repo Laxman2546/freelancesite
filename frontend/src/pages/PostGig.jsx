@@ -7,6 +7,8 @@ import { XCircleIcon, ArrowTurnDownLeftIcon } from "@heroicons/react/24/solid";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import deliveryOptions from "../utils/deliveryDates";
 import uploadImage from "../assets/images/upload.png";
+import success from "../assets/images/success.svg";
+import axios from "axios";
 const PostGig = () => {
   const steps = ["Overview", "Pricing", "Description", "Thumbnail", "Publish"];
   const [currentStep, setCurrentStep] = useState(0);
@@ -28,7 +30,53 @@ const PostGig = () => {
   const [standardprice, setstandardPrice] = useState("₹");
   const [premiumprice, setpremiumPrice] = useState("₹");
   const [description, setDescription] = useState("");
-  const [photo, setPhoto] = useState();
+  const [photo, setPhoto] = useState(null);
+  const [selectedthumbnail, setselectedThumbnail] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const postGig = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("category", category);
+      formData.append("searchTags", JSON.stringify(selectedsearchTags));
+      formData.append(
+        "pricing",
+        JSON.stringify({
+          basic: { priceTitle, priceFeatures, deliveryTime, price },
+          standard: {
+            priceTitle: standardpriceTitle,
+            priceFeatures: standardpriceFeatures,
+            deliveryTime: standarddeliveryTime,
+            price: standardprice,
+          },
+          premium: {
+            priceTitle: premiumpriceTitle,
+            priceFeatures: premiumpriceFeatures,
+            deliveryTime: premiumdeliveryTime,
+            price: premiumprice,
+          },
+        })
+      );
+      formData.append("description", description);
+      if (photo) {
+        formData.append("thumbnail", photo);
+      }
+
+      const createGig = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URI}/gig/post`,
+        formData,
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      console.log(createGig);
+    } catch (e) {
+      console.log("something went wrong while creating gig", e);
+    }
+  };
+
   const handleTags = () => {
     const trimmed = searchTags.trim();
     if (
@@ -64,7 +112,9 @@ const PostGig = () => {
       description.length <= 1000
     ) {
       setNextDisable(false);
-    } else if (currentStep === 3 && !photo) {
+    } else if (currentStep === 3 && photo) {
+      setNextDisable(false);
+    } else if (currentStep === 4) {
       setNextDisable(false);
     } else {
       setNextDisable(true);
@@ -429,7 +479,7 @@ const PostGig = () => {
                 onChange={(e) => setDescription(e.target.value)}
                 className={`p-3 w-full min-h-[300px] border-2   ${
                   wordCount > 1000 ? "border-red-500" : "border-[#d7d7d7]"
-                } rounded-xl outline-none resize-none font-normal text-lg`}
+                } rounded-xl outline-none resize-none font-normal text-md`}
               />
               <div className="w-full flex  justify-end">
                 <span
@@ -488,12 +538,26 @@ const PostGig = () => {
               </label>
             </div>
           )}
+          {currentStep === 4 && (
+            <div className="w-full  flex items-center justify-center flex-col p-4 sm:p-6 md:p-8 bg-white rounded-xl ">
+              <div className="flex flex-col items-center justify-center">
+                <img src={success} className="w-[300px] h-[300px]" />
+                <h1 className="mb-3 pl-1 font-semibold text-2xl">
+                  Setup complete!
+                </h1>
+                <span className="text-lg font-medium text-gray-500">
+                  Take a final look and publish your gig to start attracting
+                  clients.
+                </span>
+              </div>
+            </div>
+          )}
         </div>
 
-        <div className="mt-8 flex flex-row sm:flex-row gap-3 sm:gap-6 items-center">
+        <div className="mt-8 flex flex-col sm:flex-row gap-3 sm:gap-6 items-center">
           <button
             onClick={() => setCurrentStep((prev) => Math.max(prev - 1, -1))}
-            className={`px-5 py-2 rounded text-white ${
+            className={`px-5 py-2 w-full  rounded text-white ${
               currentStep === 0
                 ? `bg-gray-400 cursor-not-allowed`
                 : `bg-lime-900 hover:bg-lime-800 cursor-pointer`
@@ -504,17 +568,19 @@ const PostGig = () => {
           </button>
 
           <button
-            onClick={() =>
-              setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1))
-            }
-            className={`px-8 py-2 rounded text-white ${
+            onClick={() => {
+              setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
+              currentStep === 3;
+              currentStep === steps.length - 1 && postGig();
+            }}
+            className={`px-8 py-2 w-full rounded text-white text-nowrap  ${
               nextDisable
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-lime-900 hover:bg-lime-800 cursor-pointer"
             } `}
             disabled={nextDisable}
           >
-            {currentStep === steps.length - 1 ? "Post Gig" : "Next"}
+            {currentStep === steps.length - 1 ? "Publish Gig" : "Next"}
           </button>
         </div>
       </div>

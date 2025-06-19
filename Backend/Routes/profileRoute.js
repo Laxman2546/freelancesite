@@ -2,6 +2,7 @@ import express from "express";
 const router = express.Router();
 import isloggedin from "../middelware/isloggedIn.js";
 import multer from "multer";
+import { storage } from "../middelware/imageUpload.js";
 import {
   freelanceProfile,
   freelanceUpdateprofile,
@@ -9,16 +10,6 @@ import {
   Usertype,
   removeAccount,
 } from "../controllers/profile.js";
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "profilePics/");
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + file.originalname;
-    cb(null, uniqueSuffix);
-  },
-});
 
 const upload = multer({ storage });
 

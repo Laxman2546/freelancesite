@@ -258,7 +258,7 @@ const Login = () => {
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="pr-2 pl-3 pt-3 pb-3 rounded-[20px] border border-[#D9D9D9] outline-none font-normal"
+                className="pr-2 pl-5 pt-3 pb-3 rounded-[20px] border border-[#D9D9D9] outline-none font-normal"
               />
             </label>
             <label className="w-[90%] md:w-[70%] flex flex-col gap-2 font-medium relative">
@@ -268,7 +268,7 @@ const Login = () => {
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setpassword(e.target.value)}
-                className="pr-[50px] pl-3 pt-3 pb-3 rounded-[20px] border border-[#D9D9D9] outline-none font-normal"
+                className="pr-[50px] pl-5 pt-3 pb-3 rounded-[20px] border border-[#D9D9D9] outline-none font-normal"
               />
               {showPassword ? (
                 <EyeOutline

@@ -1,26 +1,6 @@
 import freelanceprofileModel from "../models/freelanceprofileModel.js";
 import userModel from "../models/registrationModel.js";
-import multer from "multer";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const deleteProfilePicture = async (filename) => {
-  if (!filename) return;
-
-  const filePath = path.join(__dirname, "..", "profilePics", filename);
-  try {
-    await fs.promises.unlink(filePath);
-    console.log("Profile image deleted successfully");
-    return true;
-  } catch (err) {
-    console.error("Failed to delete profile image:", err);
-    return false;
-  }
-};
+import { deleteProfilePicture } from "../middelware/imageUpload.js";
 
 export const freelanceProfile = async (req, res) => {
   const {
