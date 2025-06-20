@@ -10,8 +10,17 @@ export const gigPost = async (req, res) => {
         .status(404)
         .json({ error: "User not found while creating a gig" });
     }
-
-    const { title, category, searchTags, pricing, description } = req.body;
+    let { title, category, searchTags, pricing, description } = req.body;
+    try {
+      if (typeof searchTags === "string") searchTags = JSON.parse(searchTags);
+    } catch (e) {
+      searchTags = [];
+    }
+    try {
+      if (typeof pricing === "string") pricing = JSON.parse(pricing);
+    } catch (e) {
+      pricing = {};
+    }
 
     const createGig = await gigModel.create({
       userId,
@@ -20,7 +29,7 @@ export const gigPost = async (req, res) => {
       searchTags,
       pricing,
       description,
-      thumbnail: req.file?.filename,
+      thumbnail: req.file?.originalname,
     });
 
     return res.status(201).json({ success: true, gig: createGig });
@@ -41,4 +50,3 @@ export const getgigPost = async (req, res) => {
 export const deletegigPost = async (req, res) => {
   res.send("hello");
 };
-

@@ -10,7 +10,7 @@ import {
 } from "../controllers/gig.js";
 
 const router = express.Router();
-const upload = multer({ thumbnailStorage });
+const upload = multer({ storage: thumbnailStorage });
 
 router.post("/post", isloggedin, upload.single("thumbnail"), gigPost);
 router.post("/update", isloggedin, updategigPost);

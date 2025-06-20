@@ -35,7 +35,6 @@ const gigCreationSchema = new mongoose.Schema({
   },
   thumbnail: {
     type: String,
-    default: "",
   },
   createdAt: {
     type: Date,

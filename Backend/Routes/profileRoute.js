@@ -11,7 +11,7 @@ import {
   removeAccount,
 } from "../controllers/profile.js";
 
-const upload = multer({ storage });
+const upload = multer({ storage: storage });
 
 router.get("/", isloggedin, getfreelanceProfile);
 router.post("/usertype", isloggedin, Usertype);
