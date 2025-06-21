@@ -72,7 +72,7 @@ export const getgigPost = async (req, res) => {
         .status(404)
         .json({ error: "User not found while creating a gig" });
     }
-    const getGigs = gigModel.find({ userId });
+    const getGigs = await gigModel.find({ userId }).lean();
     if (getGigs) {
       return res.status(200).json({ success: "fetched gigs", getGigs });
     } else {
