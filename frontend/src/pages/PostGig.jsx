@@ -35,8 +35,6 @@ const PostGig = () => {
   const [loading, setLoading] = useState(false);
 
   const postGig = async (e) => {
-    console.log("postGig called");
-
     setLoading(true);
     try {
       const formData = new FormData();
@@ -91,7 +89,6 @@ const PostGig = () => {
     ) {
       setselectedsearchTags([...selectedsearchTags, trimmed]);
       setsearchTags("");
-      console.log(selectedsearchTags);
     }
   };
 
