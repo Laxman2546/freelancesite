@@ -7,6 +7,7 @@ import trashIcon from "../assets/images/trash.png";
 const PostedGigs = () => {
   const [gigs, setgigs] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
+  const [gigId, setgigId] = useState("");
   const [showmore, setShowmore] = useState(false);
   const moreMenuRefs = useRef({});
   const getGigs = async () => {
@@ -43,16 +44,31 @@ const PostedGigs = () => {
     };
   }, [activeCard]);
 
+  const deleteGig = async (gigId) => {
+    try {
+      const Deleted = await axios.delete(
+        `${process.env.REACT_APP_BACKEND_URI}/gig/delete`,
+        {
+          data: { gigId },
+          withCredentials: true,
+        }
+      );
+      getGigs();
+    } catch (e) {
+      console.log("something went wrong while deleting", e);
+    }
+  };
+
   return (
     <main className="w-full h-full flex flex-col p-0 md:p-8">
-      <div className="w-full text-center md:text-start">
-        <h1 className="text-xl font-bold">Posted Gigs</h1>
+      <div className="w-full text-center md:text-start pl-3">
+        <h1 className="text-2xl font-bold">Posted Gigs</h1>
       </div>
       <div className="w-full  px-4 py-8 flex flex-wrap  gap-6">
         {gigs.map((data, index) => (
           <div
             key={index}
-            className="w-full sm:w-[300px] bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden"
+            className="w-full sm:w-[300px] bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 "
           >
             <img
               src={`${process.env.REACT_APP_BACKEND_URI}/thumbnails/${data.thumbnail}`}
@@ -82,17 +98,20 @@ const PostedGigs = () => {
                 />
 
                 {showmore && activeCard === index && (
-                  <div className="absolute right-3 mt-2 w-32 bg-white rounded-lg shadow-xl border border-gray-300 z-10 p-2">
-                    <div className="flex flex-row items-center hover:bg-[#d7d7d7] rounded-lg hover:text-black pl-2">
+                  <div className="absolute right-4  mt-2 w-32  bg-white rounded-lg shadow-xl border border-gray-300 z-[999999] p-2">
+                    <div className="flex flex-row items-center  hover:bg-[#d7d7d7] rounded-lg hover:text-black pl-2 ">
                       <PencilSquareIcon className="w-[35px] h-[30px]" />
-                      <button className="w-full text-sm text-gray-700 hover:text-black px-4 py-2 text-left transition">
+                      <button className="w-full text-sm text-gray-700 hover:text-black px-4 py-2 text-left transition cursor-pointer">
                         Edit
                       </button>
                     </div>
                     <hr className="border-t border-gray-200 my-1" />
-                    <div className="flex flex-row items-center text-center hover:bg-[#d7d7d7] font-medium rounded-lg hover:text-black pl-2">
+                    <div className="flex flex-row items-center text-center hover:bg-[#d7d7d7] font-medium rounded-lg hover:text-black pl-2 cursor-pointer">
                       <img src={trashIcon} className="w-[20px] h-[20px]" />
-                      <button className="w-full text-sm  text-[#F85959] font-medium px-4 py-2 transition text-center">
+                      <button
+                        className="w-full text-sm  text-[#F85959] font-medium px-4 py-2 transition text-center cursor-pointer"
+                        onClick={() => deleteGig(data._id)}
+                      >
                         Delete
                       </button>
                     </div>

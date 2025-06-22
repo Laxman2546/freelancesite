@@ -236,7 +236,7 @@ const profileUpdate = () => {
     <main className="w-full h-full">
       <div className="w-full bg-white shadow-sm fixed top-0 z-40">
         <div className="container mx-auto">
-          <FreelanceNavbar />
+          <FreelanceNavbar isUpdated={isFormChanged} />
         </div>
       </div>
 

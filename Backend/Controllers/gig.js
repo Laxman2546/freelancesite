@@ -86,5 +86,27 @@ export const getgigPost = async (req, res) => {
   }
 };
 export const deletegigPost = async (req, res) => {
-  res.send("hello");
+  try {
+    const { userId } = req.user;
+    const fetchUser = await getUserData(userId);
+    if (!fetchUser) {
+      return res
+        .status(404)
+        .json({ error: "User not found while creating a gig" });
+    }
+    const { gigId } = req.body;
+    const deleteGig = await gigModel.findOneAndDelete({ _id: gigId }).lean();
+    if (deleteGig) {
+      return res
+        .status(200)
+        .json({ success: "gig deleted sucessfully", deleteGig });
+    } else {
+      return res.status(400).json({ error: "something went wrong trt again!" });
+    }
+  } catch (e) {
+    console.log("error occurs while getting gigs", e);
+    return res
+      .status(500)
+      .json({ error: "something went worng while getting gigs" });
+  }
 };

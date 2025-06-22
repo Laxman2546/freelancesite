@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { EnvelopeIcon } from "@heroicons/react/24/outline";
 import { Fade as Hamburger } from "hamburger-react";
 import { BellIcon } from "@heroicons/react/24/outline";
@@ -10,7 +10,7 @@ import Errors from "./Errors";
 import noNotifications from "../assets/images/download.svg";
 import noMessages from "../assets/images/messages.svg";
 import axios from "axios";
-const FreelancerNavbar = () => {
+const FreelancerNavbar = ({ isUpdated }) => {
   const Navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isMessageOpen, setMessageIsOpen] = useState(false);
@@ -91,7 +91,7 @@ const FreelancerNavbar = () => {
     },
   ];
 
-  const requestData = async () => {
+  const requestData = useCallback(async () => {
     try {
       const result = await axios.get(
         `${process.env.REACT_APP_BACKEND_URI}/profile`,
@@ -102,13 +102,14 @@ const FreelancerNavbar = () => {
       }
       const profilePic = `${process.env.REACT_APP_BACKEND_URI}/profilePics/${result.data.profile.profilePic}`;
       setuserPic(profilePic);
+      console.log(result);
     } catch (e) {
       console.warn(e, "error while fetching user profile data");
     }
-  };
+  }, []);
   useEffect(() => {
     requestData();
-  }, [requestData]);
+  }, [isUpdated]);
 
   useEffect(() => {
     setnotifications(notificationData);
