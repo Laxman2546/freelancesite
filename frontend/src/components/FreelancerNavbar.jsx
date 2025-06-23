@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import { EnvelopeIcon } from "@heroicons/react/24/outline";
 import { Fade as Hamburger } from "hamburger-react";
 import { BellIcon } from "@heroicons/react/24/outline";
@@ -102,7 +102,6 @@ const FreelancerNavbar = ({ isUpdated }) => {
       }
       const profilePic = `${process.env.REACT_APP_BACKEND_URI}/profilePics/${result.data.profile.profilePic}`;
       setuserPic(profilePic);
-      console.log(result);
     } catch (e) {
       console.warn(e, "error while fetching user profile data");
     }
@@ -622,7 +621,7 @@ const FreelancerNavbar = ({ isUpdated }) => {
   );
 };
 
-export default FreelancerNavbar;
+export default memo(FreelancerNavbar);
 
 export const arrowStyle = {
   border: "solid black",

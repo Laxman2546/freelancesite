@@ -61,9 +61,31 @@ export const gigPost = async (req, res) => {
 };
 
 export const updategigPost = async (req, res) => {
-  res.send("hello");
+  try {
+    const { userId } = req.user;
+    const fetchUser = await getUserData(userId);
+    if (!fetchUser) {
+      return res
+        .status(404)
+        .json({ error: "User not found while creating a gig" });
+    }
+    const { gigId } = req.body;
+    const getgig = await gigModel.findByIdAndUpdate({ _id: gigId }).lean();
+    if (getgig) {
+      return res
+        .status(200)
+        .json({ success: "gig fetched successfully", gig: getgig });
+    } else {
+      return res.status(400).json({ error: "something went wrong try again!" });
+    }
+  } catch (e) {
+    console.log("error occurs while getting gigs", e);
+    return res
+      .status(500)
+      .json({ error: "something went worng while getting gigs" });
+  }
 };
-export const getgigPost = async (req, res) => {
+export const getallgigPost = async (req, res) => {
   try {
     const { userId } = req.user;
     const fetchUser = await getUserData(userId);
@@ -102,6 +124,31 @@ export const deletegigPost = async (req, res) => {
         .json({ success: "gig deleted sucessfully", deleteGig });
     } else {
       return res.status(400).json({ error: "something went wrong trt again!" });
+    }
+  } catch (e) {
+    console.log("error occurs while getting gigs", e);
+    return res
+      .status(500)
+      .json({ error: "something went worng while getting gigs" });
+  }
+};
+export const getOnegig = async (req, res) => {
+  try {
+    const { userId } = req.user;
+    const fetchUser = await getUserData(userId);
+    if (!fetchUser) {
+      return res
+        .status(404)
+        .json({ error: "User not found while creating a gig" });
+    }
+    const { gigId } = req.body;
+    const getgig = await gigModel.findById({ _id: gigId }).lean();
+    if (getgig) {
+      return res
+        .status(200)
+        .json({ success: "gig fetched successfully", gig: getgig });
+    } else {
+      return res.status(400).json({ error: "something went wrong try again!" });
     }
   } catch (e) {
     console.log("error occurs while getting gigs", e);

@@ -4,22 +4,26 @@ import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { TrashBinSharp } from "react-ionicons";
 import trashIcon from "../assets/images/trash.png";
+import { useNavigate } from "react-router-dom";
 const PostedGigs = () => {
   const [gigs, setgigs] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
   const [gigId, setgigId] = useState("");
   const [showmore, setShowmore] = useState(false);
   const moreMenuRefs = useRef({});
+  const navigate = useNavigate();
+
   const getGigs = async () => {
-    const fetchGig = await axios.get(
-      `${process.env.REACT_APP_BACKEND_URI}/gig/get`,
-      { withCredentials: true }
-    );
-    if (!fetchGig) {
-      console.log("error");
-    }
-    console.log(fetchGig.data.getGigs);
-    setgigs(fetchGig.data.getGigs);
+    const fetchGig = await axios
+      .get(`${process.env.REACT_APP_BACKEND_URI}/gig/get`, {
+        withCredentials: true,
+      })
+      .then((fetchGig) => {
+        setgigs(fetchGig.data.getGigs);
+      })
+      .catch((e) => {
+        console.log(e, "something went wrong with the posted gigs");
+      });
   };
 
   useEffect(() => {
@@ -57,6 +61,11 @@ const PostedGigs = () => {
     } catch (e) {
       console.log("something went wrong while deleting", e);
     }
+  };
+
+  const handleUpdate = (dataId) => {
+    const url = `/gigupdate?gigid=${dataId}`;
+    navigate(url);
   };
 
   return (
@@ -101,7 +110,10 @@ const PostedGigs = () => {
                   <div className="absolute right-4  mt-2 w-32  bg-white rounded-lg shadow-xl border border-gray-300 z-[999999] p-2">
                     <div className="flex flex-row items-center  hover:bg-[#d7d7d7] rounded-lg hover:text-black pl-2 ">
                       <PencilSquareIcon className="w-[35px] h-[30px]" />
-                      <button className="w-full text-sm text-gray-700 hover:text-black px-4 py-2 text-left transition cursor-pointer">
+                      <button
+                        className="w-full text-sm text-gray-700 hover:text-black px-4 py-2 text-left transition cursor-pointer"
+                        onClick={() => handleUpdate(data._id)}
+                      >
                         Edit
                       </button>
                     </div>

@@ -10,6 +10,8 @@ import AccountSettings from "./pages/AccountSettings.jsx";
 import PostGig from "./pages/PostGig.jsx";
 import Orders from "./pages/Orders.jsx";
 import Profileupdate from "./pages/profileUpdate.jsx";
+import Gigupdate from "./pages/Gigupdate.jsx";
+
 gsap.registerPlugin(useGSAP);
 
 const App = () => {
@@ -23,6 +25,7 @@ const App = () => {
       <Route path="/userhome" element={<Userhome />} />
       <Route path="/postgig" element={<PostGig />} />
       <Route path="/orders" element={<Orders />} />
+      <Route path="/gigupdate" element={<Gigupdate />} />
     </Routes>
   );
 };
