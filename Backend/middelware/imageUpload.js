@@ -36,7 +36,6 @@ export const thumbnailStorage = multer.diskStorage({
   },
 });
 
-
 export const deleteProfilePicture = async (filename) => {
   if (!filename) return;
 
@@ -50,16 +49,19 @@ export const deleteProfilePicture = async (filename) => {
   }
 };
 
-
 export const deleteThumbnail = async (filename) => {
   if (!filename) return;
-
   const filePath = path.join(__dirname, "..", "thumbnails", filename);
   try {
     await fs.promises.unlink(filePath);
     return true;
   } catch (err) {
-    console.error("Failed to delete thumbnail:", err);
-    return false;
+    if (err.code === "ENOENT") {
+      console.warn("Thumbnail file not found (ENOENT):", filePath);
+      return false;
+    } else {
+      console.error("Failed to delete thumbnail:", err);
+      return false;
+    }
   }
 };

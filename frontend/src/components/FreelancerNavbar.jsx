@@ -25,6 +25,7 @@ const FreelancerNavbar = ({ isUpdated }) => {
   const [closingMenu, setClosingMenu] = useState(false);
   const [closingMessages, setClosingMessages] = useState(false);
   const [closingNotifications, setClosingNotifications] = useState(false);
+  const [userName, setuserName] = useState("");
   const location = useLocation();
   const recentMessages = [
     {
@@ -91,6 +92,21 @@ const FreelancerNavbar = ({ isUpdated }) => {
     },
   ];
 
+  const navItems = [
+    {
+      label: "MyGigs",
+      href: "/userhome",
+    },
+    {
+      label: "Post a Gig",
+      href: "/postgig",
+    },
+    {
+      label: "Orders",
+      href: "/orders",
+    },
+  ];
+
   const requestData = useCallback(async () => {
     try {
       const result = await axios.get(
@@ -102,6 +118,7 @@ const FreelancerNavbar = ({ isUpdated }) => {
       }
       const profilePic = `${process.env.REACT_APP_BACKEND_URI}/profilePics/${result.data.profile.profilePic}`;
       setuserPic(profilePic);
+      setuserName(result.data.fetchUser.userName);
     } catch (e) {
       console.warn(e, "error while fetching user profile data");
     }
@@ -247,12 +264,12 @@ const FreelancerNavbar = ({ isUpdated }) => {
                     />
                   )}
                   <h1 className="text-lg font-semibold text-gray-800">
-                    Lakshman
+                    {userName}
                   </h1>
                 </div>
 
                 <div className="flex-1 py-6">
-                  {/* <ul className="space-y-2 px-4">
+                  <ul className="space-y-2 px-4">
                     {navItems.map((item, index) => (
                       <li key={index}>
                         <button
@@ -263,7 +280,7 @@ const FreelancerNavbar = ({ isUpdated }) => {
                         </button>
                       </li>
                     ))}
-                  </ul> */}
+                  </ul>
 
                   <div className="border-t border-gray-200 my-6 mx-4"></div>
 
@@ -357,7 +374,7 @@ const FreelancerNavbar = ({ isUpdated }) => {
           <ul className="hidden flex-row gap-8 md:flex">
             <Link to={"/userhome"}>
               <li
-                className={`font-semibold text-lg p-3  rounded-xl cursor-pointer ${
+                className={`font-medium text-lg p-3  rounded-xl cursor-pointer ${
                   activeNav === "MyGigs" && `bg-[#3A5B22] text-white`
                 }`}
               >
@@ -366,7 +383,7 @@ const FreelancerNavbar = ({ isUpdated }) => {
             </Link>
             <Link to={"/postgig"}>
               <li
-                className={`font-semibold text-lg p-3  rounded-xl cursor-pointer ${
+                className={`font-medium text-lg p-3  rounded-xl cursor-pointer ${
                   activeNav === "Post a Gig" && `bg-[#3A5B22] text-white`
                 }`}
               >
@@ -375,7 +392,7 @@ const FreelancerNavbar = ({ isUpdated }) => {
             </Link>
             <Link to={"/orders"}>
               <li
-                className={`font-semibold text-lg p-3  rounded-xl cursor-pointer ${
+                className={`font-medium text-lg p-3  rounded-xl cursor-pointer ${
                   activeNav === "Orders" && `bg-[#3A5B22] text-white`
                 }`}
               >

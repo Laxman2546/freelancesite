@@ -14,7 +14,7 @@ const router = express.Router();
 const upload = multer({ storage: thumbnailStorage });
 
 router.post("/post", isloggedin, upload.single("thumbnail"), gigPost);
-router.post("/update", isloggedin, updategigPost);
+router.post("/update", isloggedin, upload.single("thumbnail"), updategigPost);
 router.delete("/delete", isloggedin, deletegigPost);
 router.get("/get", isloggedin, getallgigPost);
 router.post("/getone", isloggedin, getOnegig);

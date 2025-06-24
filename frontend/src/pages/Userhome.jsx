@@ -35,7 +35,9 @@ const Userhome = () => {
       )}
       <div>
         <FreelancerNavbar />
-        <PostedGigs />
+        <div className=" w-full">
+          <PostedGigs />
+        </div>
       </div>
     </main>
   );

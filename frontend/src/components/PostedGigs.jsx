@@ -69,8 +69,8 @@ const PostedGigs = () => {
   };
 
   return (
-    <main className="w-full h-full flex flex-col p-0 md:p-8">
-      <div className="w-full text-center md:text-start pl-3">
+    <main className="w-full min-h-screen flex flex-col p-0 md:p-8 bg-[#F4F2EE]">
+      <div className="w-full text-center md:text-start pl-0 md:pl-3 mt-[15px]">
         <h1 className="text-2xl font-bold">Posted Gigs</h1>
       </div>
       <div className="w-full  px-4 py-8 flex flex-wrap  gap-6">

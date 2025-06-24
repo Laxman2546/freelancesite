@@ -44,6 +44,8 @@ const profileUpdate = () => {
       console.log(e, "error while fetching user profile data");
     }
   };
+
+  console.log(userName);
   useEffect(() => {
     if (!showError) return;
     const timer = setTimeout(() => {
@@ -110,6 +112,7 @@ const profileUpdate = () => {
     e.preventDefault();
 
     const formData = new FormData();
+    formData.append("userName", userName);
     formData.append("bio", bio);
     formData.append("skills", JSON.stringify(selectedSkills));
     formData.append("job", job);

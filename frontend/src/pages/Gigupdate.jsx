@@ -9,7 +9,7 @@ import deliveryOptions from "../utils/deliveryDates";
 import uploadImage from "../assets/images/upload.png";
 import success from "../assets/images/success.svg";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 const Gigupdate = () => {
   const steps = ["Overview", "Pricing", "Description", "Thumbnail", "Publish"];
   const [currentStep, setCurrentStep] = useState(0);
@@ -35,18 +35,40 @@ const Gigupdate = () => {
   const [thumbnail, setThumbnail] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isformChanged, setisformchanged] = useState(false);
+  const [initialState, setinitialState] = useState(null);
 
-  const postGig = async (e) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const getId = () => {
+    const searchParams = new URLSearchParams(location.search);
+    const id = searchParams.get("gigid");
+    return id;
+  };
+
+  const updateGig = async () => {
     setLoading(true);
     try {
+      const gigId = getId();
+      if (!gigId) {
+        console.error("Gig ID is missing");
+        return;
+      }
+
       const formData = new FormData();
+      formData.append("gigId", gigId);
       formData.append("title", title);
       formData.append("category", category);
       formData.append("searchTags", JSON.stringify(selectedsearchTags));
       formData.append(
         "pricing",
         JSON.stringify({
-          basic: { priceTitle, priceFeatures, deliveryTime, price },
+          basic: {
+            priceTitle,
+            priceFeatures,
+            deliveryTime,
+            price,
+          },
           standard: {
             priceTitle: standardpriceTitle,
             priceFeatures: standardpriceFeatures,
@@ -62,32 +84,32 @@ const Gigupdate = () => {
         })
       );
       formData.append("description", description);
+
       if (thumbnail) {
         formData.append("thumbnail", thumbnail);
       }
 
-      const createGig = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URI}/gig/post`,
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URI}/gig/update`,
         formData,
         {
           withCredentials: true,
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
-      console.log(createGig);
+      navigate("/userhome");
     } catch (e) {
-      console.log("something went wrong while creating gig", e);
+      console.error("Error updating gig:", e.response?.data || e.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const location = useLocation();
-
   const getGigs = async () => {
-    const searchParams = new URLSearchParams(location.search);
-    const gigId = searchParams.get("gigid");
     try {
+      const gigId = getId();
       const fetchGig = await axios.post(
         `${process.env.REACT_APP_BACKEND_URI}/gig/getone`,
         { gigId },
@@ -100,30 +122,94 @@ const Gigupdate = () => {
     }
   };
   const setData = (data) => {
-    console.log("this is the data of the gigs", data);
-    setTitle(data.title);
-    setCategory(data.category);
-    setselectedsearchTags(data.searchTags);
-    setPriceTitle(data.pricing.basic.priceTitle);
-    setPriceFeatures(data.pricing.basic.priceFeatures);
-    setDeliveryTime(data.pricing.basic.deliveryTime);
-    setPrice(data.pricing.basic.price);
-    setstandardPriceTitle(data.pricing.standard.priceTitle);
-    setstandardPriceFeatures(data.pricing.standard.priceFeatures);
-    setstandardDeliveryTime(data.pricing.standard.deliveryTime);
-    setstandardPrice(data.pricing.premium.price);
-    setpremiumPriceTitle(data.pricing.premium.priceTitle);
-    setpremiumPriceFeatures(data.pricing.premium.priceFeatures);
-    setpremiumDeliveryTime(data.pricing.premium.deliveryTime);
-    setpremiumPrice(data.pricing.premium.price);
-    setDescription(data.description);
-    setPhotoPreview(
-      `${process.env.REACT_APP_BACKEND_URI}/thumbnails/${data.thumbnail}`
-    );
-    setThumbnail(
-      `${process.env.REACT_APP_BACKEND_URI}/thumbnails/${data.thumbnail}`
-    );
+    setTitle(data.title || "I will do ");
+    setCategory(data.category || "");
+    setselectedsearchTags(data.searchTags || []);
+    setPriceTitle(data.pricing?.basic?.priceTitle || "");
+    setPriceFeatures(data.pricing?.basic?.priceFeatures || "");
+    setDeliveryTime(data.pricing?.basic?.deliveryTime || "");
+    setPrice(data.pricing?.basic?.price || "₹");
+    setstandardPriceTitle(data.pricing?.standard?.priceTitle || "");
+    setstandardPriceFeatures(data.pricing?.standard?.priceFeatures || "");
+    setstandardDeliveryTime(data.pricing?.standard?.deliveryTime || "");
+    setstandardPrice(data.pricing?.standard?.price || "₹");
+    setpremiumPriceTitle(data.pricing?.premium?.priceTitle || "");
+    setpremiumPriceFeatures(data.pricing?.premium?.priceFeatures || "");
+    setpremiumDeliveryTime(data.pricing?.premium?.deliveryTime || "");
+    setpremiumPrice(data.pricing?.premium?.price || "₹");
+    setDescription(data.description || "");
+    if (data.thumbnail) {
+      setPhotoPreview(
+        `${process.env.REACT_APP_BACKEND_URI}/thumbnails/${data.thumbnail}`
+      );
+      setThumbnail(
+        `${process.env.REACT_APP_BACKEND_URI}/thumbnails/${data.thumbnail}`
+      );
+    } else {
+      setPhotoPreview(null);
+      setThumbnail(null);
+    }
+    setinitialState({
+      title: data.title || "I will do ",
+      category: data.category || "",
+      selectedsearchTags: data.searchTags || [],
+      priceTitle: data.pricing?.basic?.priceTitle || "",
+      priceFeatures: data.pricing?.basic?.priceFeatures || "",
+      deliveryTime: data.pricing?.basic?.deliveryTime || "",
+      price: data.pricing?.basic?.price || "₹",
+      standardpriceTitle: data.pricing?.standard?.priceTitle || "",
+      standardpriceFeatures: data.pricing?.standard?.priceFeatures || "",
+      standarddeliveryTime: data.pricing?.standard?.deliveryTime || "",
+      standardprice: data.pricing?.standard?.price || "₹",
+      premiumpriceTitle: data.pricing?.premium?.priceTitle || "",
+      premiumpriceFeatures: data.pricing?.premium?.priceFeatures || "",
+      premiumdeliveryTime: data.pricing?.premium?.deliveryTime || "",
+      premiumprice: data.pricing?.premium?.price || "₹",
+      description: data.description || "",
+      thumbnail: data.thumbnail || null,
+    });
   };
+
+  useEffect(() => {
+    if (!initialState) return;
+    const hasUpdated =
+      title !== initialState.title ||
+      category !== initialState.category ||
+      JSON.stringify(selectedsearchTags) !==
+        JSON.stringify(initialState.selectedsearchTags) ||
+      priceTitle !== initialState.priceTitle ||
+      priceFeatures !== initialState.priceFeatures ||
+      deliveryTime !== initialState.deliveryTime ||
+      price !== initialState.price ||
+      standardpriceTitle !== initialState.standardpriceTitle ||
+      standardpriceFeatures !== initialState.standardpriceFeatures ||
+      standarddeliveryTime !== initialState.standarddeliveryTime ||
+      standardprice !== initialState.standardprice ||
+      premiumpriceTitle !== initialState.premiumpriceTitle ||
+      premiumpriceFeatures !== initialState.premiumpriceFeatures ||
+      premiumdeliveryTime !== initialState.premiumdeliveryTime ||
+      premiumprice !== initialState.premiumprice ||
+      description !== initialState.description;
+    setisformchanged(hasUpdated);
+  }, [
+    title,
+    category,
+    selectedsearchTags,
+    priceTitle,
+    priceFeatures,
+    deliveryTime,
+    price,
+    standardpriceTitle,
+    standardpriceFeatures,
+    standarddeliveryTime,
+    standardprice,
+    premiumpriceTitle,
+    premiumpriceFeatures,
+    premiumdeliveryTime,
+    premiumprice,
+    description,
+    initialState,
+  ]);
 
   useEffect(() => {
     getGigs();
@@ -207,6 +293,7 @@ const Gigupdate = () => {
     const uploadedFile = e.target.files[0];
     if (uploadedFile) {
       setThumbnail(uploadedFile);
+      setisformchanged(true);
       const previewURL = URL.createObjectURL(uploadedFile);
       setPhotoPreview(previewURL);
     }
@@ -222,7 +309,11 @@ const Gigupdate = () => {
         </div>
 
         <div className="mt-10 w-full max-w-5xl">
-          <form method="post" encType="multipart/form-data" onSubmit={postGig}>
+          <form
+            method="post"
+            encType="multipart/form-data"
+            onSubmit={updateGig}
+          >
             {currentStep === 0 && (
               <div className="w-full p-4 sm:p-6 md:p-10 flex flex-col gap-8 bg-white rounded-xl">
                 <div className="flex flex-col md:flex-row gap-5">
@@ -640,10 +731,12 @@ const Gigupdate = () => {
             type="button"
             onClick={() => {
               setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
-              currentStep === steps.length - 1 && postGig();
+              currentStep === steps.length - 1 && updateGig();
             }}
             className={`px-8 py-2 w-full rounded text-white text-nowrap  ${
-              nextDisable || loading
+              nextDisable ||
+              loading ||
+              (currentStep === steps.length - 1 && isformChanged === false)
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-lime-900 hover:bg-lime-800 cursor-pointer"
             } `}
@@ -671,10 +764,10 @@ const Gigupdate = () => {
                     d="M4 12a8 8 0 018-8v8z"
                   ></path>
                 </svg>
-                Publishing...
+                updating...
               </span>
             ) : currentStep === steps.length - 1 ? (
-              "Publish Gig"
+              "Update Gig"
             ) : (
               "Next"
             )}

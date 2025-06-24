@@ -37,6 +37,7 @@ export const freelanceProfile = async (req, res) => {
 };
 export const freelanceUpdateprofile = async (req, res) => {
   const {
+    userName,
     bio,
     skills,
     socialLinks,
@@ -46,6 +47,7 @@ export const freelanceUpdateprofile = async (req, res) => {
     languagesKnown,
     job,
   } = req.body;
+  console.log(userName);
   try {
     const { userId } = req.user;
     const fetchUser = await userModel.findOne({ userId });
@@ -60,7 +62,12 @@ export const freelanceUpdateprofile = async (req, res) => {
     if (req.file?.filename && existingProfile?.profilePic) {
       await deleteProfilePicture(existingProfile.profilePic);
     }
-
+    const changeUsername = await userModel.findOneAndUpdate(
+      { userId },
+      { userName },
+      { new: true }
+    );
+    console.log(changeUsername);
     const createProfile = await freelanceprofileModel.findOneAndUpdate(
       { userId },
       {
