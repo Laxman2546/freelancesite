@@ -9,6 +9,7 @@ import deliveryOptions from "../utils/deliveryDates";
 import uploadImage from "../assets/images/upload.png";
 import success from "../assets/images/success.svg";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 const PostGig = () => {
   const steps = ["Overview", "Pricing", "Description", "Thumbnail", "Publish"];
   const [currentStep, setCurrentStep] = useState(0);
@@ -33,7 +34,7 @@ const PostGig = () => {
   const [thumbnail, setThumbnail] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  const navigate = useNavigate();
   const postGig = async (e) => {
     setLoading(true);
     try {
@@ -72,7 +73,8 @@ const PostGig = () => {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-      console.log(createGig);
+
+      navigate("/userhome");
     } catch (e) {
       console.log("something went wrong while creating gig", e);
     } finally {

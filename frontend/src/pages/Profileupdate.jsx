@@ -325,7 +325,9 @@ const profileUpdate = () => {
               </div>
             </div>
             <div className="w-full md:w-3/4 flex flex-col gap-3">
-              <label>Bio</label>
+              <label>
+                Bio <span className="text-red-400 text-xl font-medium">*</span>
+              </label>
               <textarea
                 className="max-h-[180px] min-h-[180px] resize-none bg-[#d9d9d9] p-5 overflow-y-auto outline-none rounded-2xl"
                 name="bio"
@@ -335,7 +337,10 @@ const profileUpdate = () => {
               ></textarea>
             </div>
             <div className="w-full md:w-3/4 flex flex-col gap-3">
-              <label>Add your Skills</label>
+              <label>
+                Add your Skills{" "}
+                <span className="text-red-400 text-xl font-medium">*</span>
+              </label>
               {selectedSkills.length > 0 && selectedSkills != "[]" && (
                 <div className="flex flex-wrap gap-2">
                   {selectedSkills.map((skill) => (
@@ -383,7 +388,10 @@ const profileUpdate = () => {
                   onChange={(e) => setExperience(e.target.value)}
                 />
               </div>
-              <label htmlFor="languages">Languages Known</label>
+              <label htmlFor="languages">
+                Languages Known{" "}
+                <span className="text-red-400 text-xl font-medium">*</span>
+              </label>
               <select
                 className="bg-[#d9d9d9] p-3 rounded-[15px]"
                 name="languages"
@@ -479,7 +487,10 @@ const profileUpdate = () => {
                 </div>
               )}
             <div className="w-full md:w-3/4 flex flex-col mb-[30px]">
-              <label htmlFor="avaliability">Availability Status</label>
+              <label htmlFor="avaliability">
+                Availability Status{" "}
+                <span className="text-red-400 text-xl font-medium">*</span>
+              </label>
               <select
                 className="bg-[#d9d9d9] p-3 rounded-[15px] mt-2"
                 name="avaliability"

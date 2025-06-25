@@ -11,6 +11,7 @@ import {
   CheckCircleIcon,
   NoSymbolIcon,
 } from "@heroicons/react/24/solid";
+import { useNavigate } from "react-router-dom";
 const Profile = () => {
   const [userName, setuserName] = useState("");
   const [emailId, setEmailID] = useState("");
@@ -24,6 +25,7 @@ const Profile = () => {
   const [mobileNumber, setmobileNumber] = useState("");
   const [avaliability, setAvaliability] = useState("");
   const [photo, setPhoto] = useState(defaultImg);
+  const [showUpdate, setshowUpdate] = useState(true);
 
   useEffect(() => {
     userProfile();
@@ -47,6 +49,11 @@ const Profile = () => {
     }
   };
   const setUserdata = (profile, fetchUser) => {
+    if (!profile.profilePic || !profile.bio || !profile.languagesKnown) {
+      setshowUpdate(true);
+    } else {
+      setshowUpdate(false);
+    }
     if (!profile || !fetchUser) {
       setshowError(true);
       setError("update your profile pic to save details");
@@ -93,14 +100,42 @@ const Profile = () => {
       setPhoto(defaultImg);
     }
   };
+  const navigate = useNavigate();
+  const handleUpdate = () => {
+    navigate("/profileupdate");
+  };
 
   return (
     <main className="w-full h-full">
       <div>
         <FreelancerNavbar />
       </div>
-      <div className="w-full min-h-screen p-2 md:p-8  pt-5 flex bg-[#F4F2EE]">
-        <div className="w-full flex flex-col md:flex-row gap-2">
+      <div className="w-full min-h-screen p-2 md:p-8  pt-5 flex bg-[#F4F2EE] relative">
+        {showUpdate && (
+          <div className="w-full min-h-full md:h-screen flex justify-center items-start bg-black/30 absolute top-0 left-0 z-50 p-5">
+            <div className="bg-white rounded-xl shadow-xl p-6 max-w-md w-full flex flex-col items-center text-center gap-4">
+              <h1 className="text-2xl font-semibold text-lime-800">
+                Oops! looks like Your profile isn’t complete.
+              </h1>
+              <p className="text-gray-700">
+                We couldn’t find enough information to show your profile. Please
+                update your details to continue.
+              </p>
+              <button
+                onClick={handleUpdate}
+                className="bg-lime-800 text-white px-6 py-2 rounded-lg hover:bg-lime-700 transition cursor-pointer"
+              >
+                Update Profile
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div
+          className={`w-full flex flex-col md:flex-row gap-2 ${
+            showUpdate && "blur-sm"
+          }`}
+        >
           <div className="w-full flex flex-col gap-5">
             <div className="bg-white  w-full md:min-w-[300px]  max-h-[280px] p-2 md:p-10 rounded-2xl flex flex-col justify-center items-center text-center gap-5">
               <div className="w-[130px] h-[130px] p-1  rounded-full flex  ">
