@@ -1,20 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import FreelancerNavbar from "../components/FreelancerNavbar";
 import { TrashIcon } from "@heroicons/react/24/solid";
 import DeleteAccount from "../components/DeleteAccount";
 import axios from "axios";
 import Success from "../components/Success.jsx";
 import { useNavigate } from "react-router-dom";
+import Errors from "../components/Errors.jsx";
+import Loader from "../components/Loader.jsx";
 const AccountSettings = () => {
   const [showPopup, setshowPopup] = useState(false);
   const [success, setSuccess] = useState(false);
   const [timer, setTimer] = useState(3);
+  const [loading, setLoading] = useState(false);
+  const [showError, setshowError] = useState(false);
+  const [error, setError] = useState("");
   const popupShow = () => {
     setshowPopup(false);
   };
   const navigate = useNavigate();
   const deleteRequest = async () => {
     try {
+      setLoading(true);
       const result = await axios.post(
         `${process.env.REACT_APP_BACKEND_URI}/profile/removeaccount`,
         {},
@@ -33,6 +39,10 @@ const AccountSettings = () => {
       }
     } catch (e) {
       console.log("something went wrong while deleting", e);
+      setshowError(true);
+      setError("Error while Deleting Acoount , tryagain!");
+    } finally {
+      setLoading(false);
     }
   };
   const redirectHome = () => {
@@ -48,15 +58,30 @@ const AccountSettings = () => {
     }, 1000);
   };
 
+  useEffect(() => {
+    if (!showError) return;
+    const timer = setTimeout(() => {
+      setshowError(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [showError, error]);
   return (
     <main className="w-full min-h-screen relative">
       <FreelancerNavbar />
       <Success
-        successText={`your account is deleted successfully,you are redirecting to Home screen in  ${timer} `}
+        successText={`your account is deleted successfully,you are redirecting to Register page in  ${timer} `}
         isSuccess={success}
         successStyles={"absolute top-25"}
       />
+      {showError && (
+        <Errors
+          isError={showError}
+          errorText={error}
+          errorStyles={`absoulte top-25`}
+        />
+      )}
 
+      {loading && <Loader />}
       <div className=" p-2 md:p-10 w-full">
         <div className="w-full   bg-[#F4F2EE]  rounded-2xl flex flex-col md:flex-row gap-10 p-2 md:p-10 ">
           <div className=" w-full flex flex-col gap-3">

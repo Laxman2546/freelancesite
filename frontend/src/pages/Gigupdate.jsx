@@ -10,6 +10,7 @@ import uploadImage from "../assets/images/upload.png";
 import success from "../assets/images/success.svg";
 import axios from "axios";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
 const Gigupdate = () => {
   const steps = ["Overview", "Pricing", "Description", "Thumbnail", "Publish"];
   const [currentStep, setCurrentStep] = useState(0);
@@ -37,7 +38,6 @@ const Gigupdate = () => {
   const [loading, setLoading] = useState(false);
   const [isformChanged, setisformchanged] = useState(false);
   const [initialState, setinitialState] = useState(null);
-
   const location = useLocation();
   const navigate = useNavigate();
   const getId = () => {
@@ -108,6 +108,7 @@ const Gigupdate = () => {
   };
 
   const getGigs = async () => {
+    setLoading(true);
     try {
       const gigId = getId();
       const fetchGig = await axios.post(
@@ -119,6 +120,8 @@ const Gigupdate = () => {
       setData(gigData);
     } catch (e) {
       console.log(e, "something went wrong with the getgigs");
+    } finally {
+      setLoading(false);
     }
   };
   const setData = (data) => {
@@ -290,18 +293,26 @@ const Gigupdate = () => {
   const fileuploadRef = useRef();
 
   const cacheImage = (e) => {
-    const uploadedFile = e.target.files[0];
-    if (uploadedFile) {
-      setThumbnail(uploadedFile);
-      setisformchanged(true);
-      const previewURL = URL.createObjectURL(uploadedFile);
-      setPhotoPreview(previewURL);
+    try {
+      setLoading(true);
+      const uploadedFile = e.target.files[0];
+      if (uploadedFile) {
+        setThumbnail(uploadedFile);
+        setisformchanged(true);
+        const previewURL = URL.createObjectURL(uploadedFile);
+        setPhotoPreview(previewURL);
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <main className="w-full min-h-screen">
       <FreelancerNavbar />
+      {loading && <Loader />}
 
       <div className="w-full min-h-screen flex flex-col items-center p-4 sm:p-6 bg-[#F4F2EE]">
         <div className="w-full max-w-5xl p-2 sm:p-3 hidden md:flex">

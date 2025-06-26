@@ -5,6 +5,7 @@ import defaultImg from "../assets/images/freelancer.png";
 import { themeColors } from "../hooks/theme";
 import { EnvelopeIcon, PhoneIcon } from "@heroicons/react/24/outline";
 import { RemoveCircleOutline } from "react-ionicons";
+import Errors from "../components/Errors";
 import {
   BriefcaseIcon,
   CalendarIcon,
@@ -12,6 +13,7 @@ import {
   NoSymbolIcon,
 } from "@heroicons/react/24/solid";
 import { useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
 const Profile = () => {
   const [userName, setuserName] = useState("");
   const [emailId, setEmailID] = useState("");
@@ -26,13 +28,16 @@ const Profile = () => {
   const [avaliability, setAvaliability] = useState("");
   const [photo, setPhoto] = useState(defaultImg);
   const [showUpdate, setshowUpdate] = useState(true);
-
+  const [loading, setloading] = useState(false);
+  const [showError, setshowError] = useState(false);
+  const [error, setError] = useState("something went wrong");
   useEffect(() => {
     userProfile();
   }, []);
 
   const userProfile = async () => {
     try {
+      setloading(true);
       const result = await axios.get(
         `${process.env.REACT_APP_BACKEND_URI}/profile`,
         { withCredentials: true }
@@ -46,6 +51,8 @@ const Profile = () => {
       console.log(result);
     } catch (e) {
       console.log(e, "error while fetching user profile data");
+    } finally {
+      setloading(false);
     }
   };
   const setUserdata = (profile, fetchUser) => {
@@ -105,12 +112,29 @@ const Profile = () => {
     navigate("/profileupdate");
   };
 
+  useEffect(() => {
+    if (!showError) return;
+    const timer = setTimeout(() => {
+      setshowError(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [showError, error]);
   return (
     <main className="w-full h-full">
       <div>
         <FreelancerNavbar />
       </div>
-      <div className="w-full min-h-screen p-2 md:p-8  pt-5 flex bg-[#F4F2EE] relative">
+      {loading && <Loader />}
+
+      <div className="w-full min-h-screen p-2 md:p-8  pt-5 flex flex-col bg-[#F4F2EE] relative">
+        {showError && (
+          <Errors
+            isError={showError}
+            errorText={error}
+            errorStyles={`absoulte`}
+          />
+        )}
+
         {showUpdate && (
           <div className="w-full min-h-full md:h-screen flex justify-center items-start bg-black/30 absolute top-0 left-0 z-50 p-5">
             <div className="bg-white rounded-xl shadow-xl p-6 max-w-md w-full flex flex-col items-center text-center gap-4">

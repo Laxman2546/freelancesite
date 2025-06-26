@@ -5,16 +5,19 @@ import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { TrashBinSharp } from "react-ionicons";
 import trashIcon from "../assets/images/trash.png";
 import nothing from "../assets/images/nothing.svg";
+import Loader from "./Loader";
 import { useNavigate } from "react-router-dom";
 const PostedGigs = () => {
   const [gigs, setgigs] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
   const [gigId, setgigId] = useState("");
   const [showmore, setShowmore] = useState(false);
+  const [loading, setloading] = useState(false);
   const moreMenuRefs = useRef({});
   const navigate = useNavigate();
 
   const getGigs = async () => {
+    setloading(true);
     const fetchGig = await axios
       .get(`${process.env.REACT_APP_BACKEND_URI}/gig/get`, {
         withCredentials: true,
@@ -24,6 +27,9 @@ const PostedGigs = () => {
       })
       .catch((e) => {
         console.log(e, "something went wrong with the posted gigs");
+      })
+      .finally(() => {
+        setloading(false);
       });
   };
 
@@ -50,6 +56,7 @@ const PostedGigs = () => {
   }, [activeCard]);
 
   const deleteGig = async (gigId) => {
+    setloading(true);
     try {
       const Deleted = await axios.delete(
         `${process.env.REACT_APP_BACKEND_URI}/gig/delete`,
@@ -61,6 +68,8 @@ const PostedGigs = () => {
       getGigs();
     } catch (e) {
       console.log("something went wrong while deleting", e);
+    } finally {
+      setloading(false);
     }
   };
 
@@ -70,6 +79,8 @@ const PostedGigs = () => {
   };
   return (
     <main>
+      {loading && <Loader />}
+
       {gigs.length > 0 ? (
         <div className="w-full min-h-screen flex flex-col p-0 md:p-8 bg-[#F4F2EE]">
           <div className="w-full text-center md:text-start pl-0 md:pl-3 mt-[15px]">

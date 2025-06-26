@@ -9,6 +9,7 @@ import { PencilIcon } from "@heroicons/react/24/solid";
 import defaultImg from "../assets/images/freelancer.png";
 import Button from "../components/Button.jsx";
 import Errors from "../components/Errors.jsx";
+import Loader from "../components/Loader.jsx";
 
 const profileUpdate = () => {
   const [userName, setuserName] = useState("");
@@ -27,8 +28,10 @@ const profileUpdate = () => {
   const [initialState, setInitialState] = useState(null);
   const [showError, setshowError] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setloading] = useState(false);
   const requestData = async () => {
     try {
+      setloading(true);
       const result = await axios.get(
         `${process.env.REACT_APP_BACKEND_URI}/profile`,
         { withCredentials: true }
@@ -39,13 +42,14 @@ const profileUpdate = () => {
       setuserName(result.data.fetchUser.userName);
       setEmailID(result.data.fetchUser.emailId);
       setUserdata(result.data.profile, result.data.fetchUser);
-      console.log(result);
     } catch (e) {
-      console.log(e, "error while fetching user profile data");
+      setshowError(true);
+      setError("error while fetching user profile data");
+    } finally {
+      setloading(false);
     }
   };
 
-  console.log(userName);
   useEffect(() => {
     if (!showError) return;
     const timer = setTimeout(() => {
@@ -126,6 +130,7 @@ const profileUpdate = () => {
     }
 
     try {
+      setloading(true);
       const result = await axios.post(
         `${process.env.REACT_APP_BACKEND_URI}/profile/update`,
         formData,
@@ -153,7 +158,10 @@ const profileUpdate = () => {
       }
       setIsFormChanged(false);
     } catch (e) {
-      console.log(e);
+      setshowError(true);
+      setError("Something went wrong while updating ! tryagain");
+    } finally {
+      setloading(false);
     }
   };
 
@@ -243,6 +251,7 @@ const profileUpdate = () => {
         </div>
       </div>
 
+      {loading && <Loader />}
       <div className="w-full min-h-screen p-8 bg-[#F4F2EE] mt-24">
         <Errors
           isError={showError}

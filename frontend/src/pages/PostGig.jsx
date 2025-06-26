@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import FreelancerNavbar from "../components/FreelancerNavbar";
 import Steps from "../components/Steps";
 import freelancerCategories from "../utils/categories";
+import Errors from "../components/Errors";
 import { ChevronDown } from "react-ionicons";
 import { XCircleIcon, ArrowTurnDownLeftIcon } from "@heroicons/react/24/solid";
 import { XMarkIcon } from "@heroicons/react/24/outline";
@@ -34,6 +35,8 @@ const PostGig = () => {
   const [thumbnail, setThumbnail] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showError, setshowError] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
   const postGig = async (e) => {
     setLoading(true);
@@ -77,10 +80,20 @@ const PostGig = () => {
       navigate("/userhome");
     } catch (e) {
       console.log("something went wrong while creating gig", e);
+      setshowError(true);
+      setError("something went wrong while creating gig");
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!showError) return;
+    const timer = setTimeout(() => {
+      setshowError(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [showError, error]);
 
   const handleTags = () => {
     const trimmed = searchTags.trim();
@@ -170,6 +183,11 @@ const PostGig = () => {
       <FreelancerNavbar />
 
       <div className="w-full min-h-screen flex flex-col items-center p-4 sm:p-6 bg-[#F4F2EE]">
+        <Errors
+          isError={showError}
+          errorText={error}
+          errorStyles={`absoulte`}
+        />
         <div className="w-full max-w-5xl p-2 sm:p-3 hidden md:flex">
           <Steps steps={steps} currentStep={currentStep} />
         </div>
