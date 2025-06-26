@@ -7,6 +7,8 @@ import Success from "../components/Success.jsx";
 import { useNavigate } from "react-router-dom";
 import Errors from "../components/Errors.jsx";
 import Loader from "../components/Loader.jsx";
+import { useAuth } from "../hooks/useAuth";
+
 const AccountSettings = () => {
   const [showPopup, setshowPopup] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -14,6 +16,7 @@ const AccountSettings = () => {
   const [loading, setLoading] = useState(false);
   const [showError, setshowError] = useState(false);
   const [error, setError] = useState("");
+  const { checkAuth } = useAuth();
   const popupShow = () => {
     setshowPopup(false);
   };
@@ -65,6 +68,9 @@ const AccountSettings = () => {
     }, 3000);
     return () => clearTimeout(timer);
   }, [showError, error]);
+  useEffect(() => {
+    checkAuth();
+  }, []);
   return (
     <main className="w-full min-h-screen relative">
       <FreelancerNavbar />

@@ -10,6 +10,7 @@ import defaultImg from "../assets/images/freelancer.png";
 import Button from "../components/Button.jsx";
 import Errors from "../components/Errors.jsx";
 import Loader from "../components/Loader.jsx";
+import { useAuth } from "../hooks/useAuth.js";
 
 const profileUpdate = () => {
   const [userName, setuserName] = useState("");
@@ -29,6 +30,7 @@ const profileUpdate = () => {
   const [showError, setshowError] = useState(false);
   const [error, setError] = useState("");
   const [loading, setloading] = useState(false);
+  const { checkAuth } = useAuth();
   const requestData = async () => {
     try {
       setloading(true);
@@ -109,6 +111,7 @@ const profileUpdate = () => {
   };
 
   useEffect(() => {
+    checkAuth();
     requestData();
   }, []);
 

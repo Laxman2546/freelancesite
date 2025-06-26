@@ -4,6 +4,7 @@ import { Fade as Hamburger } from "hamburger-react";
 import { BellIcon } from "@heroicons/react/24/outline";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
+import logo from "../assets/images/logo.svg";
 import { userLogout } from "../utils/userLogout";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Errors from "./Errors";
@@ -357,9 +358,12 @@ const FreelancerNavbar = ({ isUpdated }) => {
           }}
         >
           <Link to={"/userhome"}>
-            <h1 className="text-2xl font-bold text-center text-[#3A5B22]">
-              GigConnect
-            </h1>
+            <div className="flex flex-row items-center gap-2">
+              <img src={logo} className="size-8 hidden md:block" />
+              <h1 className="text-2xl font-bold text-center text-[#3A5B22]">
+                GigConnect
+              </h1>
+            </div>
           </Link>
         </div>
 

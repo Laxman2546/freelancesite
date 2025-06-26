@@ -22,7 +22,7 @@ const Userhome = () => {
   if (user && !user.role && !showPopup) {
     setshowPopup(true);
   }
-
+ 
   return (
     <main className="w-full h-full">
       {showPopup && (

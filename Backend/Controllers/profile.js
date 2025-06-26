@@ -28,9 +28,11 @@ export const freelanceProfile = async (req, res) => {
       profilePic: req.file?.filename,
       job,
     });
-    return res
-      .status(200)
-      .json("your data created suceesfully", createProfile, fetchUser);
+    return res.status(200).json({
+      message: "your fetched  successfully",
+      createProfile,
+      fetchUser,
+    });
   } catch (e) {
     return res.status(500).json({ error: "something went wrong" });
   }

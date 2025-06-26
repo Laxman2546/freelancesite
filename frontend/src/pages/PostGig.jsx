@@ -11,6 +11,7 @@ import uploadImage from "../assets/images/upload.png";
 import success from "../assets/images/success.svg";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 const PostGig = () => {
   const steps = ["Overview", "Pricing", "Description", "Thumbnail", "Publish"];
   const [currentStep, setCurrentStep] = useState(0);
@@ -38,6 +39,8 @@ const PostGig = () => {
   const [showError, setshowError] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  const { checkAuth } = useAuth();
   const postGig = async (e) => {
     setLoading(true);
     try {
@@ -87,6 +90,9 @@ const PostGig = () => {
     }
   };
 
+  useEffect(() => {
+    checkAuth();
+  }, []);
   useEffect(() => {
     if (!showError) return;
     const timer = setTimeout(() => {

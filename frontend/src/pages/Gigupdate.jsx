@@ -11,6 +11,7 @@ import success from "../assets/images/success.svg";
 import axios from "axios";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
+import { useAuth } from "../hooks/useAuth";
 const Gigupdate = () => {
   const steps = ["Overview", "Pricing", "Description", "Thumbnail", "Publish"];
   const [currentStep, setCurrentStep] = useState(0);
@@ -40,6 +41,7 @@ const Gigupdate = () => {
   const [initialState, setinitialState] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
+  const { checkAuth } = useAuth();
   const getId = () => {
     const searchParams = new URLSearchParams(location.search);
     const id = searchParams.get("gigid");
@@ -215,6 +217,7 @@ const Gigupdate = () => {
   ]);
 
   useEffect(() => {
+    checkAuth();
     getGigs();
   }, []);
 

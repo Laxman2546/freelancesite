@@ -11,7 +11,6 @@ import PostGig from "./pages/PostGig.jsx";
 import Orders from "./pages/Orders.jsx";
 import Profileupdate from "./pages/profileUpdate.jsx";
 import Gigupdate from "./pages/Gigupdate.jsx";
-
 gsap.registerPlugin(useGSAP);
 
 const App = () => {

@@ -14,6 +14,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
+import { useAuth } from "../hooks/useAuth";
 const Profile = () => {
   const [userName, setuserName] = useState("");
   const [emailId, setEmailID] = useState("");
@@ -31,7 +32,9 @@ const Profile = () => {
   const [loading, setloading] = useState(false);
   const [showError, setshowError] = useState(false);
   const [error, setError] = useState("something went wrong");
+  const { user, checkAuth } = useAuth();
   useEffect(() => {
+    checkAuth();
     userProfile();
   }, []);
 
