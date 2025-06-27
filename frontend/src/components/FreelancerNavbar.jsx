@@ -11,6 +11,8 @@ import Errors from "./Errors";
 import noNotifications from "../assets/images/download.svg";
 import noMessages from "../assets/images/messages.svg";
 import axios from "axios";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 const FreelancerNavbar = ({ isUpdated }) => {
   const Navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -28,6 +30,7 @@ const FreelancerNavbar = ({ isUpdated }) => {
   const [closingNotifications, setClosingNotifications] = useState(false);
   const [userName, setuserName] = useState("");
   const location = useLocation();
+
   const recentMessages = [
     {
       senderName: "John Doe",
@@ -359,7 +362,7 @@ const FreelancerNavbar = ({ isUpdated }) => {
         >
           <Link to={"/userhome"}>
             <div className="flex flex-row items-center gap-2">
-              <img src={logo} className="size-8 hidden md:block" />
+              <img src={logo} className="size-8 hidden md:block" id="logo" />
               <h1 className="text-2xl font-bold text-center text-[#3A5B22]">
                 GigConnect
               </h1>
@@ -637,6 +640,25 @@ const FreelancerNavbar = ({ isUpdated }) => {
         .animate-slideOut {
           animation: slideOut 0.2s ease-in;
         }
+        @keyframes rotateIn {
+           to {
+               transform: rotate(360deg);
+          }         
+        }
+          #logo:hover {
+            animation: mymove 1s ease-in-out;
+          }
+          @keyframes mymove {
+              0% {
+                transform: rotate(0deg);
+                scale:1;
+              }
+              100% {
+                transform: rotate(360deg);
+                scale:1.2;
+              }
+            }
+
       `}</style>
     </header>
   );

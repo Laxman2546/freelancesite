@@ -91,7 +91,7 @@ const PostedGigs = () => {
             {gigs.map((data, index) => (
               <div
                 key={index}
-                className="w-full sm:w-[300px] bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 "
+                className="w-full sm:w-[300px] bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 hover:"
               >
                 <img
                   src={`${process.env.REACT_APP_BACKEND_URI}/thumbnails/${data.thumbnail}`}
