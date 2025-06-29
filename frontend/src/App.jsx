@@ -11,6 +11,7 @@ import PostGig from "./pages/PostGig.jsx";
 import Orders from "./pages/Orders.jsx";
 import Profileupdate from "./pages/profileUpdate.jsx";
 import Gigupdate from "./pages/Gigupdate.jsx";
+import PostedgigDetails from "./components/PostedgigDetails.jsx";
 gsap.registerPlugin(useGSAP);
 
 const App = () => {
@@ -25,6 +26,7 @@ const App = () => {
       <Route path="/postgig" element={<PostGig />} />
       <Route path="/orders" element={<Orders />} />
       <Route path="/gigupdate" element={<Gigupdate />} />
+      <Route path="/postdetails" element={<PostedgigDetails />} />
     </Routes>
   );
 };

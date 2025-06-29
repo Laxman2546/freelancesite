@@ -6,7 +6,7 @@ import { TrashBinSharp } from "react-ionicons";
 import trashIcon from "../assets/images/trash.png";
 import nothing from "../assets/images/nothing.svg";
 import Loader from "./Loader";
-import { useNavigate } from "react-router-dom";
+import { Router, useNavigate } from "react-router-dom";
 const PostedGigs = () => {
   const [gigs, setgigs] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
@@ -77,6 +77,11 @@ const PostedGigs = () => {
     const url = `/gigupdate?gigid=${dataId}`;
     navigate(url);
   };
+  const showMoregig = (dataId) => {
+    console.log("clicked");
+    const url = `/postdetails?gigid=${dataId}`;
+    navigate(url);
+  };
   return (
     <main>
       {loading && <Loader />}
@@ -91,7 +96,8 @@ const PostedGigs = () => {
             {gigs.map((data, index) => (
               <div
                 key={index}
-                className="w-full sm:w-[300px] bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 hover:"
+                className="w-full sm:w-[300px] bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 hover:scale-105 hover:cursor-pointer"
+                onClick={() => showMoregig(data._id)}
               >
                 <img
                   src={`${process.env.REACT_APP_BACKEND_URI}/thumbnails/${data.thumbnail}`}
@@ -114,7 +120,8 @@ const PostedGigs = () => {
                   >
                     <EllipsisVerticalIcon
                       className="size-6 text-gray-600 hover:text-gray-800 cursor-pointer"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setShowmore(!showmore);
                         setActiveCard(activeCard === index ? null : index);
                       }}
@@ -126,7 +133,10 @@ const PostedGigs = () => {
                           <PencilSquareIcon className="w-[35px] h-[30px]" />
                           <button
                             className="w-full text-sm text-gray-700 hover:text-black px-4 py-2 text-left transition cursor-pointer"
-                            onClick={() => handleUpdate(data._id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleUpdate(data._id);
+                            }}
                           >
                             Edit
                           </button>
@@ -136,7 +146,10 @@ const PostedGigs = () => {
                           <img src={trashIcon} className="w-[20px] h-[20px]" />
                           <button
                             className="w-full text-sm  text-[#F85959] font-medium px-4 py-2 transition text-center cursor-pointer"
-                            onClick={() => deleteGig(data._id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteGig(data._id);
+                            }}
                           >
                             Delete
                           </button>
