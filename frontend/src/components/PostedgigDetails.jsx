@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loader from "./Loader";
 import FreelancerNavbar from "./FreelancerNavbar";
-import { Cart, TimeSharp } from "react-ionicons";
+import { Cart, Star, TimeSharp, Eye, PencilSharp } from "react-ionicons";
+import { PencilSquareIcon } from "@heroicons/react/24/solid";
 const PostedgigDetails = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -11,7 +12,6 @@ const PostedgigDetails = () => {
   const getId = () => {
     const search = new URLSearchParams(location.search);
     const id = search.get("gigid");
-    console.log(id);
     return id;
   };
   const getGigs = async () => {
@@ -25,6 +25,7 @@ const PostedgigDetails = () => {
       );
       const gigData = fetchGig.data.gig;
       setData(gigData);
+      console.log(gigData);
     } catch (e) {
       console.log(e, "something went wrong with the getgigs");
     } finally {
@@ -38,28 +39,77 @@ const PostedgigDetails = () => {
     <div className="w-full min-h-screen">
       {loading && <Loader />}
       <FreelancerNavbar />
-      <div className="w-full min-h-screen flex flex-col gap-5 bg-[#F4F2EE] p-2 md:p-8 ">
-        <div className="w-full h-full   flex flex-row  gap-3 items-center">
-          <div className="p-2 pl-4 pr-4 bg-[#C0E6FB] text-[#36ADF2] rounded-3xl text-center">
-            <span className="font-semibold text-sm md:text-md">Active</span>
+      <div className="w-full min-h-screen flex flex-col  bg-[#F4F2EE] p-2 md:p-8 ">
+        <div className="w-full flex flex-row justify-between pr-5">
+          <div className="flex flex-col  gap-5">
+            <div className="w-full h-full   flex flex-row  gap-3 items-center overflow-hidden">
+              <div className=" hidden md:block p-2 pl-4 pr-4 bg-[#C0E6FB] text-[#36ADF2] rounded-3xl text-center">
+                <span className="font-semibold text-sm md:text-md">Active</span>
+              </div>
+              <div className=" p-2 pl-2 pr-2 sm:pl-4 sm:pr-4 bg-[#CDEBC1]  text-[#294018] rounded-3xl text-center text-nowrap">
+                <span className="font-semibold text-sm md:text-md">
+                  {data.category}
+                </span>
+              </div>
+            </div>
+            <div className="mt-2  md:max-w-2/3">
+              <h1 className=" text-2xl md:text-3xl font-semibold ">
+                {data.title}
+              </h1>
+            </div>
+            <div className="w-full flex flex-col md:flex-row gap-5">
+              <div className=" flex flex-row   gap-1 items-center">
+                <div className="flex flex-row items-start mb-1">
+                  <Star width={"18px"} height={"19px"} color={"#ffc550"} />
+                  <Star width={"18px"} height={"19px"} color={"#ffc550"} />
+                  <Star width={"18px"} height={"19px"} color={"#ffc550"} />
+                  <Star width={"18px"} height={"19px"} color={"#ffc550"} />
+                  <Star width={"18px"} height={"19px"} color={"#ffc550"} />
+                </div>
+                <span className="text-md  text-gray-600">
+                  4.8 (
+                  <span className="underline cursor-pointer">127 reviews</span>)
+                </span>
+              </div>
+              <div className=" hidden md:flex flex-row gap-1 items-center">
+                <Eye width={"18px"} height={"18px"} />
+                <span className="text-md  text-gray-600">2,425 views</span>
+              </div>
+              <div className=" hidden md:flex flex-row gap-1 items-center">
+                <Cart width={"18px"} height={"18px"} />
+                <span className="text-md  text-gray-600">
+                  250 orders in queue
+                </span>
+              </div>
+              <div className=" flex flex-row gap-1 items-center">
+                <TimeSharp width={"18px"} height={"18px"} />
+                <span className="text-md  text-gray-600">
+                  Last updated 2 days ago
+                </span>
+              </div>
+            </div>
           </div>
-          <div className="p-2 pl-2 pr-2 sm:pl-4 sm:pr-4 bg-[#CDEBC1] overflow-hidden text-[#294018] rounded-3xl text-center text-nowrap">
-            <span className="font-semibold text-sm md:text-md">
-              {data.category}
-            </span>
+
+          <div className="hidden md:block ">
+            <button className="p-3 bg-lime-800 text-white rounded-xl flex flex-row gap-2 cursor-pointer  active:scale-95">
+              <PencilSquareIcon className="size-6" />
+              EditGig
+            </button>
           </div>
         </div>
-        <div className="mt-2 w-full md:max-w-2/3">
-          <h1 className=" text-2xl md:text-3xl font-semibold ">{data.title}</h1>
-        </div>
-        <div className="w-full flex flex-row">
-          <div className="w-full flex flex-row gap-2 items-center">
-            <Cart width={"18px"} height={"18px"} />
-            <span className="text-md  text-gray-600">250 orders in queue</span>
+        <div className="w-full mt-8 bg-green-400  flex flex-row gap-4 justify-between">
+          <div className="w-2/3 flex flex-col bg-white rounded-t-2xl">
+            <div>
+              <img
+                src={`${process.env.REACT_APP_BACKEND_URI}/thumbnails/${data.thumbnail}`}
+                alt={data.title}
+                className=" object-cover"
+              />
+            </div>
           </div>
-          <div className="w-full flex flex-row gap-2 items-center">
-            <TimeSharp width={"18px"} height={"18px"} />
-            <span className="text-md  text-gray-600">Last updated</span>
+          <div className="w-1/4 flex flex-col">
+            <h1>({data.pricing.basic.priceTitle})</h1>
+            {console.log(data.pricing.basic.priceTitle)}
           </div>
         </div>
       </div>
