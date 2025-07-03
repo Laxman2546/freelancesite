@@ -5,9 +5,11 @@ import Loader from "./Loader";
 import FreelancerNavbar from "./FreelancerNavbar";
 import { Cart, Star, TimeSharp, Eye, PencilSharp } from "react-ionicons";
 import { PencilSquareIcon } from "@heroicons/react/24/solid";
+import Pricing from "../components/Pricing";
 const PostedgigDetails = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isActivePrice, setActivePrice] = useState("Basic");
   const location = useLocation();
   const getId = () => {
     const search = new URLSearchParams(location.search);
@@ -97,19 +99,59 @@ const PostedgigDetails = () => {
             </button>
           </div>
         </div>
-        <div className="w-full mt-8 bg-green-400  flex flex-row gap-4 justify-between">
-          <div className="w-2/3 flex flex-col bg-white rounded-t-2xl">
+        <div className="w-full mt-8  flex flex-col md:flex-row gap-4 justify-between">
+          <div className="w-full md:w-2/3 flex flex-col bg-white ">
             <div>
               <img
                 src={`${process.env.REACT_APP_BACKEND_URI}/thumbnails/${data.thumbnail}`}
                 alt={data.title}
-                className=" object-cover"
+                className=" object-cover rounded-2xl"
               />
             </div>
           </div>
-          <div className="w-1/4 flex flex-col">
-            <h1>({data.pricing.basic.priceTitle})</h1>
-            {console.log(data.pricing.basic.priceTitle)}
+          <div className="w-full md:w-1/3 max-w-[700px] flex flex-col bg-white rounded-2xl p-2 md:p-6">
+            <div className="w-full flex flex-row justify-between mt-3 border-b-2 border-gray-300">
+              <div
+                className={`font-semibold cursor-pointer  ${
+                  isActivePrice === "Basic"
+                    ? "text-lime-800 border-b-3"
+                    : "text-black"
+                }`}
+                onClick={() => setActivePrice("Basic")}
+              >
+                Basic
+              </div>
+              <div
+                className={`font-semibold cursor-pointer ${
+                  isActivePrice === "Standard"
+                    ? "text-lime-800 border-b-3"
+                    : "text-black"
+                }`}
+                onClick={() => setActivePrice("Standard")}
+              >
+                Standard
+              </div>
+              <div
+                className={`font-semibold cursor-pointer ${
+                  isActivePrice === "Premium"
+                    ? "text-lime-800 border-b-3"
+                    : "text-black"
+                }`}
+                onClick={() => setActivePrice("Premium")}
+              >
+                Premium
+              </div>
+            </div>
+            <div className="mt-3 ">
+              {data?.pricing?.basic && isActivePrice == "Basic" ? (
+                <Pricing
+                  title={data.pricing.basic.priceTitle}
+                  price={data.pricing.basic.price}
+                />
+              ) : (
+                <p>Loading price info...</p>
+              )}
+            </div>
           </div>
         </div>
       </div>
