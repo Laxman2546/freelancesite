@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Loader from "./Loader";
 import FreelancerNavbar from "./FreelancerNavbar";
 import { Cart, Star, TimeSharp, Eye, PencilSharp } from "react-ionicons";
-import { PencilSquareIcon } from "@heroicons/react/24/solid";
+import { PaperAirplaneIcon, PencilSquareIcon } from "@heroicons/react/24/solid";
 import Pricing from "../components/Pricing";
 const PostedgigDetails = () => {
   const [data, setData] = useState([]);
@@ -37,6 +37,20 @@ const PostedgigDetails = () => {
   useEffect(() => {
     getGigs();
   }, []);
+  const countDays = (date) => {
+    const givenDate = new Date(date);
+    const today = new Date();
+
+    givenDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    const timeDiff = givenDate.getTime() - today.getTime();
+    const dayDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+    const updatedDay = dayDiff.toLocaleString().split("-");
+    
+    return updatedDay;
+  };
+
   return (
     <div className="w-full min-h-screen">
       {loading && <Loader />}
@@ -54,7 +68,7 @@ const PostedgigDetails = () => {
                 </span>
               </div>
             </div>
-            <div className="mt-2  md:max-w-2/3">
+            <div className="mt-2  md:max-w-3/2">
               <h1 className=" text-2xl md:text-3xl font-semibold ">
                 {data.title}
               </h1>
@@ -86,7 +100,7 @@ const PostedgigDetails = () => {
               <div className=" flex flex-row gap-1 items-center">
                 <TimeSharp width={"18px"} height={"18px"} />
                 <span className="text-md  text-gray-600">
-                  Last updated 2 days ago
+                  updated at {countDays(data.updatedAt)} days ago
                 </span>
               </div>
             </div>
@@ -108,8 +122,14 @@ const PostedgigDetails = () => {
                 className=" object-cover rounded-2xl"
               />
             </div>
+            <div className="flex flex-col mt-8 p-5 gap-5">
+              <h1 className="text-xl md:text-2xl font-semibold">
+                About this Gig
+              </h1>
+              <h1>{data.description} </h1>
+            </div>
           </div>
-          <div className="w-full md:w-1/3 max-w-[700px] flex flex-col bg-white rounded-2xl p-2 md:p-6">
+          <div className="w-full md:w-1/3 max-w-[700px] h-auto max-h-[500px] md:sticky top-5 flex flex-col bg-white rounded-2xl p-2 md:p-6">
             <div className="w-full flex flex-row justify-between mt-3 border-b-2 border-gray-300">
               <div
                 className={`font-semibold cursor-pointer  ${
@@ -142,15 +162,27 @@ const PostedgigDetails = () => {
                 Premium
               </div>
             </div>
-            <div className="mt-3 ">
-              {data?.pricing?.basic && isActivePrice == "Basic" ? (
+            <div className="mt-5">
+              {data?.pricing?.basic ? (
                 <Pricing
-                  title={data.pricing.basic.priceTitle}
-                  price={data.pricing.basic.price}
+                  title={data.pricing[isActivePrice.toLowerCase()].priceTitle}
+                  price={data.pricing[isActivePrice.toLowerCase()].price}
+                  features={
+                    data.pricing[isActivePrice.toLowerCase()].priceFeatures
+                  }
+                  delivery={
+                    data.pricing[isActivePrice.toLowerCase()].deliveryTime
+                  }
                 />
               ) : (
                 <p>Loading price info...</p>
               )}
+            </div>
+            <div className=" flex flex-row items-end h-auto mt-5 md:h-full   text-center">
+              <button className="w-full mb-5 rounded-2xl flex flex-row items-center justify-center gap-3  p-3 bg-lime-700 text-white active:scale-95 cursor-pointer">
+                Contact me
+                <PaperAirplaneIcon className="size-5 text-white -rotate-50" />
+              </button>
             </div>
           </div>
         </div>

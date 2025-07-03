@@ -7,39 +7,40 @@ const packageSchema = new mongoose.Schema({
   price: { type: String },
 });
 
-const gigCreationSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
-    required: true,
+const gigCreationSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+    category: {
+      type: String,
+      required: true,
+    },
+    searchTags: {
+      type: [String],
+    },
+    pricing: {
+      basic: { type: packageSchema },
+      standard: { type: packageSchema },
+      premium: { type: packageSchema },
+    },
+    description: {
+      type: String,
+      maxlength: 1000,
+    },
+    thumbnail: {
+      type: String,
+    },
   },
-  title: {
-    type: String,
-    required: true,
-  },
-  category: {
-    type: String,
-    required: true,
-  },
-  searchTags: {
-    type: [String],
-  },
-  pricing: {
-    basic: { type: packageSchema },
-    standard: { type: packageSchema },
-    premium: { type: packageSchema },
-  },
-  description: {
-    type: String,
-    maxlength: 1000,
-  },
-  thumbnail: {
-    type: String,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 export default mongoose.model("gigCreation", gigCreationSchema);
