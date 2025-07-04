@@ -39,16 +39,23 @@ const PostedgigDetails = () => {
   }, []);
   const countDays = (date) => {
     const givenDate = new Date(date);
-    const today = new Date();
+    const now = new Date();
 
-    givenDate.setHours(0, 0, 0, 0);
-    today.setHours(0, 0, 0, 0);
+    const timeDiffMs = now - givenDate;
 
-    const timeDiff = givenDate.getTime() - today.getTime();
-    const dayDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-    const updatedDay = dayDiff.toLocaleString().split("-");
-    
-    return updatedDay;
+    const seconds = Math.floor((timeDiffMs / 1000) % 60);
+    const minutes = Math.floor((timeDiffMs / (1000 * 60)) % 60);
+    const hours = Math.floor((timeDiffMs / (1000 * 60 * 60)) % 24);
+    const days = Math.floor(timeDiffMs / (1000 * 60 * 60 * 24));
+
+    if (seconds < 60 && minutes < 1) {
+      return `updated ${seconds} Second${seconds !== 1 ? "s" : ""} ago`;
+    } else if (minutes < 60 && hours < 1) {
+      return `updated ${minutes} Minute${minutes !== 1 ? "s" : ""} ago`;
+    } else if (hours < 24 && days < 1) {
+      return `updated ${hours} Hour${hours !== 1 ? "s" : ""} ago`;
+    }
+    return `updated ${days} Day${days !== 1 ? "s" : ""} ago`;
   };
 
   return (
@@ -99,8 +106,8 @@ const PostedgigDetails = () => {
               </div>
               <div className=" flex flex-row gap-1 items-center">
                 <TimeSharp width={"18px"} height={"18px"} />
-                <span className="text-md  text-gray-600">
-                  updated at {countDays(data.updatedAt)} days ago
+                <span className="text-md text-gray-600">
+                  {countDays(data.updatedAt)}
                 </span>
               </div>
             </div>
