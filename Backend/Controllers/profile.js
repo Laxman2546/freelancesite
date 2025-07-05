@@ -129,6 +129,40 @@ export const getfreelanceProfile = async (req, res) => {
     });
   }
 };
+export const getfreelancerId = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ error: "Invalid user ID in token" });
+    }
+
+    const fetchUser = await userModel.findOne({ userId });
+    if (!fetchUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const fetchUserProfile = await freelanceprofileModel.findOne({ userId });
+    if (!fetchUserProfile) {
+      return res.status(200).json({
+        success: true,
+        fetchUser: fetchUser,
+        message: "Add Your profile photo",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      fetchUser: fetchUser,
+      profile: fetchUserProfile,
+    });
+  } catch (e) {
+    console.error("Profile fetch error:", e);
+    return res.status(500).json({
+      error: "Internal server error",
+      message: e.message,
+    });
+  }
+};
 export const Usertype = async (req, res) => {
   try {
     const { userId } = req.user;

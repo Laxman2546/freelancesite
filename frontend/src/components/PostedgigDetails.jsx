@@ -10,7 +10,9 @@ const PostedgigDetails = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isActivePrice, setActivePrice] = useState("Basic");
+  const [creatordata, setcreatorData] = useState("");
   const location = useLocation();
+  const navigation = useNavigate();
   const getId = () => {
     const search = new URLSearchParams(location.search);
     const id = search.get("gigid");
@@ -27,6 +29,7 @@ const PostedgigDetails = () => {
       );
       const gigData = fetchGig.data.gig;
       setData(gigData);
+      getUser(gigData.userId);
       console.log(gigData);
     } catch (e) {
       console.log(e, "something went wrong with the getgigs");
@@ -34,6 +37,31 @@ const PostedgigDetails = () => {
       setLoading(false);
     }
   };
+
+  const getUser = async (userId) => {
+    setLoading(true);
+
+    if (!userId) {
+      console.error("User ID is missing");
+      setLoading(false);
+      return;
+    }
+    try {
+      const fetchUser = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URI}/profile/creator`,
+        { userId },
+        { withCredentials: true }
+      );
+      const userData = fetchUser.data;
+      setcreatorData(userData);
+      console.log(fetchUser.data);
+    } catch (e) {
+      console.error("Something went wrong with getUser:", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     getGigs();
   }, []);
@@ -57,7 +85,9 @@ const PostedgigDetails = () => {
     }
     return `updated ${days} Day${days !== 1 ? "s" : ""} ago`;
   };
-
+  const handleEdit = () => {
+    navigation(`/gigupdate?gigid=${getId()}`);
+  };
   return (
     <div className="w-full min-h-screen">
       {loading && <Loader />}
@@ -114,7 +144,10 @@ const PostedgigDetails = () => {
           </div>
 
           <div className="hidden md:block ">
-            <button className="p-3 bg-lime-800 text-white rounded-xl flex flex-row gap-2 cursor-pointer  active:scale-95">
+            <button
+              className="p-3 bg-lime-800 text-white rounded-xl flex flex-row gap-2 cursor-pointer  active:scale-95"
+              onClick={() => handleEdit()}
+            >
               <PencilSquareIcon className="size-6" />
               EditGig
             </button>
@@ -129,11 +162,60 @@ const PostedgigDetails = () => {
                 className=" object-cover rounded-2xl"
               />
             </div>
+            <div className="flex flex-col gap-2 mt-8 pl-5">
+              <div className="flex flex-row gap-2 ">
+                <div>
+                  <img
+                    className="w-[35px] h-[35px] object-center"
+                    src={`${process.env.REACT_APP_BACKEND_URI}/profilePics/${creatordata?.profile?.profilePic}`}
+                  />
+                </div>
+                <div className="flex flex-col cursor-pointer">
+                  <h1 className="text-xl font-semibold">
+                    {creatordata?.fetchUser?.userName || "fetchingname..."}
+                  </h1>
+                  <h1 className="text-sm text-gray-400 font-normal">
+                    {creatordata?.profile?.job || "Loading..."}
+                  </h1>
+                </div>
+              </div>
+            </div>
             <div className="flex flex-col mt-8 p-5 gap-5">
               <h1 className="text-xl md:text-2xl font-semibold">
                 About this Gig
               </h1>
               <h1>{data.description} </h1>
+            </div>
+            <div className="flex flex-col mt-3 p-5 gap-5">
+              <div className="flex ">
+                <h1 className="text-xl font-semibold">
+                  Customer Reviews (150)
+                </h1>
+              </div>
+              <div className="flex flex-col pl-1 md:pl-8 gap-5">
+                <div className=" flex flex-row items-center gap-3">
+                  <div>
+                    <img
+                      className="w-[50px] h-[50px] rounded-full"
+                      src={`${process.env.REACT_APP_BACKEND_URI}/thumbnails/${data.thumbnail}`}
+                    />
+                  </div>
+                  <div>
+                    <h1 className="text-lg font-medium">Sarah Jhon</h1>
+                    <h1 className="text-gray-400 text-sm font-normal">
+                      2 days ago
+                    </h1>
+                  </div>
+                </div>
+                <div className="pl-3 md:pl-15">
+                  <h1>
+                    Absolutely amazing work! The designer understood exactly
+                    what I was looking for and delivered a logo that perfectly
+                    represents my brand. Fast delivery and excellent
+                    communication throughout the process.
+                  </h1>
+                </div>
+              </div>
             </div>
           </div>
           <div className="w-full md:w-1/3 max-w-[700px] h-auto max-h-[500px] md:sticky top-5 flex flex-col bg-white rounded-2xl p-2 md:p-6">
