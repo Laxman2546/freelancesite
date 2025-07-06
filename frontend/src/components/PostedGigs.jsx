@@ -13,6 +13,9 @@ const PostedGigs = () => {
   const [gigId, setgigId] = useState("");
   const [showmore, setShowmore] = useState(false);
   const [loading, setloading] = useState(false);
+  const [showPopup, setshowPopup] = useState(false);
+  const [title, setTitle] = useState("");
+  const [deletegigId, setdeletegigId] = useState("");
   const moreMenuRefs = useRef({});
   const navigate = useNavigate();
 
@@ -65,6 +68,7 @@ const PostedGigs = () => {
           withCredentials: true,
         }
       );
+      setshowPopup(false);
       getGigs();
     } catch (e) {
       console.log("something went wrong while deleting", e);
@@ -82,12 +86,22 @@ const PostedGigs = () => {
     const url = `/postdetails?gigid=${dataId}`;
     navigate(url);
   };
+  const handleDelete = (data) => {
+    setshowPopup(true);
+    setTitle(data.title);
+    setdeletegigId(data._id);
+  };
+
   return (
     <main>
       {loading && <Loader />}
 
       {gigs.length > 0 ? (
-        <div className="w-full min-h-screen flex flex-col p-0 md:p-8 bg-[#F4F2EE]">
+        <div
+          className={`w-full ${
+            showPopup ? "max-h-screen blur-sm" : "min-h-screen"
+          } flex flex-col p-0 md:p-8 bg-[#F4F2EE]`}
+        >
           <div className="w-full text-center md:text-start pl-0 md:pl-3 mt-[15px]">
             <h1 className="text-2xl font-semibold">Posted Gigs</h1>
           </div>
@@ -148,7 +162,7 @@ const PostedGigs = () => {
                             className="w-full text-sm  text-[#F85959] font-medium px-4 py-2 transition text-center cursor-pointer"
                             onClick={(e) => {
                               e.stopPropagation();
-                              deleteGig(data._id);
+                              handleDelete(data);
                             }}
                           >
                             Delete
@@ -168,6 +182,33 @@ const PostedGigs = () => {
           <h1 className="text-xl font-semibold text-black">
             No Gigs created yet!
           </h1>
+        </div>
+      )}
+      {showPopup && (
+        <div className="w-full min-h-screen md:h-screen flex justify-center items-center bg-[#00000080] absolute top-0  left-0 z-50 p-5">
+          <div className="max-w-[500px] flex flex-col gap-5 justify-center p-8 rounded-2xl bg-white">
+            <h1 className=" text-red-600 font-semibold text-2xl">
+              Delete post
+            </h1>
+            <h1>
+              Are u sure want to delete{" "}
+              <span className="font-semibold">{title}</span> this post
+            </h1>
+            <div className="w-full flex justify-end flex-row gap-3 ">
+              <button
+                className="p-3 bg-lime-700 text-white rounded-xl active:scale-95 cursor-pointer"
+                onClick={() => setshowPopup(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="p-3  bg-red-500 text-white rounded-xl active:scale-95 cursor-pointer"
+                onClick={() => deleteGig(deletegigId)}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </main>
