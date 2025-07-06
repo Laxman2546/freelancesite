@@ -105,7 +105,7 @@ const PostedgigDetails = () => {
                 </span>
               </div>
             </div>
-            <div className="mt-2  md:max-w-3/2">
+            <div className="mt-2  md:max-w-3/4">
               <h1 className=" text-2xl md:text-3xl font-semibold ">
                 {data.title}
               </h1>
@@ -166,7 +166,7 @@ const PostedgigDetails = () => {
               <div className="flex flex-row gap-2 ">
                 <div>
                   <img
-                    className="w-[35px] h-[35px] object-center"
+                    className="w-[35px] h-[35px] object-center rounded-full"
                     src={`${process.env.REACT_APP_BACKEND_URI}/profilePics/${creatordata?.profile?.profilePic}`}
                   />
                 </div>

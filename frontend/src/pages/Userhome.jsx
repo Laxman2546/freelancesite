@@ -22,7 +22,7 @@ const Userhome = () => {
   if (user && !user.role && !showPopup) {
     setshowPopup(true);
   }
- 
+
   return (
     <main className="w-full h-full">
       {showPopup && (
@@ -35,9 +35,11 @@ const Userhome = () => {
       )}
       <div>
         <FreelancerNavbar />
-        <div className=" w-full">
-          <PostedGigs />
-        </div>
+        {!showPopup && (
+          <div className=" w-full">
+            <PostedGigs />
+          </div>
+        )}
       </div>
     </main>
   );

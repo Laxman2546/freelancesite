@@ -102,7 +102,7 @@ const PostedGigs = () => {
                 <img
                   src={`${process.env.REACT_APP_BACKEND_URI}/thumbnails/${data.thumbnail}`}
                   alt={data.title}
-                  className="w-full h-[180px] object-cover"
+                  className="w-full h-[180px] rounded-t-xl object-cover"
                 />
                 <div className="w-full flex flex-row items-start justify-between">
                   <div className="p-4 flex flex-col gap-2">
