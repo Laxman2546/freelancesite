@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import FreelancerNavbar from "../components/FreelancerNavbar";
-import empty from "../assets/images/empty.svg";
-import Errors from "../components/Errors";
-import { useAuth } from "../hooks/useAuth";
+import FreelancerNavbar from "../../components/FreelancerNavbar";
+import empty from "../../assets/images/empty.svg";
+import Errors from "../../components/Errors";
+import { useAuth } from "../../hooks/useAuth";
 const Orders = () => {
   const { checkAuth } = useAuth();
   const [showError, setshowError] = useState(false);

@@ -1,17 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
-import FreelancerNavbar from "../components/FreelancerNavbar";
-import Steps from "../components/Steps";
-import freelancerCategories from "../utils/categories";
-import Errors from "../components/Errors";
+import FreelancerNavbar from "../../components/FreelancerNavbar";
+import Steps from "../../components/Steps";
+import freelancerCategories from "../../utils/categories";
+import Errors from "../../components/Errors";
 import { ChevronDown } from "react-ionicons";
 import { XCircleIcon, ArrowTurnDownLeftIcon } from "@heroicons/react/24/solid";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import deliveryOptions from "../utils/deliveryDates";
-import uploadImage from "../assets/images/upload.png";
-import success from "../assets/images/success.svg";
+import deliveryOptions from "../../utils/deliveryDates";
+import uploadImage from "../../assets/images/upload.png";
+import success from "../../assets/images/success.svg";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../../hooks/useAuth";
 const PostGig = () => {
   const steps = ["Overview", "Pricing", "Description", "Thumbnail", "Publish"];
   const [currentStep, setCurrentStep] = useState(0);

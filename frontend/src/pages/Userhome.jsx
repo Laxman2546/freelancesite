@@ -24,7 +24,7 @@ const Userhome = () => {
   }
 
   return (
-    <main className="w-full h-full">
+    <main className="w-full h-full ">
       {showPopup && (
         <div className="w-full min-h-full md:h-screen flex justify-center items-center bg-[#00000080] absolute top-0  left-0 z-50">
           <Usertype
@@ -33,14 +33,20 @@ const Userhome = () => {
           />
         </div>
       )}
-      <div>
-        <FreelancerNavbar />
-        {!showPopup && (
-          <div className=" w-full">
-            <PostedGigs />
-          </div>
-        )}
-      </div>
+      {user?.role === "freelancer" ? (
+        <div className={`${showPopup ? "blur-sm" : "blur-none"}`}>
+          <FreelancerNavbar />
+          {!showPopup && (
+            <div className=" w-full">
+              <PostedGigs />
+            </div>
+          )}
+        </div>
+      ) : (
+        <div>
+          <h1>hello</h1>
+        </div>
+      )}
     </main>
   );
 };

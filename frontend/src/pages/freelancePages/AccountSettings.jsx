@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import FreelancerNavbar from "../components/FreelancerNavbar";
+import FreelancerNavbar from "../../components/FreelancerNavbar.jsx";
 import { TrashIcon } from "@heroicons/react/24/solid";
-import DeleteAccount from "../components/DeleteAccount";
+import DeleteAccount from "../../components/DeleteAccount.jsx";
 import axios from "axios";
-import Success from "../components/Success.jsx";
+import Success from "../../components/Success.jsx";
 import { useNavigate } from "react-router-dom";
-import Errors from "../components/Errors.jsx";
-import Loader from "../components/Loader.jsx";
-import { useAuth } from "../hooks/useAuth";
+import Errors from "../../components/Errors.jsx";
+import Loader from "../../components/Loader.jsx";
+import { useAuth } from "../../hooks/useAuth.js";
 
 const AccountSettings = () => {
   const [showPopup, setshowPopup] = useState(false);

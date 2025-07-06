@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import FreelancerNavbar from "../components/FreelancerNavbar";
+import FreelancerNavbar from "../../components/FreelancerNavbar";
 import axios from "axios";
-import defaultImg from "../assets/images/freelancer.png";
-import { themeColors } from "../hooks/theme";
+import defaultImg from "../../assets/images/freelancer.png";
+import { themeColors } from "../../hooks/theme";
 import { EnvelopeIcon, PhoneIcon } from "@heroicons/react/24/outline";
 import { RemoveCircleOutline } from "react-ionicons";
-import Errors from "../components/Errors";
+import Errors from "../../components/Errors";
 import {
   BriefcaseIcon,
   CalendarIcon,
@@ -13,8 +13,8 @@ import {
   NoSymbolIcon,
 } from "@heroicons/react/24/solid";
 import { useNavigate } from "react-router-dom";
-import Loader from "../components/Loader";
-import { useAuth } from "../hooks/useAuth";
+import Loader from "../../components/Loader";
+import { useAuth } from "../../hooks/useAuth";
 const Profile = () => {
   const [userName, setuserName] = useState("");
   const [emailId, setEmailID] = useState("");

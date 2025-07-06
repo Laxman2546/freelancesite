@@ -1,16 +1,15 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import FreelanceNavbar from "../components/FreelancerNavbar.jsx";
-import skillsList from "../utils/skills.js";
-import languages from "../utils/languages.js";
+import FreelanceNavbar from "../../components/FreelancerNavbar.jsx";
+import skillsList from "../../utils/skills.js";
+import languages from "../../utils/languages.js";
 import { XCircleIcon } from "@heroicons/react/24/solid";
 import { ArrowTurnDownLeftIcon } from "@heroicons/react/24/solid";
 import { PencilIcon } from "@heroicons/react/24/solid";
-import defaultImg from "../assets/images/freelancer.png";
-import Button from "../components/Button.jsx";
-import Errors from "../components/Errors.jsx";
-import Loader from "../components/Loader.jsx";
-import { useAuth } from "../hooks/useAuth.js";
+import defaultImg from "../../assets/images/freelancer.png";
+import Errors from "../../components/Errors.jsx";
+import Loader from "../../components/Loader.jsx";
+import { useAuth } from "../../hooks/useAuth.js";
 
 const profileUpdate = () => {
   const [userName, setuserName] = useState("");

@@ -37,7 +37,7 @@ const Usertype = ({ username, onComplete }) => {
 
   return (
     <main className="p-4 flex justify-center items-center ">
-      <div className="flex flex-col bg-white  shadow-sm dark:bg-gray-700 text-center p-6 md:p-14 rounded-2xl gap-8 w-full max-w-4xl relative">
+      <div className="flex flex-col bg-white  shadow-sm  text-center p-6 md:p-14 rounded-2xl gap-8 w-full max-w-4xl relative">
         <div className="flex flex-col gap-2">
           <h1 className="text-lg font-medium mx-auto w-full max-w-md">
             Welcome, {username || "user"}! Your account is all set. Let us know
@@ -93,12 +93,17 @@ const Usertype = ({ username, onComplete }) => {
           </div>
         </div>
         <div className="flex justify-end mt-4">
-          <Button
-            styles="text-white p-3 rounded-2xl cursor-pointer font-medium"
-            text={isSubmitting ? "Submitting..." : "Continue"}
+          <button
+            className={`p-4 text-white  ${
+              userType
+                ? " bg-lime-700 cursor-pointer"
+                : "bg-gray-600 cursor-not-allowed"
+            } rounded-2xl`}
+            disabled={!userType}
             onClick={requestProfile}
-
-          />
+          >
+            {isSubmitting ? "Saving..." : "Save Details"}
+          </button>
         </div>
       </div>
     </main>
