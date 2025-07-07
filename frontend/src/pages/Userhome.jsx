@@ -3,6 +3,7 @@ import Usertype from "../components/Usertype";
 import { useAuth } from "../hooks/useAuth";
 import FreelancerNavbar from "../components/FreelancerNavbar.jsx";
 import PostedGigs from "../components/PostedGigs.jsx";
+import ClientNavbar from "../components/clientNavbar.jsx";
 const Userhome = () => {
   const [showPopup, setshowPopup] = useState(false);
   const { user, loading, checkAuth } = useAuth();
@@ -44,6 +45,7 @@ const Userhome = () => {
         </div>
       ) : (
         <div>
+          <ClientNavbar />
           <h1>hello</h1>
         </div>
       )}
