@@ -98,16 +98,12 @@ const ClientNavbar = ({ isUpdated }) => {
 
   const navItems = [
     {
-      label: "MyGigs",
+      label: "Explore",
       href: "/userhome",
     },
     {
-      label: "Post a Gig",
-      href: "/postgig",
-    },
-    {
       label: "Orders",
-      href: "/orders",
+      href: "/postgig",
     },
   ];
 
