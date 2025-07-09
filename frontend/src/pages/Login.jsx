@@ -15,8 +15,8 @@ const Login = () => {
   const [showError, setshowError] = useState(false);
   const [error, setError] = useState("");
   const [username, setuserName] = useState("");
-  const [email, setEmail] = useState("laxman@gmail.com");
-  const [password, setpassword] = useState("laxman");
+  const [email, setEmail] = useState("harika@gmail.com");
+  const [password, setpassword] = useState("harika");
   const [isChecked, setisChecked] = useState(false);
   const imageRef = useRef(null);
   const Navigate = useNavigate();
