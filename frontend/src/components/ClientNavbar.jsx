@@ -45,7 +45,7 @@ const ClientNavbar = ({ isUpdated }) => {
       avatar: "/avatars/sarah.png",
       message: "Can you help me with React Native?",
       time: "Yesterday",
-      isRead: true,
+      isRead: false,
       chatId: "chat456",
     },
   ];
