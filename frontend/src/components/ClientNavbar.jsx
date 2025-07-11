@@ -1,5 +1,9 @@
 import React, { memo, useCallback, useEffect, useState } from "react";
-import { EnvelopeIcon } from "@heroicons/react/24/outline";
+import {
+  EnvelopeIcon,
+  MagnifyingGlassIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import { Fade as Hamburger } from "hamburger-react";
 import { BellIcon } from "@heroicons/react/24/outline";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
@@ -28,6 +32,7 @@ const ClientNavbar = ({ isUpdated }) => {
   const [closingMenu, setClosingMenu] = useState(false);
   const [closingMessages, setClosingMessages] = useState(false);
   const [closingNotifications, setClosingNotifications] = useState(false);
+  const [searchText, setSearchText] = useState("");
   const [userName, setuserName] = useState("");
   const location = useLocation();
 
@@ -224,7 +229,7 @@ const ClientNavbar = ({ isUpdated }) => {
         />
       )}
 
-      <nav className="w-full p-5 pl-0 md:p-8 flex flex-row md:flex-row items-center justify-center md:justify-between relative z-40">
+      <nav className="w-full p-3 pl-0 md:p-8 flex flex-row md:flex-row items-center justify-center  relative z-40">
         <div className="absoulte z-[80] flex flex-col mr-[20px] md:hidden">
           <Hamburger
             easing="ease-in"
@@ -367,46 +372,46 @@ const ClientNavbar = ({ isUpdated }) => {
         </div>
 
         <div
-          className="w-full flex items-center justify-center"
+          className="w-full  flex items-center justify-center"
           onClick={() => {
             setMessageIsOpen(false);
             setNotifcationopen(false);
             setIsOpen(false);
           }}
         >
-          <ul className="hidden flex-row gap-8 md:flex">
-            <Link to={"/userhome"}>
-              <li
-                className={`font-medium text-lg p-3  rounded-xl cursor-pointer ${
-                  activeNav === "MyGigs" && `bg-[#3A5B22] text-white`
-                }`}
-              >
-                MyGigs
-              </li>
-            </Link>
-            <Link to={"/postgig"}>
-              <li
-                className={`font-medium text-lg p-3  rounded-xl cursor-pointer ${
-                  activeNav === "Post a Gig" && `bg-[#3A5B22] text-white`
-                }`}
-              >
-                Post a Gig
-              </li>
-            </Link>
+          <ul className="hidden  w-3/4 flex-row gap-8 md:flex items-center relative">
+            <li className="w-full ">
+              <input
+                type="text"
+                className="min-w-full p-2 rounded-xl border-2 border-gray-400 pr-16 pl-3 outline-none"
+                value={searchText}
+                onChange={(e) => {
+                  setSearchText(e.target.value);
+                }}
+              />
+            </li>
+            {searchText.length == 0 ? (
+              <MagnifyingGlassIcon className="size-7 absolute top-2 right-3" />
+            ) : (
+              <XMarkIcon
+                className="size-7 absolute top-2 right-3 cursor-pointer"
+                onClick={() => setSearchText("")}
+              />
+            )}
+          </ul>
+        </div>
+
+        <div className="hidden md:flex items-center justify-end">
+          <ul className="flex flex-row gap-5 items-center">
             <Link to={"/orders"}>
               <li
-                className={`font-medium text-lg p-3  rounded-xl cursor-pointer ${
+                className={`font-medium text-lg p-3   rounded-xl cursor-pointer ${
                   activeNav === "Orders" && `bg-[#3A5B22] text-white`
                 }`}
               >
                 Orders
               </li>
             </Link>
-          </ul>
-        </div>
-
-        <div className="hidden md:flex items-center justify-end">
-          <ul className="flex flex-row gap-5">
             <li className="cursor-pointer relative">
               <EnvelopeIcon
                 className="size-6  transition-colors"
@@ -661,10 +666,3 @@ const ClientNavbar = ({ isUpdated }) => {
 };
 
 export default memo(ClientNavbar);
-
-export const arrowStyle = {
-  border: "solid black",
-  borderWidth: "0 3px 3px 0",
-  display: "inline-block",
-  padding: "3px",
-};
