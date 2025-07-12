@@ -6,17 +6,18 @@ const Search = () => {
     <div>
       <input
         type="text"
-        className="min-w-full p-2 rounded-xl border-2 border-gray-400 pr-16 pl-3 outline-none"
+        className="min-w-full p-3 font-semibold rounded-xl border-2 border-gray-400 pr-16 pl-3 outline-none"
         value={searchText}
         onChange={(e) => {
           setSearchText(e.target.value);
         }}
+        placeholder="Search for a service"
       />
       {searchText.length == 0 ? (
-        <MagnifyingGlassIcon className="size-7 absolute top-2 right-3" />
+        <MagnifyingGlassIcon className="size-7 absolute top-3 right-3" />
       ) : (
         <XMarkIcon
-          className="size-7 absolute top-2 right-3 cursor-pointer"
+          className="size-6 absolute top-3 right-3 cursor-pointer"
           onClick={() => setSearchText("")}
         />
       )}

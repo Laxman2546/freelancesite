@@ -7,3 +7,11 @@
   user-select: none;
 }
 
+body {
+  min-width: 100vh;
+  min-height: 100vh;
+  max-width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
