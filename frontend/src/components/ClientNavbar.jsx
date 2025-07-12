@@ -17,7 +17,7 @@ import noMessages from "../assets/images/messages.svg";
 import axios from "axios";
 import Search from "./Search";
 
-const ClientNavbar = ({ isUpdated }) => {
+const ClientNavbar = ({ isUpdated, isVisible }) => {
   const Navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isMessageOpen, setMessageIsOpen] = useState(false);
@@ -380,9 +380,15 @@ const ClientNavbar = ({ isUpdated }) => {
           }}
         >
           <ul className="hidden  w-3/4 flex-row gap-8 md:flex items-center relative">
-            <li className="w-full ">
-              <Search />
-            </li>
+            {isVisible && (
+              <li
+                className={`${
+                  isVisible ? " animate-fade-in w-full" : "animate-fade-in "
+                }`}
+              >
+                <Search />
+              </li>
+            )}
           </ul>
         </div>
 

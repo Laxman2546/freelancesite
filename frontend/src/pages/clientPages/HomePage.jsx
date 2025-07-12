@@ -1,13 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ClientNavbar from "../../components/clientNavbar";
 import Search from "../../components/Search";
 import Gigcards from "../../components/Gigcards.jsx";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { ChevronRightIcon, ChevronLeftIcon } from "@heroicons/react/24/solid";
+import {
+  ChevronRightIcon,
+  ChevronLeftIcon,
+  CodeBracketIcon,
+  StarIcon,
+} from "@heroicons/react/24/solid";
+import {
+  BarChartSharp,
+  CodeSlashSharp,
+  ColorPaletteSharp,
+  Megaphone,
+  PencilSharp,
+  Videocam,
+} from "react-ionicons";
+import { SpeakerWaveIcon } from "@heroicons/react/24/outline";
+import Footer from "../../components/Footer.jsx";
 const HomePage = () => {
   const [activeBtn, setactivebtn] = useState("Web Development");
+  const [isVisible, setisVisible] = useState(false);
   const gigs = [
     {
       thumbnail:
@@ -130,14 +146,102 @@ const HomePage = () => {
     ],
   };
 
+  const cards = [
+    {
+      title: "Development",
+      icon: CodeSlashSharp,
+      description: "Custom Websites & Web applications",
+    },
+    {
+      title: "UI/UX Design",
+      icon: ColorPaletteSharp,
+      description: "Beautiful user interfaces & experiences",
+    },
+    {
+      title: "Content Writing",
+      icon: PencilSharp,
+      description: "Engaging content for your brand",
+    },
+    {
+      title: "Data Analysis",
+      icon: BarChartSharp,
+      description: "Insights from your data",
+    },
+    {
+      title: "Video Editing",
+      icon: Videocam,
+      description: "Professional video production",
+    },
+    {
+      title: "Digital Marketing",
+      icon: Megaphone,
+      description: "Grow your online presence",
+    },
+  ];
+
+  const professionals = [
+    {
+      name: "Lakshman",
+      role: "Fullstack Developer",
+      image: "https://randomuser.me/api/portraits/men/31.jpg",
+      rating: 4.3,
+    },
+    {
+      name: "Ram",
+      role: "UI/UX Designer",
+      image: "https://randomuser.me/api/portraits/men/20.jpg",
+      rating: 5,
+    },
+    {
+      name: "Sita",
+      role: "Content Writer",
+      image: "https://randomuser.me/api/portraits/women/71.jpg",
+      rating: 5,
+    },
+    {
+      name: "Hanuman",
+      role: "Data Analyst",
+      image: "https://randomuser.me/api/portraits/men/40.jpg",
+      rating: 4.8,
+    },
+  ];
+  const myDivRef = useRef();
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setisVisible(false);
+        } else {
+          setisVisible(true);
+        }
+      },
+      {
+        root: null,
+        rootMargin: "0px",
+        threshold: 0,
+      }
+    );
+
+    if (myDivRef.current) {
+      observer.observe(myDivRef.current);
+    }
+
+    return () => {
+      if (myDivRef.current) {
+        observer.unobserve(myDivRef.current);
+      }
+    };
+  }, []);
+
   return (
     <main className="w-full min-h-screen">
-      <div className="sticky top-0 z-[999999]">
-        <ClientNavbar />
+      <div className="sticky top-0 z-[99999]">
+        <ClientNavbar isVisible={isVisible} />
       </div>
       <div className="w-full bg-gray-50 p-3 md:p-8">
         <div className="w-full flex flex-row gap-5 ">
-          <div className="w-full md:w-2/4  flex flex-col gap-3">
+          <div className="w-full md:w-4/5  flex flex-col gap-5">
             <h1 className="text-3xl md:text-6xl font-semibold leading:2 md:leading-18">
               Find the right
               <span className="text-lime-800"> freelancer</span>
@@ -150,7 +254,7 @@ const HomePage = () => {
                 to life
               </h1>
             </div>
-            <div className="relative w-full md:max-w-full">
+            <div className="relative" ref={myDivRef}>
               <Search />
             </div>
             <div className="flex flex-row flex-wrap gap-4">
@@ -176,7 +280,7 @@ const HomePage = () => {
                     : "bg-white "
                 }`}
               >
-                LogoDesign
+                Logo Design
               </button>
               <button
                 onClick={() => {
@@ -188,7 +292,7 @@ const HomePage = () => {
                     : "bg-white "
                 }`}
               >
-                DataAnalysis
+                Data Analysis
               </button>
               <button
                 onClick={() => {
@@ -223,6 +327,84 @@ const HomePage = () => {
             ))}
           </Slider>
         </div>
+      </div>
+      <div className="w-full flex flex-col items-center justify-center p-3 md:p-8 ">
+        <h1 className="text-3xl font-semibold">Popular Categories</h1>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-center justify-center gap-5 mt-8">
+          {cards.map((card, index) => (
+            <div
+              key={index}
+              className="group p-5 pb-10 pt-10 border-2 border-gray-300 hover:border-lime-700 hover:shadow-lg rounded-3xl flex flex-col items-center gap-10 transition"
+            >
+              <div className="p-5 bg-[#d7d7d7] rounded-full transition-all duration-300 group-hover:bg-lime-700">
+                <card.icon
+                  className="w-[30px] h-[30px] text-black transition-colors duration-300 group-hover:text-white"
+                  style={{
+                    width: "30px",
+                    height: "30px",
+                  }}
+                />
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <h1 className="text-lg font-semibold">{card.title}</h1>
+                <h2 className="text-md font-medium text-gray-600">
+                  {card.description}
+                </h2>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="w-full flex flex-col gap-2 items-center justify-center p-3 md:p-8 bg-gray-50 ">
+        <h1 className="text-3xl font-semibold">Top-Rated Freelancers</h1>
+        <h1 className="text-lg text-gray-500">
+          Work with the best professionals in their fields
+        </h1>
+        <div className="flex flex-row flex-wrap items-center justify-center gap-12 mt-8">
+          {professionals.map((Professional, index) => (
+            <div
+              key={index}
+              className="group p-13 pb-10 pt-10 bg-white shadow-xl  rounded-xl flex flex-col items-center gap-4 transition"
+            >
+              <div>
+                <img
+                  src={Professional.image}
+                  className="w-[100px] h-[100px] rounded-full object-center"
+                />
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <h1 className="text-lg font-semibold">{Professional.name}</h1>
+                <h2 className="text-md font-medium text-gray-600">
+                  {Professional.role}
+                </h2>
+              </div>
+              <div className="flex flex-row gap-1">
+                {Array.from({ length: Professional.rating }, (_, i) => (
+                  <StarIcon key={i} className="size-5 text-amber-400" />
+                ))}
+                <h1 className="text-md">({Professional.rating})</h1>
+              </div>
+              <button className="p-3 w-full bg-lime-800 text-white rounded-xl cursor-pointer">
+                View Services
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="w-full p-3 md:p-8">
+        <h1 className="text-3xl font-semibold">Recently Viewed</h1>
+        <div className="mt-6 overflow-hidden">
+          <Slider {...settings}>
+            {gigs.map((data) => (
+              <div key={data.title}>
+                <Gigcards data={data} />
+              </div>
+            ))}
+          </Slider>
+        </div>
+      </div>
+      <div className="w-full ">
+        <Footer />
       </div>
     </main>
   );

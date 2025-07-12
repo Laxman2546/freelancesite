@@ -6,7 +6,7 @@ const Search = () => {
     <div>
       <input
         type="text"
-        className="min-w-full p-3 font-semibold rounded-xl border-2 border-gray-400 pr-16 pl-3 outline-none"
+        className="w-[100%] md:min-w-full p-3 font-semibold rounded-xl border-2 border-gray-400 pr-0 md:pr-10 pl-3 outline-none"
         value={searchText}
         onChange={(e) => {
           setSearchText(e.target.value);
