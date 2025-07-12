@@ -15,8 +15,8 @@ import Errors from "./Errors";
 import noNotifications from "../assets/images/download.svg";
 import noMessages from "../assets/images/messages.svg";
 import axios from "axios";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
+import Search from "./Search";
+
 const ClientNavbar = ({ isUpdated }) => {
   const Navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -32,7 +32,7 @@ const ClientNavbar = ({ isUpdated }) => {
   const [closingMenu, setClosingMenu] = useState(false);
   const [closingMessages, setClosingMessages] = useState(false);
   const [closingNotifications, setClosingNotifications] = useState(false);
-  const [searchText, setSearchText] = useState("");
+
   const [userName, setuserName] = useState("");
   const location = useLocation();
 
@@ -381,23 +381,8 @@ const ClientNavbar = ({ isUpdated }) => {
         >
           <ul className="hidden  w-3/4 flex-row gap-8 md:flex items-center relative">
             <li className="w-full ">
-              <input
-                type="text"
-                className="min-w-full p-2 rounded-xl border-2 border-gray-400 pr-16 pl-3 outline-none"
-                value={searchText}
-                onChange={(e) => {
-                  setSearchText(e.target.value);
-                }}
-              />
+              <Search />
             </li>
-            {searchText.length == 0 ? (
-              <MagnifyingGlassIcon className="size-7 absolute top-2 right-3" />
-            ) : (
-              <XMarkIcon
-                className="size-7 absolute top-2 right-3 cursor-pointer"
-                onClick={() => setSearchText("")}
-              />
-            )}
           </ul>
         </div>
 
