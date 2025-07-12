@@ -20,7 +20,9 @@
     "react-dom": "^19.1.0",
     "react-ionicons": "^4.2.1",
     "react-loading-indicators": "^1.0.1",
-    "react-router-dom": "^7.6.1"
+    "react-router-dom": "^7.6.1",
+    "react-slick": "^0.30.3",
+    "slick-carousel": "^1.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
