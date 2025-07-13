@@ -242,7 +242,7 @@ const HomePage = () => {
       <div className="w-full bg-gray-50 p-3 md:p-8">
         <div className="w-full flex flex-row gap-5 ">
           <div className="w-full md:w-4/5  flex flex-col gap-5">
-            <h1 className="text-3xl md:text-6xl font-semibold leading:2 md:leading-18">
+            <h1 className="text-3xl md:text-6xl font-semibold leading:2 md:leading-18 text-wrap">
               Find the right
               <span className="text-lime-800"> freelancer</span>
               &nbsp;for
@@ -317,7 +317,9 @@ const HomePage = () => {
         </div>
       </div>
       <div className="w-full px-4 md:px-8 py-6">
-        <h1 className="text-2xl font-semibold ">Popular on {activeBtn}</h1>
+        <h1 className="text-lg md:text-2xl font-semibold ">
+          Popular on {activeBtn}
+        </h1>
         <div className="mt-6 overflow-hidden">
           <Slider {...settings}>
             {gigs.map((data) => (
@@ -329,7 +331,9 @@ const HomePage = () => {
         </div>
       </div>
       <div className="w-full flex flex-col items-center justify-center p-3 md:p-8 ">
-        <h1 className="text-3xl font-semibold">Popular Categories</h1>
+        <h1 className="text-xl md:text-3xl font-semibold">
+          Popular Categories
+        </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-center justify-center gap-5 mt-8">
           {cards.map((card, index) => (
             <div
@@ -356,8 +360,10 @@ const HomePage = () => {
         </div>
       </div>
       <div className="w-full flex flex-col gap-2 items-center justify-center p-3 md:p-8 bg-gray-50 ">
-        <h1 className="text-3xl font-semibold">Top-Rated Freelancers</h1>
-        <h1 className="text-lg text-gray-500">
+        <h1 className="text-xl md:text-3xl font-semibold">
+          Top-Rated Freelancers
+        </h1>
+        <h1 className="text-md md:text-lg text-gray-500">
           Work with the best professionals in their fields
         </h1>
         <div className="flex flex-row flex-wrap items-center justify-center gap-12 mt-8">
@@ -392,7 +398,7 @@ const HomePage = () => {
         </div>
       </div>
       <div className="w-full p-3 md:p-8">
-        <h1 className="text-3xl font-semibold">Recently Viewed</h1>
+        <h1 className="text-xl md:text-3xl font-semibold">Recently Viewed</h1>
         <div className="mt-6 overflow-hidden">
           <Slider {...settings}>
             {gigs.map((data) => (

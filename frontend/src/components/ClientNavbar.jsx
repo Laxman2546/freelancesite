@@ -32,7 +32,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
   const [closingMenu, setClosingMenu] = useState(false);
   const [closingMessages, setClosingMessages] = useState(false);
   const [closingNotifications, setClosingNotifications] = useState(false);
-
+  const [isSearchvisible, setSearchvisible] = useState(false);
   const [userName, setuserName] = useState("");
   const location = useLocation();
 
@@ -213,6 +213,11 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
       setActiveNav("Orders");
     }
   }, [location.pathname]);
+
+  const isVisble = () => {
+    setSearchvisible(!isSearchvisible);
+  };
+
   return (
     <header className="w-full h-full flex flex-col items-center relative bg-white shadow-gray-400 shadow-sm z-[9999999]">
       <Errors
@@ -229,7 +234,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
         />
       )}
 
-      <nav className="w-full p-3 pl-0 md:p-5 flex flex-row md:flex-row items-center justify-center  relative z-[9999999]">
+      <nav className="w-full p-3 pl-0 md:p-5 flex flex-row md:flex-row items-center justify-center  relative z-[999]">
         <div className="absoulte z-[80] flex flex-col mr-[20px] md:hidden">
           <Hamburger
             easing="ease-in"
@@ -355,6 +360,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
         </div>
 
         <div
+          className="   flex flex-row  items-center gap-8"
           onClick={() => {
             setMessageIsOpen(false);
             setNotifcationopen(false);
@@ -362,13 +368,28 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
           }}
         >
           <Link to={"/userhome"}>
-            <div className="flex flex-row items-center gap-2">
+            <div
+              className={`flex flex-row items-center gap-2 ${
+                !isSearchvisible ? "md:flex" : "hidden md:flex"
+              }`}
+            >
               <img src={logo} className="size-8 hidden md:block" id="logo" />
               <h1 className="text-2xl font-bold text-center text-[#3A5B22]">
                 GigConnect
               </h1>
             </div>
           </Link>
+          <div
+            className={`md:hidden absolute bg-white  ${
+              isSearchvisible ? "right-4" : "right-4 top-2.5"
+            }`}
+          >
+            <Search
+              isSearchvisible={isVisble}
+              showSearch={isSearchvisible}
+              navBarSearch={true}
+            />
+          </div>
         </div>
 
         <div
