@@ -219,7 +219,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
   };
 
   return (
-    <header className="w-full h-full flex flex-col items-center relative bg-white shadow-gray-400 shadow-sm z-[9999999]">
+    <header className="w-full  h-full flex flex-col items-center relative bg-white shadow-gray-400 shadow-sm z-[9999999]">
       <Errors
         errorText={error}
         isError={isError}
@@ -380,8 +380,8 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
             </div>
           </Link>
           <div
-            className={`md:hidden absolute bg-white  ${
-              isSearchvisible ? "right-4" : "right-4 top-2.5"
+            className={`md:hidden w-full absolute bg-white  ${
+              isSearchvisible ? "right-1" : "right-1 top-2.5"
             }`}
           >
             <Search
