@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import ClientNavbar from "../../components/clientNavbar";
 import Search from "../../components/Search";
 import Gigcards from "../../components/Gigcards.jsx";
 import Slider from "react-slick";
@@ -21,6 +20,7 @@ import {
 } from "react-ionicons";
 import { SpeakerWaveIcon } from "@heroicons/react/24/outline";
 import Footer from "../../components/Footer.jsx";
+import ClientNavbar from "../../components/ClientNavbar.jsx";
 const HomePage = () => {
   const [activeBtn, setactivebtn] = useState("Web Development");
   const [isVisible, setisVisible] = useState(false);

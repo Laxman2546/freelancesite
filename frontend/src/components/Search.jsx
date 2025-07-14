@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import freelancerCategories from "../utils/categories";
+import { useNavigate } from "react-router-dom";
 
 const Search = ({ isSearchvisible, showSearch, navBarSearch }) => {
   const [searchText, setSearchText] = useState("");
   const [Showsugessions, setShowsugessions] = useState(false);
   const [filterdSearch, setFilteredSearch] = useState([]);
   const suggestions = useRef();
-
+  const Navigate = useNavigate();
   useEffect(() => {
     const handleCloseSuggestions = (event) => {
       if (suggestions.current && !suggestions.current.contains(event.target)) {
@@ -37,7 +38,7 @@ const Search = ({ isSearchvisible, showSearch, navBarSearch }) => {
           {showSearch && (
             <input
               type="text"
-              className="w-full p-3 pl-13 font-semibold rounded-xl border-2 border-gray-400 pr-10 outline-none"
+              className="w-full p-3 pl-13 font-medium rounded-xl border-2 border-gray-400 pr-10 outline-none"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               onClick={() => setShowsugessions(true)}
@@ -61,7 +62,7 @@ const Search = ({ isSearchvisible, showSearch, navBarSearch }) => {
         <div className="relative">
           <input
             type="text"
-            className="w-full p-3 font-semibold rounded-xl border-2 border-gray-400 pr-10 pl-3 outline-none"
+            className="w-full p-3 font-medium rounded-xl border-2 border-gray-400 pr-10 pl-5 outline-none"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             onClick={() => setShowsugessions(true)}
@@ -107,9 +108,12 @@ const Search = ({ isSearchvisible, showSearch, navBarSearch }) => {
             return (
               <div key={index}>
                 <h1
-                  className="p-3 hover:bg-gray-200 rounded-md cursor-pointer"
+                  className={`p-3 hover:bg-gray-200 rounded-md cursor-pointer ${
+                    navBarSearch ? "pl-12" : ""
+                  } `}
                   onClick={() => {
                     setSearchText(suggest);
+                    Navigate(`/searchresults?query=${suggest}`);
                     setShowsugessions(false);
                   }}
                   dangerouslySetInnerHTML={{ __html: highlightedText }}
