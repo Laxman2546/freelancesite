@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
   EnvelopeIcon,
   MagnifyingGlassIcon,
@@ -206,17 +206,26 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
   };
   useEffect(() => {
     if (location.pathname.includes("userhome")) {
-      setActiveNav("MyGigs");
-    } else if (location.pathname.includes("postgig")) {
-      setActiveNav("Post a Gig");
-    } else if (location.pathname.includes("orders")) {
-      setActiveNav("Orders");
+      setSearchvisible(false);
+    } else {
+      setSearchvisible(true);
     }
   }, [location.pathname]);
 
   const isVisble = () => {
     setSearchvisible(!isSearchvisible);
   };
+  const mobileSearch = useRef(null);
+
+  useEffect(() => {
+    const handleSearchClose = (e) => {
+      if (mobileSearch.current && !mobileSearch.current.contains(e.target)) {
+        setSearchvisible(false);
+      }
+    };
+    document.addEventListener("mousedown", handleSearchClose);
+    return () => document.removeEventListener("mousedown", handleSearchClose);
+  }, []);
 
   return (
     <header className="w-full  h-full flex flex-col items-center relative bg-white shadow-gray-400 shadow-sm z-[9999999]">
@@ -374,12 +383,13 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
               }`}
             >
               <img src={logo} className="size-8 hidden md:block" id="logo" />
-              <h1 className="text-2xl font-bold text-center text-[#3A5B22]">
+              <h1 className="text-lg xsm:text-lg sm:text-xl md:text-2xl font-bold text-center text-[#3A5B22]">
                 GigConnect
               </h1>
             </div>
           </Link>
           <div
+            ref={mobileSearch}
             className={`md:hidden w-full absolute bg-white  ${
               isSearchvisible ? "right-1" : "right-1 top-2.5"
             }`}

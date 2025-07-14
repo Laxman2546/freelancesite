@@ -31,6 +31,16 @@ const Search = ({ isSearchvisible, showSearch, navBarSearch }) => {
     }
   }, [searchText]);
 
+  const searchNavigation = (suggest) => {
+    Navigate(`/searchresults?query=${suggest}`);
+  };
+
+  const handleEnter = (e) => {
+    if (e.key === "Enter") {
+      searchNavigation(searchText);
+    }
+  };
+  
   return (
     <div>
       {navBarSearch ? (
@@ -42,6 +52,7 @@ const Search = ({ isSearchvisible, showSearch, navBarSearch }) => {
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               onClick={() => setShowsugessions(true)}
+              onKeyDown={handleEnter}
               placeholder="Search for a Service"
             />
           )}
@@ -65,7 +76,10 @@ const Search = ({ isSearchvisible, showSearch, navBarSearch }) => {
             className="w-full p-3 font-medium rounded-xl border-2 border-gray-400 pr-10 pl-5 outline-none"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            onClick={() => setShowsugessions(true)}
+            onClick={() => {
+              setShowsugessions(true);
+            }}
+            onKeyDown={handleEnter}
             placeholder="Search for a service"
           />
 
@@ -113,7 +127,7 @@ const Search = ({ isSearchvisible, showSearch, navBarSearch }) => {
                   } `}
                   onClick={() => {
                     setSearchText(suggest);
-                    Navigate(`/searchresults?query=${suggest}`);
+                    searchNavigation(suggest);
                     setShowsugessions(false);
                   }}
                   dangerouslySetInnerHTML={{ __html: highlightedText }}
