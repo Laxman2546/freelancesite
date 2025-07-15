@@ -8,6 +8,7 @@ import {
   getOnegig,
   gigPost,
   updategigPost,
+  searchGig,
 } from "../controllers/gig.js";
 
 const router = express.Router();
@@ -18,4 +19,5 @@ router.post("/update", isloggedin, upload.single("thumbnail"), updategigPost);
 router.delete("/delete", isloggedin, deletegigPost);
 router.get("/get", isloggedin, getallgigPost);
 router.post("/getone", isloggedin, getOnegig);
+router.post("/search", isloggedin, searchGig);
 export default router;

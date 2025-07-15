@@ -3,7 +3,6 @@ import Usertype from "../components/Usertype";
 import { useAuth } from "../hooks/useAuth";
 import FreelancerNavbar from "../components/FreelancerNavbar.jsx";
 import PostedGigs from "../components/PostedGigs.jsx";
-import ClientNavbar from "../components/clientNavbar.jsx";
 import HomePage from "./clientPages/HomePage.jsx";
 const Userhome = () => {
   const [showPopup, setshowPopup] = useState(false);

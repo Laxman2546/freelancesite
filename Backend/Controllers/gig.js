@@ -206,3 +206,41 @@ export const getOnegig = async (req, res) => {
       .json({ error: "something went worng while getting gigs" });
   }
 };
+
+export const searchGig = async (req, res) => {
+  try {
+    const fetchUser = req.user;
+    if (!fetchUser) {
+      return res
+        .status(400)
+        .json({ error: "Something went wrong, login again" });
+    }
+
+    const searchQuery = req.body.searchQuery; 
+    if (!searchQuery || searchQuery.trim() === "") {
+      return res.status(400).json({ error: "Search query is required" });
+    }
+
+    const query = {
+      $or: [
+        { title: { $regex: searchQuery, $options: "i" } },
+        { category: { $regex: searchQuery, $options: "i" } },
+        { searchTags: { $in: [searchQuery] } }, 
+      ],
+    };
+
+    const gigs = await gigModel.find(query);
+
+    if (!gigs || gigs.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No gigs found matching the search criteria" });
+    }
+
+    return res.status(200).json({ gigs });
+  } catch (e) {
+    console.error("Error in searchGig:", e);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+

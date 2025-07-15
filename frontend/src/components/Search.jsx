@@ -40,7 +40,7 @@ const Search = ({ isSearchvisible, showSearch, navBarSearch }) => {
       searchNavigation(searchText);
     }
   };
-  
+
   return (
     <div>
       {navBarSearch ? (
@@ -91,7 +91,10 @@ const Search = ({ isSearchvisible, showSearch, navBarSearch }) => {
           ) : (
             <XMarkIcon
               className="size-6 absolute top-3 right-3 cursor-pointer text-gray-700 z-10"
-              onClick={() => setSearchText("")}
+              onClick={() => {
+                setSearchText("");
+                Navigate("/userhome");
+              }}
             />
           )}
         </div>
