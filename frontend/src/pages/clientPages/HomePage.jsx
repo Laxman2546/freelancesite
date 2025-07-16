@@ -21,9 +21,12 @@ import {
 import { SpeakerWaveIcon } from "@heroicons/react/24/outline";
 import Footer from "../../components/Footer.jsx";
 import ClientNavbar from "../../components/ClientNavbar.jsx";
+import axios from "axios";
 const HomePage = () => {
   const [activeBtn, setactivebtn] = useState("Web Development");
   const [isVisible, setisVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
   const gigs = [
     {
       thumbnail:
@@ -205,6 +208,28 @@ const HomePage = () => {
       rating: 4.8,
     },
   ];
+
+  const fetchCategories = async () => {
+    setLoading(true);
+
+    try {
+      const gigResult = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URI}/gig/search`,
+        { searchQuery: activeBtn },
+        { withCredentials: true }
+      );
+      setData(gigResult.data.gigs);
+    } catch (e) {
+      console.log("something went wrong whiler searching", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, [activeBtn]);
+
   const myDivRef = useRef();
 
   useEffect(() => {
@@ -272,15 +297,15 @@ const HomePage = () => {
               </button>
               <button
                 onClick={() => {
-                  setactivebtn("Logo Design");
+                  setactivebtn("Graphic Design");
                 }}
                 className={`p-2 pl-4 pr-4  text-md border-1  text-nowrap border-lime-700 rounded-3xl cursor-pointer hover:bg-lime-700 hover:text-white ${
-                  activeBtn === "Logo Design"
+                  activeBtn === "Graphic Design"
                     ? "bg-lime-700  text-white"
                     : "bg-white "
                 }`}
               >
-                Logo Design
+                Graphic Design
               </button>
               <button
                 onClick={() => {
@@ -320,9 +345,9 @@ const HomePage = () => {
         <h1 className="text-lg md:text-2xl font-semibold ">
           Popular on {activeBtn}
         </h1>
-        <div className="mt-6 overflow-hidden">
+        <div className="mt-6">
           <Slider {...settings}>
-            {gigs.map((data) => (
+            {data.map((data) => (
               <div key={data.title}>
                 <Gigcards data={data} />
               </div>
