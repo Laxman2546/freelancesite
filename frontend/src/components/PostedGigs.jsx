@@ -82,7 +82,6 @@ const PostedGigs = () => {
     navigate(url);
   };
   const showMoregig = (dataId) => {
-    console.log("clicked");
     const url = `/postdetails?gigid=${dataId}`;
     navigate(url);
   };

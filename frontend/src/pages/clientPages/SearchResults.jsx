@@ -43,6 +43,11 @@ const SearchResults = () => {
     }
   };
 
+  const handelGigDetails = (gigId) => {
+    const url = `/postdetails?gigid=${gigId}`;
+    navigate(url);
+  };
+
   return (
     <div className="w-full min-h-screen">
       <ClientNavbar isVisible={true} />
@@ -67,7 +72,7 @@ const SearchResults = () => {
               </div>
               <div className="flex flex-row flex-wrap gap-3 mt-5">
                 {data.map((data, index) => (
-                  <div key={index}>
+                  <div key={index} onClick={() => handelGigDetails(data._id)}>
                     <Gigcards data={data} />
                   </div>
                 ))}
