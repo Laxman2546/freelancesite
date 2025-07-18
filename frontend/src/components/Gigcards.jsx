@@ -9,7 +9,7 @@ const Gigcards = ({ data }) => {
           data.thumbnail
         }
         alt={data.title}
-        className="w-full h-[180px] object-cover rounded-2xl"
+        className="w-full max-h-[180px] object-cover rounded-2xl"
       />
       <div className="p-4">
         <h2 className="text-base font-semibold text-gray-800 line-clamp-2">

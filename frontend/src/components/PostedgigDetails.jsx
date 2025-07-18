@@ -6,16 +6,19 @@ import FreelancerNavbar from "./FreelancerNavbar";
 import { Cart, Star, TimeSharp, Eye, PencilSharp } from "react-ionicons";
 import { PaperAirplaneIcon, PencilSquareIcon } from "@heroicons/react/24/solid";
 import Pricing from "../components/Pricing";
+import ClientNavbar from "./ClientNavbar";
 const PostedgigDetails = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isActivePrice, setActivePrice] = useState("Basic");
-  const [creatordata, setcreatorData] = useState("");
+  const [creatordata, setcreatorData] = useState([]);
+  const [clientData, setclientData] = useState([]);
   const location = useLocation();
   const navigation = useNavigate();
   const getId = () => {
     const search = new URLSearchParams(location.search);
     const id = search.get("gigid");
+
     return id;
   };
   const getGigs = async () => {
@@ -38,6 +41,37 @@ const PostedgigDetails = () => {
     }
   };
 
+  const getUserid = () => {
+    const searchUserId = new URLSearchParams(location.search);
+    const userId = searchUserId.get("userid");
+    console.log(userId);
+    return userId;
+  };
+
+  const getClientDet = async () => {
+    const userId = getUserid();
+    setLoading(true);
+
+    if (!userId) {
+      console.error("User ID is missing");
+      setLoading(false);
+      return;
+    }
+    try {
+      const fetchUser = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URI}/profile/creator`,
+        { userId },
+        { withCredentials: true }
+      );
+      const userData = fetchUser?.data;
+      console.log(userData);
+      setclientData(userData);
+    } catch (e) {
+      console.error("Something went wrong with getUser:", e);
+    } finally {
+      setLoading(false);
+    }
+  };
   const getUser = async (userId) => {
     setLoading(true);
 
@@ -52,9 +86,9 @@ const PostedgigDetails = () => {
         { userId },
         { withCredentials: true }
       );
-      const userData = fetchUser.data;
+      const userData = fetchUser?.data;
       setcreatorData(userData);
-      console.log(fetchUser.data);
+      console.log("this is user data", fetchUser.data.fetchUser);
     } catch (e) {
       console.error("Something went wrong with getUser:", e);
     } finally {
@@ -64,6 +98,7 @@ const PostedgigDetails = () => {
 
   useEffect(() => {
     getGigs();
+    getClientDet();
   }, []);
   const countDays = (date) => {
     const givenDate = new Date(date);
@@ -88,10 +123,16 @@ const PostedgigDetails = () => {
   const handleEdit = () => {
     navigation(`/gigupdate?gigid=${getId()}`);
   };
+
   return (
     <div className="w-full min-h-screen">
       {loading && <Loader />}
-      <FreelancerNavbar />
+
+      {clientData.role === "freelancer" ? (
+        <FreelancerNavbar />
+      ) : (
+        <ClientNavbar />
+      )}
       <div className="w-full min-h-screen flex flex-col  bg-[#F4F2EE] p-2 md:p-8 ">
         <div className="w-full flex flex-row justify-between pr-5">
           <div className="flex flex-col  gap-5">
@@ -142,16 +183,17 @@ const PostedgigDetails = () => {
               </div>
             </div>
           </div>
-
-          <div className="hidden md:block ">
-            <button
-              className="p-3 bg-lime-800 text-white rounded-xl flex flex-row gap-2 cursor-pointer  active:scale-95"
-              onClick={() => handleEdit()}
-            >
-              <PencilSquareIcon className="size-6" />
-              EditGig
-            </button>
-          </div>
+          {clientData?.role === "freelancer" &&
+            clientData.userId === data?.userId && (
+              <div className="hidden md:block">
+                <button
+                  className="p-3 bg-lime-800 text-white rounded-xl flex flex-row gap-2 cursor-pointer active:scale-95"
+                  onClick={() => handleEdit()}
+                >
+                  <PencilSquareIcon className="size-6" /> EditGig
+                </button>
+              </div>
+            )}
         </div>
         <div className="w-full mt-8  flex flex-col md:flex-row gap-4 justify-between">
           <div className="w-full md:w-2/3 flex flex-col bg-white ">
@@ -159,7 +201,7 @@ const PostedgigDetails = () => {
               <img
                 src={`${process.env.REACT_APP_BACKEND_URI}/thumbnails/${data.thumbnail}`}
                 alt={data.title}
-                className=" object-cover rounded-2xl"
+                className="max-h-[450px] min-w-full object-cover rounded-2xl"
               />
             </div>
             <div className="flex flex-col gap-2 mt-8 pl-5">

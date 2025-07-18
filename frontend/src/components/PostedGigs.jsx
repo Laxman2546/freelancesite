@@ -7,6 +7,7 @@ import trashIcon from "../assets/images/trash.png";
 import nothing from "../assets/images/nothing.svg";
 import Loader from "./Loader";
 import { Router, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 const PostedGigs = () => {
   const [gigs, setgigs] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
@@ -19,6 +20,7 @@ const PostedGigs = () => {
   const moreMenuRefs = useRef({});
   const navigate = useNavigate();
 
+  const { user } = useAuth();
   const getGigs = async () => {
     setloading(true);
     const fetchGig = await axios
@@ -82,7 +84,7 @@ const PostedGigs = () => {
     navigate(url);
   };
   const showMoregig = (dataId) => {
-    const url = `/postdetails?gigid=${dataId}`;
+    const url = `/postdetails?gigid=${dataId}&userid=${user.userId}`;
     navigate(url);
   };
   const handleDelete = (data) => {

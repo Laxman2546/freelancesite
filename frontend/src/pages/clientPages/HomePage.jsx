@@ -7,7 +7,6 @@ import "slick-carousel/slick/slick-theme.css";
 import {
   ChevronRightIcon,
   ChevronLeftIcon,
-  CodeBracketIcon,
   StarIcon,
 } from "@heroicons/react/24/solid";
 import {
@@ -18,15 +17,20 @@ import {
   PencilSharp,
   Videocam,
 } from "react-ionicons";
-import { SpeakerWaveIcon } from "@heroicons/react/24/outline";
 import Footer from "../../components/Footer.jsx";
 import ClientNavbar from "../../components/ClientNavbar.jsx";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth.js";
 const HomePage = () => {
   const [activeBtn, setactivebtn] = useState("Web Development");
   const [isVisible, setisVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  console.log(user);
+
   const gigs = [
     {
       thumbnail:
@@ -259,6 +263,11 @@ const HomePage = () => {
     };
   }, []);
 
+  const handleGigdets = (gigId) => {
+    const url = `/postdetails?gigid=${gigId}&userid=${user.userId}`;
+    navigate(url);
+  };
+
   return (
     <main className="w-full min-h-screen">
       <div className="sticky top-0 z-[99999]">
@@ -348,7 +357,7 @@ const HomePage = () => {
         <div className="mt-6">
           <Slider {...settings}>
             {data.map((data) => (
-              <div key={data.title}>
+              <div key={data.title} onClick={() => handleGigdets(data._id)}>
                 <Gigcards data={data} />
               </div>
             ))}
