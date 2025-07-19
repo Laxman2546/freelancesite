@@ -3,8 +3,9 @@ import FreelancerNavbar from "../../components/FreelancerNavbar";
 import empty from "../../assets/images/empty.svg";
 import Errors from "../../components/Errors";
 import { useAuth } from "../../hooks/useAuth";
+import ClientNavbar from "../../components/ClientNavbar";
 const Orders = () => {
-  const { checkAuth } = useAuth();
+  const { checkAuth, user } = useAuth();
   const [showError, setshowError] = useState(false);
   const [ordersData, setordersData] = useState([]);
   const [error, setError] = useState(
@@ -21,9 +22,15 @@ const Orders = () => {
     }, 3000);
     return () => clearTimeout(timer);
   }, [showError, error]);
+
   return (
     <main>
-      <FreelancerNavbar />
+      {user?.role === "freelancer" ? (
+        <FreelancerNavbar />
+      ) : (
+        <ClientNavbar isVisible={true} />
+      )}
+
       <Errors
         isError={showError}
         errorText={error}

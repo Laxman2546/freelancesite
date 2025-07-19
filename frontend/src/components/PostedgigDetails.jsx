@@ -12,7 +12,7 @@ const PostedgigDetails = () => {
   const [loading, setLoading] = useState(false);
   const [isActivePrice, setActivePrice] = useState("Basic");
   const [creatordata, setcreatorData] = useState([]);
-  const [clientData, setclientData] = useState([]);
+  const [clientData, setclientData] = useState();
   const location = useLocation();
   const navigation = useNavigate();
   const getId = () => {
@@ -64,7 +64,7 @@ const PostedgigDetails = () => {
         { withCredentials: true }
       );
       const userData = fetchUser?.data;
-      console.log(userData);
+      console.log("this is masmsasadasda", userData);
       setclientData(userData);
     } catch (e) {
       console.error("Something went wrong with getUser:", e);
@@ -123,15 +123,16 @@ const PostedgigDetails = () => {
   const handleEdit = () => {
     navigation(`/gigupdate?gigid=${getId()}`);
   };
+  console.log(clientData);
 
   return (
     <div className="w-full min-h-screen">
       {loading && <Loader />}
 
-      {clientData.role === "freelancer" ? (
+      {clientData?.fetchUser?.role === "freelancer" ? (
         <FreelancerNavbar />
       ) : (
-        <ClientNavbar />
+        <ClientNavbar isVisible={true} />
       )}
       <div className="w-full min-h-screen flex flex-col  bg-[#F4F2EE] p-2 md:p-8 ">
         <div className="w-full flex flex-row justify-between pr-5">
@@ -183,8 +184,8 @@ const PostedgigDetails = () => {
               </div>
             </div>
           </div>
-          {clientData?.role === "freelancer" &&
-            clientData.userId === data?.userId && (
+          {clientData?.fetchUser?.role === "freelancer" &&
+            clientData?.fetchUser?.userId === data?.userId && (
               <div className="hidden md:block">
                 <button
                   className="p-3 bg-lime-800 text-white rounded-xl flex flex-row gap-2 cursor-pointer active:scale-95"

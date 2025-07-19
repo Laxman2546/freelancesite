@@ -204,13 +204,6 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
       }
     }, 200);
   };
-  useEffect(() => {
-    if (location.pathname.includes("userhome")) {
-      setSearchvisible(false);
-    } else {
-      setSearchvisible(true);
-    }
-  }, [location.pathname]);
 
   const isVisble = () => {
     setSearchvisible(!isSearchvisible);
@@ -225,6 +218,42 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
     };
     document.addEventListener("mousedown", handleSearchClose);
     return () => document.removeEventListener("mousedown", handleSearchClose);
+  }, []);
+
+  const closeMessage = useRef(null);
+  const closeNotification = useRef(null);
+  const profileClose = useRef(null);
+  useEffect(() => {
+    const handleMessgageClose = (e) => {
+      if (closeMessage.current && !closeMessage.current.contains(e.target)) {
+        setMessageIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleMessgageClose);
+    return () => document.removeEventListener("mousedown", handleMessgageClose);
+  }, []);
+
+  useEffect(() => {
+    const handleNotificationClose = (e) => {
+      if (
+        closeNotification.current &&
+        !closeNotification.current.contains(e.target)
+      ) {
+        setNotifcationopen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleNotificationClose);
+    return () =>
+      document.removeEventListener("mousedown", handleNotificationClose);
+  }, []);
+  useEffect(() => {
+    const handleProfilecolse = (e) => {
+      if (profileClose.current && !profileClose.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleProfilecolse);
+    return () => document.removeEventListener("mousedown", handleProfilecolse);
   }, []);
 
   return (
@@ -368,14 +397,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
           )}
         </div>
 
-        <div
-          className="   flex flex-row  items-center gap-8"
-          onClick={() => {
-            setMessageIsOpen(false);
-            setNotifcationopen(false);
-            setIsOpen(false);
-          }}
-        >
+        <div className="   flex flex-row  items-center gap-8">
           <Link to={"/userhome"}>
             <div
               className={`flex flex-row items-center gap-2 ${
@@ -441,6 +463,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
               />
               {(isMessageOpen || closingMessages) && (
                 <div
+                  ref={closeMessage}
                   className={`absolute right-0 top-8 z-20 bg-white rounded-lg shadow-lg border w-80 ${
                     closingMessages ? "animate-fade-out" : "animate-fade-in"
                   }`}
@@ -509,6 +532,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
               <BellIcon
                 className="size-6  transition-colors"
                 onClick={handleNotificationsToggle}
+                ref={closeNotification}
               />
               {(isnotificationopen || closingNotifications) && (
                 <div
@@ -557,7 +581,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
                 </div>
               )}
             </li>
-            <li className="cursor-pointer relative">
+            <li className="cursor-pointer relative" ref={profileClose}>
               {userPic ? (
                 <div className="w-[25px] h-[25px] " onClick={handleMenuToggle}>
                   <img

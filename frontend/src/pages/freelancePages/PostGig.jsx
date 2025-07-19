@@ -38,6 +38,7 @@ const PostGig = () => {
   const [loading, setLoading] = useState(false);
   const [showError, setshowError] = useState(false);
   const [error, setError] = useState("");
+  const [showUpdate, setshowUpdate] = useState(false);
   const navigate = useNavigate();
 
   const { checkAuth } = useAuth();
@@ -92,6 +93,7 @@ const PostGig = () => {
 
   useEffect(() => {
     checkAuth();
+    userProfile();
   }, []);
   useEffect(() => {
     if (!showError) return;
@@ -126,7 +128,7 @@ const PostGig = () => {
       // priceTitle.trim() !== "" &&
       // priceFeatures.trim() !== "" &&
       // deliveryTime !== "" &&
-      // price.trim() !== ""   //optional for future things
+      // price.trim() !== ""   //optional bayya future lo cuskundam kavalante
     ) {
       setNextDisable(false);
     } else if (
@@ -184,16 +186,71 @@ const PostGig = () => {
     }
   };
 
+  const userProfile = async () => {
+    try {
+      setLoading(true);
+      const result = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URI}/profile`,
+        { withCredentials: true }
+      );
+      if (!result) {
+        throw new Error("something went wrong");
+      }
+      setUserdata(result.data.profile, result.data.fetchUser);
+    } catch (e) {
+      setshowUpdate(true);
+      console.log(e, "error while fetching user profile data");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const setUserdata = (profile, fetchUser) => {
+    if (!profile.profilePic || !profile.bio || !profile.languagesKnown) {
+      setshowUpdate(true);
+    } else {
+      setshowUpdate(false);
+    }
+    if (!profile || !fetchUser) {
+      setshowError(true);
+      setError("update your profile pic to save details");
+      return;
+    }
+  };
+  const handleUpdate = () => {
+    navigate("/profileupdate");
+  };
   return (
     <main className="w-full min-h-screen">
       <FreelancerNavbar />
-
-      <div className="w-full min-h-screen flex flex-col items-center p-4 sm:p-6 bg-[#F4F2EE]">
+      {showUpdate && (
+        <div className="w-full min-h-full md:h-screen flex justify-center items-start bg-black/30 absolute top-0 left-0 z-50 p-5">
+          <div className="bg-white rounded-xl  shadow-xl p-6 mt-20 max-w-md w-full flex flex-col items-center text-center gap-4">
+            <h1 className="text-2xl font-semibold text-lime-800">
+              Oops! looks like Your profile isn’t complete.
+            </h1>
+            <p className="text-gray-700">
+              Almost there! Complete your profile to post your first gig
+            </p>
+            <button
+              onClick={handleUpdate}
+              className="bg-lime-800 text-white px-6 py-2 rounded-lg hover:bg-lime-700 transition cursor-pointer"
+            >
+              Update Profile
+            </button>
+          </div>
+        </div>
+      )}
+      <div
+        className={`${
+          showUpdate ? "blur-sm" : "blur-none"
+        } w-full flex flex-col items-center p-4 sm:p-6 bg-[#F4F2EE] `}
+      >
         <Errors
           isError={showError}
           errorText={error}
           errorStyles={`absoulte`}
         />
+
         <div className="w-full max-w-5xl p-2 sm:p-3 hidden md:flex">
           <Steps steps={steps} currentStep={currentStep} />
         </div>

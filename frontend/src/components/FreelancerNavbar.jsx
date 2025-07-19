@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import { EnvelopeIcon } from "@heroicons/react/24/outline";
 import { Fade as Hamburger } from "hamburger-react";
 import { BellIcon } from "@heroicons/react/24/outline";
@@ -193,6 +193,42 @@ const FreelancerNavbar = ({ isUpdated }) => {
     setMessageIsOpen(false);
   };
 
+  const closeMessage = useRef(null);
+  const closeNotification = useRef(null);
+  const profileClose = useRef(null);
+  useEffect(() => {
+    const handleMessgageClose = (e) => {
+      if (closeMessage.current && !closeMessage.current.contains(e.target)) {
+        setMessageIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleMessgageClose);
+    return () => document.removeEventListener("mousedown", handleMessgageClose);
+  }, []);
+
+  useEffect(() => {
+    const handleNotificationClose = (e) => {
+      if (
+        closeNotification.current &&
+        !closeNotification.current.contains(e.target)
+      ) {
+        setNotifcationopen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleNotificationClose);
+    return () =>
+      document.removeEventListener("mousedown", handleNotificationClose);
+  }, []);
+  useEffect(() => {
+    const handleProfilecolse = (e) => {
+      if (profileClose.current && !profileClose.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleProfilecolse);
+    return () => document.removeEventListener("mousedown", handleProfilecolse);
+  }, []);
+
   const handleNavItemClick = (href) => {
     setClosingMenu(true);
     setTimeout(() => {
@@ -228,7 +264,7 @@ const FreelancerNavbar = ({ isUpdated }) => {
         />
       )}
 
-      <nav className="w-full p-5 pl-0 md:p-8 flex flex-row md:flex-row items-center justify-center md:justify-between relative z-40">
+      <nav className="w-full p-5 pl-0 md:p-5 flex flex-row md:flex-row items-center justify-center md:justify-between relative z-40">
         <div className="absoulte z-[80] flex flex-col mr-[20px] md:hidden">
           <Hamburger
             easing="ease-in"
@@ -370,14 +406,7 @@ const FreelancerNavbar = ({ isUpdated }) => {
           </Link>
         </div>
 
-        <div
-          className="w-full flex items-center justify-center"
-          onClick={() => {
-            setMessageIsOpen(false);
-            setNotifcationopen(false);
-            setIsOpen(false);
-          }}
-        >
+        <div className="w-full flex items-center justify-center">
           <ul className="hidden flex-row gap-8 md:flex">
             <Link to={"/userhome"}>
               <li
@@ -411,7 +440,7 @@ const FreelancerNavbar = ({ isUpdated }) => {
 
         <div className="hidden md:flex items-center justify-end">
           <ul className="flex flex-row gap-5">
-            <li className="cursor-pointer relative">
+            <li className="cursor-pointer relative" ref={closeMessage}>
               <EnvelopeIcon
                 className="size-6  transition-colors"
                 onClick={handleMessagesToggle}
@@ -482,7 +511,7 @@ const FreelancerNavbar = ({ isUpdated }) => {
                 </div>
               )}
             </li>
-            <li className="cursor-pointer relative">
+            <li className="cursor-pointer relative" ref={closeNotification}>
               <BellIcon
                 className="size-6  transition-colors"
                 onClick={handleNotificationsToggle}
@@ -534,7 +563,7 @@ const FreelancerNavbar = ({ isUpdated }) => {
                 </div>
               )}
             </li>
-            <li className="cursor-pointer relative">
+            <li className="cursor-pointer relative" ref={profileClose}>
               {userPic ? (
                 <div className="w-[25px] h-[25px] " onClick={handleMenuToggle}>
                   <img

@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import Errors from "../../components/Errors.jsx";
 import Loader from "../../components/Loader.jsx";
 import { useAuth } from "../../hooks/useAuth.js";
+import ClientNavbar from "../../components/ClientNavbar.jsx";
 
 const AccountSettings = () => {
   const [showPopup, setshowPopup] = useState(false);
@@ -16,7 +17,7 @@ const AccountSettings = () => {
   const [loading, setLoading] = useState(false);
   const [showError, setshowError] = useState(false);
   const [error, setError] = useState("");
-  const { checkAuth } = useAuth();
+  const { checkAuth, user } = useAuth();
   const popupShow = () => {
     setshowPopup(false);
   };
@@ -73,7 +74,11 @@ const AccountSettings = () => {
   }, []);
   return (
     <main className="w-full min-h-screen relative">
-      <FreelancerNavbar />
+      {user?.role === "freelancer" ? (
+        <FreelancerNavbar />
+      ) : (
+        <ClientNavbar isVisible={true} />
+      )}
       <Success
         successText={`your account is deleted successfully,you are redirecting to Register page in  ${timer} `}
         isSuccess={success}
@@ -88,7 +93,7 @@ const AccountSettings = () => {
       )}
 
       {loading && <Loader />}
-      <div className=" p-2 md:p-10 w-full">
+      <div className=" p-5 md:p-10 w-full">
         <div className="w-full   bg-[#F4F2EE]  rounded-2xl flex flex-col md:flex-row gap-10 p-2 md:p-10 ">
           <div className=" w-full flex flex-col gap-3">
             <h1 className="font-bold text-xl">Delete freelance Account</h1>

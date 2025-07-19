@@ -10,6 +10,7 @@ import defaultImg from "../../assets/images/freelancer.png";
 import Errors from "../../components/Errors.jsx";
 import Loader from "../../components/Loader.jsx";
 import { useAuth } from "../../hooks/useAuth.js";
+import ClientNavbar from "../../components/ClientNavbar.jsx";
 
 const profileUpdate = () => {
   const [userName, setuserName] = useState("");
@@ -29,7 +30,7 @@ const profileUpdate = () => {
   const [showError, setshowError] = useState(false);
   const [error, setError] = useState("");
   const [loading, setloading] = useState(false);
-  const { checkAuth } = useAuth();
+  const { checkAuth, user } = useAuth();
   const requestData = async () => {
     try {
       setloading(true);
@@ -249,16 +250,20 @@ const profileUpdate = () => {
     <main className="w-full h-full">
       <div className="w-full bg-white shadow-sm fixed top-0 z-40">
         <div className="container mx-auto">
-          <FreelanceNavbar isUpdated={isFormChanged} />
+          {user?.role === "freelancer" ? (
+            <FreelanceNavbar isUpdated={isFormChanged} />
+          ) : (
+            <ClientNavbar isVisible={true} />
+          )}
         </div>
       </div>
 
       {loading && <Loader />}
-      <div className="w-full min-h-screen p-8 bg-[#F4F2EE] mt-24">
+      <div className="w-full min-h-screen p-8 bg-[#F4F2EE] mt-18">
         <Errors
           isError={showError}
           errorText={error}
-          errorStyles={`absoulte`}
+          errorStyles={`absolute top-30`}
         />
         <div>
           <h1 className="text-2xl font-medium">Let's Update your profile</h1>

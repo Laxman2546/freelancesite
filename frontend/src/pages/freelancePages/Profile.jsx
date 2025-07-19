@@ -15,6 +15,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import Loader from "../../components/Loader";
 import { useAuth } from "../../hooks/useAuth";
+import ClientNavbar from "../../components/ClientNavbar";
 const Profile = () => {
   const [userName, setuserName] = useState("");
   const [emailId, setEmailID] = useState("");
@@ -51,7 +52,6 @@ const Profile = () => {
       setuserName(result.data.fetchUser.userName);
       setEmailID(result.data.fetchUser.emailId);
       setUserdata(result.data.profile, result.data.fetchUser);
-      console.log(result);
     } catch (e) {
       console.log(e, "error while fetching user profile data");
     } finally {
@@ -125,7 +125,11 @@ const Profile = () => {
   return (
     <main className="w-full h-full">
       <div>
-        <FreelancerNavbar />
+        {user?.role === "freelancer" ? (
+          <FreelancerNavbar />
+        ) : (
+          <ClientNavbar isVisible={true} />
+        )}
       </div>
       {loading && <Loader />}
 

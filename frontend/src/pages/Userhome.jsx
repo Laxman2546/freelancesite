@@ -34,18 +34,20 @@ const Userhome = () => {
           />
         </div>
       )}
-      {user?.role === "freelancer" ? (
+      {user?.role === "client" ? (
+        <div
+          className={`${showPopup ? "blur-sm overflow-hidden" : "blur-none"}`}
+        >
+          <HomePage />
+        </div>
+      ) : (
         <div className={`${showPopup ? "blur-sm" : "blur-none"}`}>
-          <FreelancerNavbar />
           {!showPopup && (
             <div className=" w-full">
+              <FreelancerNavbar />
               <PostedGigs />
             </div>
           )}
-        </div>
-      ) : (
-        <div>
-          <HomePage />
         </div>
       )}
     </main>

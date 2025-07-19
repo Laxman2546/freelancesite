@@ -321,7 +321,7 @@ const HomePage = () => {
                   setactivebtn("Data Analysis");
                 }}
                 className={`p-2 pl-4 pr-4  text-md border-1 text-nowrap border-lime-700 rounded-3xl cursor-pointer hover:bg-lime-700 hover:text-white ${
-                  activeBtn === "Data not-odd:Analysis"
+                  activeBtn === "Data Analysis"
                     ? "bg-lime-700  text-white"
                     : "bg-white "
                 }`}
