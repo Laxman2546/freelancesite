@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Link, Navigate, Router, useNavigate } from "react-router-dom";
-import loginImage from "../assets/images/login.png";
+import loginImage from "../assets/images/loginImage.png";
 import { themeColors } from "../hooks/theme.js";
 import Errors from "../components/Errors.jsx";
 import Button from "../components/Button.jsx";
