@@ -4,7 +4,7 @@ import authRoute from "./routes/authRoute.js";
 import profileRoute from "./routes/profileRoute.js";
 import gigRoute from "./routes/gigRoute.js";
 import cors from "cors";
-import db from "./Config/mongooseConnection.js";
+import connectDB from "./config/mongooseConnection.js";
 import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -18,6 +18,7 @@ app.use("/profilePics", express.static(path.join(__dirname, "profilePics")));
 app.use("/thumbnails", express.static(path.join(__dirname, "thumbnails")));
 app.use(cookieParser());
 dotenv.config();
+connectDB();
 app.use(
   cors({
     origin: [
