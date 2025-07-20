@@ -9,7 +9,7 @@ import { useGSAP } from "@gsap/react";
 import AccountSettings from "./pages/freelancePages/AccountSettings.jsx";
 import PostGig from "./pages/freelancePages/PostGig.jsx";
 import Orders from "./pages/freelancePages/Orders.jsx";
-import Profileupdate from "./pages/freelancePages/ProfileUpdate.jsx";
+import Profileupdate from "./pages/freelancePages/Profileupdate.jsx";
 import Gigupdate from "./pages/freelancePages/Gigupdate.jsx";
 import PostedgigDetails from "./components/PostedgigDetails.jsx";
 import SearchResults from "./pages/clientPages/SearchResults.jsx";
