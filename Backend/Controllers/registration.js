@@ -18,12 +18,21 @@ export const registerUser = async (req, res) => {
       password: hashedPassword,
     });
     const token = generateToken(createUser);
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-      maxAge: 24 * 60 * 60 * 1000,
-    });
+    const isSecure = req.secure || req.headers["x-forwarded-proto"] === "https";
+    const cookieOptions = isSecure
+      ? {
+          httpOnly: true,
+          secure: true,
+          sameSite: "none",
+          maxAge: 24 * 60 * 60 * 1000,
+        }
+      : {
+          httpOnly: true,
+          secure: false,
+          sameSite: "lax",
+          maxAge: 24 * 60 * 60 * 1000,
+        };
+    res.cookie("token", token, cookieOptions);
     return res.status(200).json(createUser);
   } catch (error) {
     console.error("Registration error:", error);
@@ -45,13 +54,21 @@ export const loginUser = async (req, res) => {
     }
 
     const token = generateToken(userData);
-
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-      maxAge: 24 * 60 * 60 * 1000,
-    });
+    const isSecure = req.secure || req.headers["x-forwarded-proto"] === "https";
+    const cookieOptions = isSecure
+      ? {
+          httpOnly: true,
+          secure: true,
+          sameSite: "none",
+          maxAge: 24 * 60 * 60 * 1000,
+        }
+      : {
+          httpOnly: true,
+          secure: false,
+          sameSite: "lax",
+          maxAge: 24 * 60 * 60 * 1000,
+        };
+    res.cookie("token", token, cookieOptions);
 
     return res.status(200).json({ message: "login successful" });
   } catch (error) {

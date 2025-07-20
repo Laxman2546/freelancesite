@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 const isloggedin = (req, res, next) => {
   const token = req.cookies.token;
   if (!token) {
+    console.log("token not recevied");
     return res
       .status(401)
       .json({ error: "Something went wrong! please login again" });
@@ -9,8 +10,10 @@ const isloggedin = (req, res, next) => {
   try {
     const data = jwt.verify(token, process.env.SECRET_KEY);
     req.user = data;
+    console.log("token verified", data);
     next();
   } catch (err) {
+    console.log("token not recevied", err);
     return res
       .status(401)
       .json({ error: "Something went wrong! please login again" });

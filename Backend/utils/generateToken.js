@@ -6,6 +6,7 @@ const generateToken = (user) => {
       { emailId: user.emailId, userId: user.userId },
       process.env.SECRET_KEY
     );
+    console.log("Token generated", token);
     return token;
   } catch (e) {
     throw new Error("Token generation failed");
