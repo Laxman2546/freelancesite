@@ -27,11 +27,11 @@ const Errors = ({ isError, errorText, errorStyles }) => {
   return (
     <div
       style={{ minHeight: 56 }}
-      className={`w-[100%] flex justify-center items-start  ${errorStyles}`}
+      className={` flex justify-center items-start  ${errorStyles}`}
     >
       <div
         ref={errorRef}
-        className="w-[80%] md:w-[50%] text-center p-3 rounded-2xl"
+        className=" text-center p-3 rounded-2xl"
         style={{
           backgroundColor: themeColors.danger,
           color: themeColors.text.inverse,

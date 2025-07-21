@@ -157,7 +157,6 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
     return () => clearTimeout(ShowError);
   }, [error]);
 
-  // Fixed menu toggle function
   const handleMenuToggle = () => {
     if (isOpen) {
       setClosingMenu(true);
@@ -168,7 +167,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
     } else {
       setIsOpen(true);
     }
-    // Close other menus
+
     setMessageIsOpen(false);
     setNotifcationopen(false);
   };
@@ -303,7 +302,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
       <Errors
         errorText={error}
         isError={isError}
-        errorStyles={"absolute top-25 z-50"}
+        errorStyles={"absolute top-25 z-50 "}
       />
 
       {(isOpen || closingMenu) && (
@@ -322,7 +321,6 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
             onToggle={handleMenuToggle}
             color="#3A5B22"
             size={24}
-            
           />
 
           {isOpen && (
