@@ -98,6 +98,9 @@ const Login = () => {
       });
     console.log(submitData);
   };
+
+  console.log(process.env.REACT_APP_BACKEND_URI);
+
   const handelLoginSubmit = (e) => {
     e.preventDefault();
     if (checkFields()) return;

@@ -18,7 +18,6 @@ const PostedgigDetails = () => {
   const getId = () => {
     const search = new URLSearchParams(location.search);
     const id = search.get("gigid");
-
     return id;
   };
   const getGigs = async () => {
@@ -123,7 +122,11 @@ const PostedgigDetails = () => {
   const handleEdit = () => {
     navigation(`/gigupdate?gigid=${getId()}`);
   };
-  console.log(clientData);
+
+  const handlefreelanceProfile = () => {
+    console.log("clicked");
+    navigation(`/profile?id=${creatordata?.fetchUser?.userId}`);
+  };
 
   return (
     <div className="w-full min-h-screen">
@@ -205,7 +208,10 @@ const PostedgigDetails = () => {
                 className="max-h-[450px] min-w-full object-cover rounded-2xl"
               />
             </div>
-            <div className="flex flex-col gap-2 mt-8 pl-5">
+            <div
+              className="flex flex-col gap-2 mt-8 pl-5 "
+              onClick={handlefreelanceProfile}
+            >
               <div className="flex flex-row gap-2 ">
                 <div>
                   <img
@@ -215,7 +221,7 @@ const PostedgigDetails = () => {
                 </div>
                 <div className="flex flex-col cursor-pointer">
                   <h1 className="text-xl font-semibold">
-                    {creatordata?.fetchUser?.userName || "fetchingname..."}
+                    {creatordata?.fetchUser?.userName || "Freelancer"}
                   </h1>
                   <h1 className="text-sm text-gray-400 font-normal">
                     {creatordata?.profile?.job || "Loading..."}

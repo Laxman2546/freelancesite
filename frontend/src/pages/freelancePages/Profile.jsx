@@ -12,7 +12,7 @@ import {
   CheckCircleIcon,
   NoSymbolIcon,
 } from "@heroicons/react/24/solid";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Loader from "../../components/Loader";
 import { useAuth } from "../../hooks/useAuth";
 import ClientNavbar from "../../components/ClientNavbar";
@@ -30,18 +30,51 @@ const Profile = () => {
   const [avaliability, setAvaliability] = useState("");
   const [photo, setPhoto] = useState(defaultImg);
   const [showUpdate, setshowUpdate] = useState(true);
-  const [loading, setloading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [showError, setshowError] = useState(false);
   const [error, setError] = useState("something went wrong");
   const { user, checkAuth } = useAuth();
+  const location = useLocation();
   useEffect(() => {
     checkAuth();
-    userProfile();
-  }, []);
+    const search = new URLSearchParams(location.search);
+    const id = search.get("id");
+    if (id) {
+      getUser(id);
+    } else {
+      userProfile();
+    }
+  }, [location.search]);
+
+  const getUser = async (userId) => {
+    setLoading(true);
+    if (!userId) {
+      console.error("User ID is missing");
+      setLoading(false);
+      return;
+    }
+    try {
+      const result = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URI}/profile/creator`,
+        { userId },
+        { withCredentials: true }
+      );
+      if (!result) {
+        throw new Error("something went wrong");
+      }
+      setuserName(result.data.fetchUser.userName);
+      setEmailID(result.data.fetchUser.emailId);
+      setUserdata(result.data.profile, result.data.fetchUser);
+    } catch (e) {
+      console.error("Something went wrong with getUser:", e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const userProfile = async () => {
     try {
-      setloading(true);
+      setLoading(true);
       const result = await axios.get(
         `${process.env.REACT_APP_BACKEND_URI}/profile`,
         { withCredentials: true }
@@ -55,7 +88,7 @@ const Profile = () => {
     } catch (e) {
       console.log(e, "error while fetching user profile data");
     } finally {
-      setloading(false);
+      setLoading(false);
     }
   };
   const setUserdata = (profile, fetchUser) => {
@@ -333,18 +366,27 @@ const Profile = () => {
               <div className="flex flex-col items-start gap-2 pr-5">
                 <h1 className="font-bold">Social Links</h1>
                 <div className="flex flex-row flex-wrap gap-3">
-                  {socialLinks.map((links, index) => (
-                    <div key={index} className="p-3  bg-[#C0E6FB] rounded-2xl">
-                      <a
-                        href={links}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[#36ADF2] font-medium break-all"
+                  {socialLinks.length > 0 ? (
+                    socialLinks.map((links, index) => (
+                      <div
+                        key={index}
+                        className="p-3  bg-[#C0E6FB] rounded-2xl"
                       >
-                        {links}
-                      </a>
-                    </div>
-                  ))}
+                        <a
+                          href={links}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#36ADF2] font-medium break-all"
+                        >
+                          {links}
+                        </a>
+                      </div>
+                    ))
+                  ) : (
+                    <h1 className="text-center font-medium text-gray-400">
+                      No social links found
+                    </h1>
+                  )}
                 </div>
               </div>
             </div>

@@ -29,7 +29,6 @@ const HomePage = () => {
   const [data, setData] = useState([]);
   const navigate = useNavigate();
   const { user } = useAuth();
-  console.log(user);
 
   const gigs = [
     {

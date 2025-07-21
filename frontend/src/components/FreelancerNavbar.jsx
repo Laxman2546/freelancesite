@@ -229,15 +229,21 @@ const FreelancerNavbar = ({ isUpdated }) => {
     return () => document.removeEventListener("mousedown", handleProfilecolse);
   }, []);
 
-  const handleNavItemClick = (href) => {
-    setClosingMenu(true);
-    setTimeout(() => {
-      setIsOpen(false);
-      setClosingMenu(false);
+  const handleNavItemClick = (href, isMobileNav = false) => {
+    if (!isMobileNav) {
+      setClosingMenu(true);
+      setTimeout(() => {
+        setIsOpen(false);
+        setClosingMenu(false);
+        if (href !== "#") {
+          Navigate(href);
+        }
+      }, 200);
+    } else {
       if (href !== "#") {
         Navigate(href);
       }
-    }, 200);
+    }
   };
   useEffect(() => {
     if (location.pathname.includes("userhome")) {
@@ -310,16 +316,42 @@ const FreelancerNavbar = ({ isUpdated }) => {
 
                 <div className="flex-1 py-6">
                   <ul className="space-y-2 px-4">
-                    {navItems.map((item, index) => (
-                      <li key={index}>
-                        <button
-                          onClick={() => handleNavItemClick(item.href)}
-                          className="w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium"
-                        >
-                          {item.label}
-                        </button>
-                      </li>
-                    ))}
+                    <li>
+                      <button
+                        onClick={() => handleNavItemClick("/userhome", true)}
+                        className={`w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium ${
+                          activeNav === "MyGigs"
+                            ? "bg-[#3A5B22] text-white"
+                            : ""
+                        }`}
+                      >
+                        MyGigs
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => handleNavItemClick("/postgig", true)}
+                        className={`w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium ${
+                          activeNav === "Post a Gig"
+                            ? "bg-[#3A5B22] text-white"
+                            : ""
+                        }`}
+                      >
+                        Post a Gig
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => handleNavItemClick("/orders", true)}
+                        className={`w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium ${
+                          activeNav === "Orders"
+                            ? "bg-[#3A5B22] text-white"
+                            : ""
+                        }`}
+                      >
+                        Orders
+                      </button>
+                    </li>
                   </ul>
 
                   <div className="border-t border-gray-200 my-6 mx-4"></div>

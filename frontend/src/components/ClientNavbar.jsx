@@ -18,7 +18,7 @@ import axios from "axios";
 import Search from "./Search";
 
 const ClientNavbar = ({ isUpdated, isVisible }) => {
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isMessageOpen, setMessageIsOpen] = useState(false);
   const [isnotificationopen, setNotifcationopen] = useState(false);
@@ -35,6 +35,9 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
   const [isSearchvisible, setSearchvisible] = useState(false);
   const [userName, setuserName] = useState("");
   const location = useLocation();
+
+  // Refs for click outside detection
+  const mobileMenuRef = useRef(null);
 
   const recentMessages = [
     {
@@ -128,6 +131,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
       console.warn(e, "error while fetching user profile data");
     }
   }, []);
+
   useEffect(() => {
     requestData();
   }, [isUpdated]);
@@ -140,7 +144,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
   const handleLogout = async () => {
     const result = await userLogout();
     if (result === 201) {
-      Navigate("/login");
+      navigate("/login");
     }
     seterror(result);
     setisError(true);
@@ -153,6 +157,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
     return () => clearTimeout(ShowError);
   }, [error]);
 
+  // Fixed menu toggle function
   const handleMenuToggle = () => {
     if (isOpen) {
       setClosingMenu(true);
@@ -163,6 +168,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
     } else {
       setIsOpen(true);
     }
+    // Close other menus
     setMessageIsOpen(false);
     setNotifcationopen(false);
   };
@@ -180,6 +186,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
     setNotifcationopen(false);
     setIsOpen(false);
   };
+
   const handleNotificationsToggle = () => {
     if (isnotificationopen) {
       setClosingNotifications(true);
@@ -194,20 +201,27 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
     setMessageIsOpen(false);
   };
 
+  // FIXED: Simplified navigation function
   const handleNavItemClick = (href) => {
-    setClosingMenu(true);
+    console.log("Navigation clicked:", href);
+
+    // Close menu immediately without animation for better UX
+    setIsOpen(false);
+    setClosingMenu(false);
+
+    // Small delay to ensure menu closes before navigation
     setTimeout(() => {
-      setIsOpen(false);
-      setClosingMenu(false);
       if (href !== "#") {
-        Navigate(href);
+        console.log("Navigating to:", href);
+        navigate(href);
       }
-    }, 200);
+    }, 50);
   };
 
   const isVisble = () => {
     setSearchvisible(!isSearchvisible);
   };
+
   const mobileSearch = useRef(null);
 
   useEffect(() => {
@@ -223,6 +237,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
   const closeMessage = useRef(null);
   const closeNotification = useRef(null);
   const profileClose = useRef(null);
+
   useEffect(() => {
     const handleMessgageClose = (e) => {
       if (closeMessage.current && !closeMessage.current.contains(e.target)) {
@@ -246,6 +261,33 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
     return () =>
       document.removeEventListener("mousedown", handleNotificationClose);
   }, []);
+
+  // FIXED: Click outside detection - exclude hamburger button
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target)) {
+        // Check if click is not on hamburger button
+        const hamburgerButton =
+          e.target.closest('[data-testid="hamburger"]') ||
+          e.target.closest('button[aria-label*="menu"]');
+
+        if (!hamburgerButton && isOpen) {
+          setClosingMenu(true);
+          setTimeout(() => {
+            setIsOpen(false);
+            setClosingMenu(false);
+          }, 200);
+        }
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]);
+
   useEffect(() => {
     const handleProfilecolse = (e) => {
       if (profileClose.current && !profileClose.current.contains(e.target)) {
@@ -257,37 +299,38 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
   }, []);
 
   return (
-    <header className="w-full  h-full flex flex-col items-center relative bg-white shadow-gray-400 shadow-sm z-[9999999]">
+    <header className="w-full h-full flex flex-col items-center relative bg-white shadow-gray-400 shadow-sm z-[9999999]">
       <Errors
         errorText={error}
         isError={isError}
         errorStyles={"absolute top-25 z-50"}
       />
+
       {(isOpen || closingMenu) && (
         <div
-          className={`fixed inset-0 bg-[#00000080] bg-opacity-50 z-30 md:hidden ${
+          className={`fixed inset-0 bg-[#00000080] bg-opacity-50 md:hidden ${
             closingMenu ? "animate-fade-out" : "animate-fade-in"
           }`}
-          onClick={handleMenuToggle}
         />
       )}
 
-      <nav className="w-full p-3 pl-0 md:p-5 flex flex-row md:flex-row items-center justify-center  relative z-[999]">
-        <div className="absoulte z-[80] flex flex-col mr-[20px] md:hidden">
+      <nav className="w-full p-3 pl-0 md:p-5 flex flex-row md:flex-row items-center justify-center relative">
+        <div className="flex flex-col mr-[20px] md:hidden">
           <Hamburger
             easing="ease-in"
             toggled={isOpen}
             onToggle={handleMenuToggle}
             color="#3A5B22"
             size={24}
+            
           />
-          {(isOpen || closingMenu) && (
+
+          {isOpen && (
             <div
-              className={`fixed top-0 left-0 w-[280px]  bg-white h-full shadow-xl overflow-scroll  z-40 mr-[40px] ${
-                closingMenu ? "animate-slideOut" : "animate-slideIn"
-              }`}
+              ref={mobileMenuRef}
+              className="fixed top-0 left-0 w-[280px] bg-white  h-full shadow-xl overflow-scroll animate-slideIn"
             >
-              <div className="absolute top-5">
+              <div className="absolute top-5 left-3">
                 <Hamburger
                   easing="ease-in"
                   toggled={isOpen}
@@ -296,20 +339,19 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
                   size={24}
                 />
               </div>
+
               <div className="h-full flex flex-col">
                 <div className="flex flex-row items-center justify-center mt-[80px] gap-3 p-6 border-b border-gray-200">
                   {userPic ? (
                     <div className="w-[25px] h-[25px]">
                       <img
                         src={userPic}
-                        className="w-[50px] h-[25px] rounded-full"
+                        className="w-[25px] h-[25px] rounded-full object-cover"
+                        alt="Profile"
                       />
                     </div>
                   ) : (
-                    <UserCircleIcon
-                      className="size-6  transition-colors"
-                      onClick={handleMenuToggle}
-                    />
+                    <UserCircleIcon className="size-6 transition-colors" />
                   )}
                   <h1 className="text-lg font-semibold text-gray-800">
                     {userName}
@@ -320,12 +362,15 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
                   <ul className="space-y-2 px-4">
                     {navItems.map((item, index) => (
                       <li key={index}>
-                        <button
-                          onClick={() => handleNavItemClick(item.href)}
-                          className="w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium"
+                        <Link
+                          to={item.href}
+                          onClick={() => {
+                            setIsOpen(false);
+                          }}
+                          className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium"
                         >
                           {item.label}
-                        </button>
+                        </Link>
                       </li>
                     ))}
                   </ul>
@@ -334,59 +379,67 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
 
                   <ul className="space-y-2 px-4">
                     <li>
-                      <button
-                        onClick={() => handleNavItemClick("/messages")}
-                        className="w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium flex items-center gap-3"
+                      <Link
+                        to="/messages"
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center gap-3 w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium"
                       >
                         <EnvelopeIcon className="size-5" />
                         Messages
-                      </button>
+                      </Link>
                     </li>
                     <li>
-                      <button
-                        onClick={() => handleNavItemClick("/notifications")}
-                        className="w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium flex items-center gap-3"
+                      <Link
+                        to="/notifications"
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center gap-3 w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium"
                       >
                         <BellIcon className="size-5" />
                         Notifications
-                      </button>
+                      </Link>
                     </li>
                     <li>
-                      <button
-                        onClick={() => handleNavItemClick("/profile")}
-                        className="w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium flex items-center gap-3"
+                      <Link
+                        to="/profile"
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center gap-3 w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium"
                       >
                         {userPic ? (
                           <div className="w-[25px] h-[25px]">
                             <img
                               src={userPic}
-                              className="w-[50px] h-[25px] rounded-full"
+                              className="w-[25px] h-[25px] rounded-full object-cover"
+                              alt="Profile"
                             />
                           </div>
                         ) : (
-                          <UserCircleIcon
-                            className="size-6  transition-colors"
-                            onClick={handleMenuToggle}
-                          />
+                          <UserCircleIcon className="size-5 transition-colors" />
                         )}
                         Profile
-                      </button>
+                      </Link>
                     </li>
                     <li>
-                      <button
-                        onClick={() => handleNavItemClick("/profileupdate")}
-                        className="w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium flex items-center gap-3"
+                      <Link
+                        to="/profileupdate"
+                        onClick={() => {
+                          console.log("clicked profile update");
+                          setIsOpen(false);
+                        }}
+                        className="flex items-center gap-3 w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium"
                       >
                         <PencilSquareIcon className="size-5" />
                         Update Profile
-                      </button>
+                      </Link>
                     </li>
                   </ul>
                 </div>
 
                 <div className="p-4 border-t border-gray-200">
                   <button
-                    onClick={handleLogout}
+                    onClick={() => {
+                      setIsOpen(false);
+                      setTimeout(() => handleLogout(), 50);
+                    }}
                     className="w-full px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200 font-medium text-left"
                   >
                     Logout
@@ -397,7 +450,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
           )}
         </div>
 
-        <div className="   flex flex-row  items-center gap-8">
+        <div className="flex flex-row items-center gap-8">
           <Link to={"/userhome"}>
             <div
               className={`flex flex-row items-center gap-2 ${
@@ -425,14 +478,14 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
         </div>
 
         <div
-          className="w-full  flex items-center justify-center"
+          className="w-full flex items-center justify-center"
           onClick={() => {
             setMessageIsOpen(false);
             setNotifcationopen(false);
             setIsOpen(false);
           }}
         >
-          <ul className="hidden  w-3/4 flex-row gap-8 md:flex items-center relative">
+          <ul className="hidden w-3/4 flex-row gap-8 md:flex items-center relative">
             {isVisible && (
               <li
                 className={`${
@@ -449,7 +502,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
           <ul className="flex flex-row gap-5 items-center">
             <Link to={"/orders"}>
               <li
-                className={`font-medium text-lg p-3   rounded-xl cursor-pointer ${
+                className={`font-medium text-lg p-3 rounded-xl cursor-pointer ${
                   activeNav === "Orders" && `bg-[#3A5B22] text-white`
                 }`}
               >
@@ -458,13 +511,13 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
             </Link>
             <li className="cursor-pointer relative">
               <EnvelopeIcon
-                className="size-6  transition-colors"
+                className="size-6 transition-colors"
                 onClick={handleMessagesToggle}
               />
               {(isMessageOpen || closingMessages) && (
                 <div
                   ref={closeMessage}
-                  className={`absolute right-0 top-8 z-20 bg-white rounded-lg shadow-lg border w-80 ${
+                  className={`absolute right-0 top-8  bg-white rounded-lg shadow-lg border w-80 ${
                     closingMessages ? "animate-fade-out" : "animate-fade-in"
                   }`}
                 >
@@ -490,7 +543,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
                           <li
                             key={idx}
                             className="flex gap-3 items-start px-4 py-3 hover:bg-green-50 cursor-pointer transition-colors"
-                            onClick={() => Navigate(`/messages/${msg.chatId}`)}
+                            onClick={() => navigate(`/messages/${msg.chatId}`)}
                           >
                             <img
                               src={msg.avatar}
@@ -519,7 +572,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
 
                       <div
                         className="text-center py-2 border-t border-gray-100 text-sm text-[#3A5B22] hover:underline cursor-pointer"
-                        onClick={() => Navigate("/messages")}
+                        onClick={() => navigate("/messages")}
                       >
                         See All Messages
                       </div>
@@ -530,13 +583,13 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
             </li>
             <li className="cursor-pointer relative">
               <BellIcon
-                className="size-6  transition-colors"
+                className="size-6 transition-colors"
                 onClick={handleNotificationsToggle}
                 ref={closeNotification}
               />
               {(isnotificationopen || closingNotifications) && (
                 <div
-                  className={`notifications absolute right-0 top-8 z-20 bg-white rounded-lg shadow-lg border w-80 max-h-96 overflow-y-auto ${
+                  className={`notifications absolute right-0 top-8  bg-white rounded-lg shadow-lg border w-80 max-h-96 overflow-y-auto ${
                     closingNotifications
                       ? "animate-fade-out"
                       : "animate-fade-in"
@@ -583,27 +636,28 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
             </li>
             <li className="cursor-pointer relative" ref={profileClose}>
               {userPic ? (
-                <div className="w-[25px] h-[25px] " onClick={handleMenuToggle}>
+                <div className="w-[25px] h-[25px]" onClick={handleMenuToggle}>
                   <img
                     src={userPic}
-                    className="w-[50px] h-[25px] rounded-full"
+                    className="w-[25px] h-[25px] rounded-full object-cover"
+                    alt="Profile"
                   />
                 </div>
               ) : (
                 <UserCircleIcon
-                  className="size-6  transition-colors"
+                  className="size-6 transition-colors"
                   onClick={handleMenuToggle}
                 />
               )}
               {(isOpen || closingMenu) && (
                 <div
-                  className={`absolute right-0 top-8 z-20 bg-white rounded-lg shadow-lg border w-48 ${
+                  className={`absolute right-0 top-8  bg-white rounded-lg shadow-lg border w-48 ${
                     closingMenu ? "animate-fade-out" : "animate-fade-in"
                   }`}
                 >
                   <ul className="flex flex-col py-2">
                     <Link to={"/profile"}>
-                      <li className=" px-4 py-2 transition-colors cursor-pointer hover:bg-gray-100">
+                      <li className="px-4 py-2 transition-colors cursor-pointer hover:bg-gray-100">
                         <span className="font-medium cursor-pointer">
                           Profile
                         </span>
@@ -613,7 +667,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
                       </li>
                     </Link>
                     <Link to={"/profileupdate"}>
-                      <li className=" px-4 py-2 transition-colors cursor-pointer hover:bg-gray-100">
+                      <li className="px-4 py-2 transition-colors cursor-pointer hover:bg-gray-100">
                         <span className="font-medium cursor-pointer">
                           Update Profile
                         </span>
