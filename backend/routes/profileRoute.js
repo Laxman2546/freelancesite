@@ -10,6 +10,7 @@ import {
   Usertype,
   removeAccount,
   getfreelancerId,
+  getAllUser,
 } from "../controllers/profile.js";
 
 const upload = multer({ storage: storage });
@@ -30,4 +31,5 @@ router.post(
   freelanceUpdateprofile
 );
 router.post("/removeaccount", isloggedin, removeAccount);
+router.post("/getuser", isloggedin, getAllUser);
 export default router;

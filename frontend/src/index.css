@@ -9,3 +9,13 @@
 .slick-slide > div {
   margin-right: 25px;
 }
+
+.message::-webkit-scrollbar {
+  display: none;
+}
+
+
+.message {
+  -ms-overflow-style: none; 
+  scrollbar-width: none;
+}

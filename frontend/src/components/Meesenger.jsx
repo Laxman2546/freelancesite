@@ -4,13 +4,14 @@ import Loader from "../components/Loader";
 import FreelancerNavbar from "../components/FreelancerNavbar";
 import ClientNavbar from "../components/ClientNavbar";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { SendSharp } from "react-ionicons";
+import { io, Socket } from "socket.io-client";
+import { useEffect } from "react";
+import axios from "axios";
 
-const Meesenger = () => {
-  const [loading, setLoading] = useState(false);
-  const [clientData, setclientData] = useState();
-  const { user } = useAuth();
-  const [SearchFreelancer, setSearchFreelancer] = useState("");
-  console.log(user);
+
+
+
   return (
     <div className="w-full ">
       {loading && <Loader />}
@@ -26,7 +27,11 @@ const Meesenger = () => {
             <MagnifyingGlassIcon className="size-6 absolute left-8 text-gray-500" />
             <input
               type="text"
-              placeholder="Search conversations..."
+              placeholder={
+                user?.role === "freelancer"
+                  ? `Search Clients...`
+                  : `Search Freelancers...`
+              }
               className="w-full p-2  pl-9 font-medium border-2 border-[#d7d7d7]  outline-none rounded-xl"
               onChange={(e) => setSearchFreelancer(e.target.value)}
               value={SearchFreelancer}
@@ -94,39 +99,60 @@ const Meesenger = () => {
                 Today
               </span>
             </div>
-            <div className="w-full flex flex-col mt-5 gap-5 overflow-y-auto flex-1">
-              <div className="flex flex-row gap-2">
-                <img
-                  src={`${process.env.REACT_APP_BACKEND_URI}/profilePics/${user?.profile?.profilePic}`}
-                  alt="profilepic"
-                  className="w-[35px] h-[35px] rounded-full "
-                />
-                <div className="w-full flex flex-col gap-1">
-                  <div className="p-2 bg-gray-100 rounded-lg max-w-3/5 flex flex-col">
-                    <p className="text-wrap font-medium">
-                      Hi! I've reviewed your project requirements and I'm
-                      excited to work with you on this UI/UX design project.
-                    </p>
-                  </div>
-                  <span className="text-sm text-gray-500">10:00 AM</span>
+            <div className="message w-full flex flex-col mt-5 gap-5 overflow-y-auto flex-1 mb-5">
+              {messages.map((message, index) => (
+                <div className="w-full" key={index}>
+                  {message.senderId === user?.userId ? (
+                    <div className="flex justify-end flex-row gap-2 mr-8">
+                      <div className="p-2 bg-lime-800  rounded-lg max-w-3/5 flex flex-col">
+                        <p className="w-full text-wrap text-white font-medium">
+                          {message.textMessage}
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-row gap-2">
+                      <img
+                        src={`${process.env.REACT_APP_BACKEND_URI}/profilePics/${user?.profile?.profilePic}`}
+                        alt="profilepic"
+                        className="w-[35px] h-[35px] rounded-full "
+                      />
+                      <div className="w-full flex flex-col gap-1">
+                        <div className="p-2 bg-gray-100 rounded-lg max-w-3/5 flex flex-col">
+                          <p className="text-wrap font-medium">
+                            Hi! I've reviewed your project requirements and I'm
+                            excited to work with you on this UI/UX design
+                            project.
+                          </p>
+                        </div>
+                        <span className="text-sm text-gray-500">10:00 AM</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
-              <div className="flex justify-end flex-row gap-2">
-                <div className="p-2 bg-lime-800  rounded-lg max-w-3/5 flex flex-col">
-                  <p className="text-wrap text-white font-medium">
-                    That's great! I'd love to discuss the timeline and
-                    deliverables. When can we schedule a call?
-                  </p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
           <div className="w-full p-3 md:p-5 border-t border-[#d7d7d7] bg-white">
-            <div className="min-w-full">
+            <div className="min-w-full flex flex-row items-center justify-between gap-5">
               <input
+                onChange={(e) => setTextMessage(e.target.value)}
+                value={textMessage}
+                type="text"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleMessageSend();
+                  }
+                }}
                 placeholder="Type a message..."
-                className="w-full p-3 border border-[#d7d7d7] rounded-xl outline-none focus:border-lime-700"
+                className="w-full p-3 border border-[#afafaf] rounded-xl outline-none focus:border-lime-700"
               />
+              <div
+                className="p-3 bg-lime-800 rounded-xl flex  items-center justify-center active:scale-90 cursor-pointer"
+                onClick={() => handleMessageSend()}
+              >
+                <SendSharp color={"#fff"} height="25px" width="25px" />
+              </div>
             </div>
           </div>
         </div>

@@ -226,3 +226,27 @@ export const removeAccount = async (req, res) => {
       .json({ error: "Internal server error. Please try again later." });
   }
 };
+
+export const getAllUser = async (req, res) => {
+  const userId = req.user;
+  const role = req.body;
+  console.log(role);
+  if (!userId) {
+    return res.status(400).json({ error: "Invalid user ID in token" });
+  }
+  if (!role || role == "") {
+    return res.status(400).json({ error: "role is empty" });
+  }
+
+  try {
+    const fetchUser = await userModel.find(role);
+    console.log(fetchUser);
+    return res.status(200).json({
+      success: true,
+      fetchUser,
+    });
+  } catch (e) {
+    console.error("Profile fetch error:", e);
+    return res.status(500).json({ error: "something went wrong" });
+  }
+};

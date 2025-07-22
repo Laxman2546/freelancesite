@@ -10,7 +10,6 @@ const isloggedin = (req, res, next) => {
   try {
     const data = jwt.verify(token, process.env.SECRET_KEY);
     req.user = data;
-    console.log("token verified", data);
     next();
   } catch (err) {
     console.log("token not recevied", err);
