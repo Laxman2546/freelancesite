@@ -229,24 +229,39 @@ export const removeAccount = async (req, res) => {
 
 export const getAllUser = async (req, res) => {
   const userId = req.user;
-  const role = req.body;
+  const { role } = req.body;
   console.log(role);
   if (!userId) {
     return res.status(400).json({ error: "Invalid user ID in token" });
   }
-  if (!role || role == "") {
-    return res.status(400).json({ error: "role is empty" });
+  if (!role || role === "") {
+    return res.status(400).json({ error: "Role is empty" });
   }
 
   try {
-    const fetchUser = await userModel.find(role);
-    console.log(fetchUser);
+    const users = await userModel.find({ role });
+    const userIds = users.map((u) => u.userId);
+
+    let profiles = [];
+    if (role === "freelancer") {
+      profiles = await freelanceprofileModel.find({ userId: { $in: userIds } });
+    }
+
+    const userWithProfile = users.map((user) => {
+      const profile = profiles.find(
+        (p) => p.userId.toString() === user.userId.toString()
+      );
+      return {
+        ...user.toObject(),
+        profile: profile || null,
+      };
+    });
     return res.status(200).json({
       success: true,
-      fetchUser,
+      fetchUser: userWithProfile,
     });
   } catch (e) {
     console.error("Profile fetch error:", e);
-    return res.status(500).json({ error: "something went wrong" });
+    return res.status(500).json({ error: "Something went wrong" });
   }
 };

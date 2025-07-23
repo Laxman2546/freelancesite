@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
+import freelanceImg from "../assets/images/freelancer.png";
+import clientImg from "../assets/images/client.png";
 import Loader from "../components/Loader";
 import FreelancerNavbar from "../components/FreelancerNavbar";
 import ClientNavbar from "../components/ClientNavbar";
@@ -9,8 +11,92 @@ import { io, Socket } from "socket.io-client";
 import { useEffect } from "react";
 import axios from "axios";
 
+const Meesenger = () => {
+  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
+  const [clientData, setclientData] = useState(user || null);
+  const [SearchFreelancer, setSearchFreelancer] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [textMessage, setTextMessage] = useState("");
+  const [socket, setSocket] = useState(null);
+  const [role, setRole] = useState("");
+  const [usersList, setUsersList] = useState([]);
 
+  const userRole = () => {
+    const role = clientData?.role;
 
+    role === "freelancer" ? setRole("client") : setRole("freelancer");
+    getUserList();
+  };
+
+  const getUserList = async () => {
+    console.log(role);
+    setLoading(true);
+    try {
+      const getList = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URI}/profile/getuser`,
+        { role: role },
+        { withCredentials: true }
+      );
+      console.log("this is userslist", getList);
+      setUsersList(getList?.data?.fetchUser);
+    } catch (e) {
+      console.log("error occured while fetching usersList", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      userRole();
+      setclientData(user);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    const newSocket = io(
+      process.env.REACT_APP_BACKEND_URI || "http://localhost:3000",
+      {
+        withCredentials: true,
+      }
+    );
+
+    setSocket(newSocket);
+
+    newSocket.on("connect", () => {
+      console.log("Socket connected:", newSocket.id);
+      newSocket.emit("hello");
+    });
+
+    return () => {
+      newSocket.disconnect();
+    };
+  }, []);
+  const handleMessageSend = () => {
+    if (textMessage.trim()) {
+      const newMessage = {
+        senderId: user.userId,
+        textMessage: textMessage,
+      };
+
+      setMessages((prev) => [...prev, newMessage]);
+      socket.emit("sendMessage", newMessage);
+      setTextMessage("");
+    }
+  };
+
+  console.log("this is userslist", usersList);
+
+  const getProfilePic = (users) => {
+    const profilePicUrl = users?.profile?.profilePic
+      ? `${process.env.REACT_APP_BACKEND_URI}/profilePics/${users.profile.profilePic}`
+      : users.role === "freelancer"
+      ? freelanceImg
+      : clientImg;
+    console.log(profilePicUrl, "thisprofileurl");
+    return profilePicUrl;
+  };
 
   return (
     <div className="w-full ">
@@ -38,37 +124,42 @@ import axios from "axios";
             />
           </div>
 
-          <div className="flex flex-col w-full  mt-1.5 ">
-            <div className=" flex flex-row items-start  w-full gap-3  border-t-1 border-t-[#d7d7d7] p-3 md:p-5 bg-[#ccf99823] border-l-5 rounded-sm  border-lime-700">
-              <div className=" flex min-w-[50px] min-h-[50px] flex-col relative">
-                <img
-                  src={`${process.env.REACT_APP_BACKEND_URI}/profilePics/${user?.profile?.profilePic}`}
-                  alt="profilepic"
-                  className="w-[50px] h-[50px] rounded-full "
-                />
-                <span className="w-[15px] h-[15px] bg-green-400 rounded-full absolute right-0 bottom-0"></span>
-              </div>
+          <div className="flex flex-col w-full  mt-1.5 gap-3">
+            {usersList?.map((users, index) => (
+              <div
+                key={index}
+                className=" flex flex-row items-start  w-full gap-3  border-t-1 border-t-[#d7d7d7] p-3 md:p-5 bg-[#ccf99823] border-l-5 rounded-sm  border-lime-700 "
+              >
+                <div className=" flex min-w-[50px] min-h-[50px] flex-col relative">
+                  <img
+                    src={getProfilePic(users)}
+                    alt="profilepic"
+                    className="w-[50px] h-[50px] rounded-full "
+                  />
+                  <span className="w-[15px] h-[15px] bg-green-400 rounded-full absolute right-0 bottom-0"></span>
+                </div>
 
-              <div className="max-w-4/5 flex  flex-col">
-                <h1 className="font-medium">Harika</h1>
-                <p className="max-w-full  text-nowrap overflow-hidden text-ellipsis">
-                  Hello how are u my friend i miss u a lot can we have a dinner
-                  tonight?
-                </p>
-                <div className="w-full  flex flex-row  items-center justify-between">
-                  <div>
-                    <span className="text-sm mt-1 text-gray-500">
-                      webdeveloper
-                    </span>
-                  </div>
-                  <div>
-                    <p className="  w-[25px] h-[25px] flex  items-center justify-center   bg-lime-700 text-white rounded-full text-xs font-medium ">
-                      5
-                    </p>
+                <div className="max-w-4/5 flex  flex-col">
+                  <h1 className="font-medium">{users?.userName}</h1>
+                  <p className="max-w-full  text-nowrap overflow-hidden text-ellipsis">
+                    Hello how are u my friend i miss u a lot can we have a
+                    dinner tonight?
+                  </p>
+                  <div className="w-full  flex flex-row  items-center justify-between">
+                    <div>
+                      <span className="text-sm mt-1 text-gray-500">
+                        webdeveloper
+                      </span>
+                    </div>
+                    <div>
+                      <p className="  w-[25px] h-[25px] flex  items-center justify-center   bg-lime-700 text-white rounded-full text-xs font-medium ">
+                        5
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
         <div className="w-full flex flex-col h-full">
