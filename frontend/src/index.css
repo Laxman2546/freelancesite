@@ -10,12 +10,11 @@
   margin-right: 25px;
 }
 
-.message::-webkit-scrollbar {
+*::-webkit-scrollbar {
   display: none;
 }
 
-
-.message {
-  -ms-overflow-style: none; 
+* {
+  -ms-overflow-style: none;
   scrollbar-width: none;
 }

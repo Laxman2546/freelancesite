@@ -245,6 +245,12 @@ export const getAllUser = async (req, res) => {
     let profiles = [];
     if (role === "freelancer") {
       profiles = await freelanceprofileModel.find({ userId: { $in: userIds } });
+    } else if (role === "client") {
+      profiles = await freelanceprofileModel.find({
+        userId: { $in: userIds },
+      });
+    } else {
+      return res.status(400).json({ error: "Invalid role" });
     }
 
     const userWithProfile = users.map((user) => {

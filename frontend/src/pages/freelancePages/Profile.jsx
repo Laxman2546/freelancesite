@@ -33,6 +33,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [showError, setshowError] = useState(false);
   const [error, setError] = useState("something went wrong");
+  const [fetchedUser, setFetchedUser] = useState([]);
   const { user, checkAuth } = useAuth();
   const location = useLocation();
   useEffect(() => {
@@ -65,6 +66,7 @@ const Profile = () => {
       setuserName(result.data.fetchUser.userName);
       setEmailID(result.data.fetchUser.emailId);
       setUserdata(result.data.profile, result.data.fetchUser);
+      setFetchedUser(result.data.fetchUser);
     } catch (e) {
       console.error("Something went wrong with getUser:", e);
     } finally {
@@ -144,8 +146,8 @@ const Profile = () => {
     }
   };
   const navigate = useNavigate();
-  const handleUpdate = () => {
-    navigate("/profileupdate");
+  const handleUpdate = (type) => {
+    type === "profile" ? navigate("/profileupdate") : navigate("/userhome");
   };
 
   useEffect(() => {
@@ -155,6 +157,7 @@ const Profile = () => {
     }, 3000);
     return () => clearTimeout(timer);
   }, [showError, error]);
+
   return (
     <main className="w-full h-full">
       <div>
@@ -177,21 +180,41 @@ const Profile = () => {
 
         {showUpdate && (
           <div className="w-full min-h-full md:h-screen flex justify-center items-start bg-black/30 absolute top-0 left-0 z-50 p-5">
-            <div className="bg-white rounded-xl shadow-xl p-6 max-w-md w-full flex flex-col items-center text-center gap-4">
-              <h1 className="text-2xl font-semibold text-lime-800">
-                Oops! looks like Your profile isn’t complete.
-              </h1>
-              <p className="text-gray-700">
-                We couldn’t find enough information to show your profile. Please
-                update your details to continue.
-              </p>
-              <button
-                onClick={handleUpdate}
-                className="bg-lime-800 text-white px-6 py-2 rounded-lg hover:bg-lime-700 transition cursor-pointer"
-              >
-                Update Profile
-              </button>
-            </div>
+            {user?.userId === fetchedUser?.userId ? (
+              <div className="bg-white rounded-xl shadow-xl p-6 max-w-md w-full flex flex-col items-center text-center gap-4">
+                <h1 className="text-2xl font-semibold text-lime-800">
+                  Oops! looks like Your profile isn’t complete.
+                </h1>
+                <p className="text-gray-700">
+                  We couldn’t find enough information to show your profile.
+                  Please update your details to continue.
+                </p>
+                <button
+                  onClick={() => handleUpdate("profile")}
+                  className="bg-lime-800 text-white px-6 py-2 rounded-lg hover:bg-lime-700 transition cursor-pointer"
+                >
+                  Update Profile
+                </button>
+              </div>
+            ) : (
+              <div className="bg-white rounded-xl shadow-xl p-6 max-w-md w-full flex flex-col items-center text-center gap-4">
+                <h1 className="text-2xl font-semibold text-lime-800">
+                  Oops! looks like{" "}
+                  {user.role === "client" ? "freelancer" : "client"} not updated
+                  profile
+                </h1>
+                <p className="text-gray-700">
+                  We couldn’t find enough information to show like{" "}
+                  {user.role === "client" ? "freelancer" : "client"} profile.
+                </p>
+                <button
+                  onClick={() => handleUpdate("home")}
+                  className="bg-lime-800 text-white px-6 py-2 rounded-lg hover:bg-lime-700 transition cursor-pointer"
+                >
+                  Go to homePage
+                </button>
+              </div>
+            )}
           </div>
         )}
 

@@ -124,7 +124,6 @@ const PostedgigDetails = () => {
   };
 
   const handlefreelanceProfile = () => {
-    console.log("clicked");
     navigation(`/profile?id=${creatordata?.fetchUser?.userId}`);
   };
 
