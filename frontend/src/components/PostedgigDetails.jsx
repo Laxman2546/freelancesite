@@ -126,6 +126,9 @@ const PostedgigDetails = () => {
   const handlefreelanceProfile = () => {
     navigation(`/profile?id=${creatordata?.fetchUser?.userId}`);
   };
+  const handleContact = (userId) => {
+    navigation(`/messages?id=${userId}`);
+  };
 
   return (
     <div className="w-full min-h-screen">
@@ -315,9 +318,12 @@ const PostedgigDetails = () => {
                 <p>Loading price info...</p>
               )}
             </div>
-            <div className=" flex flex-row items-end h-auto mt-5 md:h-full   text-center">
+            <div
+              className=" flex flex-row items-end h-auto mt-5 md:h-full   text-center"
+              onClick={() => handleContact(creatordata?.fetchUser?.userName)}
+            >
               <button className="w-full mb-5 rounded-2xl flex flex-row items-center justify-center gap-3  p-3 bg-lime-700 text-white active:scale-95 cursor-pointer">
-                Contact me
+                Message me
                 <PaperAirplaneIcon className="size-5 text-white -rotate-50" />
               </button>
             </div>
