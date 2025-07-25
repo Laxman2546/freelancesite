@@ -320,7 +320,7 @@ const PostedgigDetails = () => {
             </div>
             <div
               className=" flex flex-row items-end h-auto mt-5 md:h-full   text-center"
-              onClick={() => handleContact(creatordata?.fetchUser?.userName)}
+              onClick={() => handleContact(creatordata?.fetchUser?.userId)}
             >
               <button className="w-full mb-5 rounded-2xl flex flex-row items-center justify-center gap-3  p-3 bg-lime-700 text-white active:scale-95 cursor-pointer">
                 Message me

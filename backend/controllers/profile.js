@@ -129,7 +129,7 @@ export const getfreelanceProfile = async (req, res) => {
     });
   }
 };
-export const getfreelancerId = async (req, res) => {
+export const getfreelancerById = async (req, res) => {
   try {
     const { userId } = req.body;
 
@@ -229,28 +229,41 @@ export const removeAccount = async (req, res) => {
 
 export const getAllUser = async (req, res) => {
   const userId = req.user;
-  const { role } = req.body;
-  console.log(role);
+  const { role, singleUserId } = req.body;
+
   if (!userId) {
     return res.status(400).json({ error: "Invalid user ID in token" });
   }
-  if (!role || role === "") {
-    return res.status(400).json({ error: "Role is empty" });
-  }
 
   try {
-    const users = await userModel.find({ role });
-    const userIds = users.map((u) => u.userId);
-
+    let users = [];
     let profiles = [];
-    if (role === "freelancer") {
-      profiles = await freelanceprofileModel.find({ userId: { $in: userIds } });
-    } else if (role === "client") {
+
+    if (role === "freelancer" || role === "client") {
+      users = await userModel.find({ role });
+      const userIds = users.map((u) => u.userId);
+
       profiles = await freelanceprofileModel.find({
         userId: { $in: userIds },
       });
+    } else if (singleUserId) {
+      const singleUser = await userModel.findOne({ userId: singleUserId });
+      if (!singleUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      users = [singleUser];
+
+      const profile = await freelanceprofileModel.findOne({
+        userId: singleUserId,
+      });
+      if (profile) {
+        profiles = [profile];
+      }
     } else {
-      return res.status(400).json({ error: "Invalid role" });
+      return res
+        .status(400)
+        .json({ error: "Role or singleUserId must be provided" });
     }
 
     const userWithProfile = users.map((user) => {
@@ -262,6 +275,7 @@ export const getAllUser = async (req, res) => {
         profile: profile || null,
       };
     });
+
     return res.status(200).json({
       success: true,
       fetchUser: userWithProfile,

@@ -9,14 +9,14 @@ import {
   getfreelanceProfile,
   Usertype,
   removeAccount,
-  getfreelancerId,
+  getfreelancerById,
   getAllUser,
 } from "../controllers/profile.js";
 
 const upload = multer({ storage: storage });
 
 router.get("/", isloggedin, getfreelanceProfile);
-router.post("/creator", isloggedin, getfreelancerId);
+router.post("/creator", isloggedin, getfreelancerById);
 router.post("/usertype", isloggedin, Usertype);
 router.post(
   "/freelanceProfile",

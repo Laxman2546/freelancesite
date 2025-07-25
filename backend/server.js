@@ -217,7 +217,6 @@ io.on("connection", (socket) => {
       return;
     }
 
-    // Update status in map
     const userData = users.get(socket.userId);
     if (userData) {
       userData.status = status;
@@ -231,7 +230,6 @@ io.on("connection", (socket) => {
       onlineUsers.delete(socket.userId);
     }
 
-    // Notify all rooms user is part of
     if (userRooms.has(socket.userId)) {
       userRooms.get(socket.userId).forEach((roomId) => {
         socket.to(roomId).emit("userStatusUpdate", {
@@ -242,7 +240,6 @@ io.on("connection", (socket) => {
       });
     }
 
-    // Optional: broadcast globally
     broadcastUserStatus(socket.userId, status);
   });
 

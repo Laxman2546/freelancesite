@@ -31,6 +31,7 @@ const Messenger = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState(new Set());
   const [lastMessages, setLastMessages] = useState({});
+  const [freelancerId, setfreelancerId] = useState("");
 
   const navigate = useNavigate();
   const messagesEndRef = useRef(null);
@@ -46,8 +47,8 @@ const Messenger = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const id = searchParams.get("id");
-    if (id && id.trim() !== "") {
-      setSearchFreelancer(id.slice(0, 2));
+    if (id) {
+      setfreelancerId(id);
     }
   }, [location.search]);
 
@@ -66,26 +67,36 @@ const Messenger = () => {
     }
 
     setRole(targetRole);
-    getUserList(targetRole);
+
+    if (freelancerId) {
+      getUserList(null, freelancerId); 
+    } else {
+      getUserList(targetRole);
+    }
   };
 
-  const getUserList = async (targetRole) => {
-    if (!targetRole) return;
-
+  const getUserList = async (targetRole, singleUserId = null) => {
     setLoading(true);
+
     try {
-      const getList = await axios.post(
+      const requestBody = singleUserId
+        ? { singleUserId }
+        : { role: targetRole };
+
+      const response = await axios.post(
         `${process.env.REACT_APP_BACKEND_URI}/profile/getuser`,
-        { role: targetRole },
+        requestBody,
         { withCredentials: true }
       );
-      setUsersList(getList?.data?.fetchUser || []);
+
+      const fetchedUsers = response?.data?.fetchUser || [];
+      setUsersList(fetchedUsers);
 
       const initialOnlineUsers = new Set();
-      getList?.data?.fetchUser?.forEach((fetchedUser) => {});
+      fetchedUsers.forEach((user) => {});
       setOnlineUsers(initialOnlineUsers);
-    } catch (e) {
-      console.error("Error occurred while fetching usersList", e);
+    } catch (error) {
+      console.error("Error fetching users list:", error);
     } finally {
       setLoading(false);
     }
@@ -275,10 +286,9 @@ const Messenger = () => {
   };
 
   useEffect(() => {
-    if (user) {
-      setClientData(user);
-      determineUserRole(user);
-    }
+    if (!user) return;
+    setClientData(user);
+    determineUserRole(user);
   }, [user]);
 
   const getProfilePic = (users) => {
