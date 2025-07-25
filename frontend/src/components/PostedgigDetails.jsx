@@ -69,7 +69,6 @@ const PostedgigDetails = () => {
         { withCredentials: true }
       );
       const userData = fetchUser?.data;
-      console.log("this is masmsasadasda", userData);
       setclientData(userData);
     } catch (e) {
       console.error("Something went wrong with getUser:", e);
@@ -79,8 +78,8 @@ const PostedgigDetails = () => {
   };
 
   const handlePlaceOrder = async () => {
-    setShowOrder(false);
-    setShowConfirmation(true);
+    handleOrder();
+
     console.log("place order");
   };
 
@@ -100,11 +99,27 @@ const PostedgigDetails = () => {
       );
       const userData = fetchUser?.data;
       setcreatorData(userData);
-      console.log("this is user data", fetchUser.data.fetchUser);
     } catch (e) {
       console.error("Something went wrong with getUser:", e);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleOrder = async () => {
+    setShowOrder(false);
+    setShowConfirmation(true);
+    try {
+      const gigId = getId();
+      const freelancerId = creatordata?.fetchUser?.userId;
+      const placeOrder = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URI}/orders`,
+        { gigId, freelancerId },
+        { withCredentials: true }
+      );
+      console.log(placeOrder);
+    } catch (e) {
+      console.log("something went wrong while plcing order", e);
     }
   };
 
@@ -144,7 +159,6 @@ const PostedgigDetails = () => {
   };
 
   const handleOrders = () => {
-    console.log(data.pricing[isActivePrice.toLowerCase()]);
     setShowOrder(true);
   };
 
@@ -161,6 +175,7 @@ const PostedgigDetails = () => {
     const messageTimer = setTimeout(() => {
       setShowMessage(true);
     }, 3000);
+
     return () => clearTimeout(messageTimer);
   }, [showConfirmation]);
 

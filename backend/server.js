@@ -12,6 +12,7 @@ import profileRoute from "./routes/profileRoute.js";
 import gigRoute from "./routes/gigRoute.js";
 import messageRoute, { saveMessage } from "./routes/messageRoute.js";
 import connectDB from "./config/mongooseConnection.js";
+import orderRoute from "./routes/ordersRoute.js";
 
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
@@ -36,6 +37,7 @@ app.use("/", authRoute);
 app.use("/profile", profileRoute);
 app.use("/gig", gigRoute);
 app.use("/messages", messageRoute);
+app.use("/orders", orderRoute);
 
 const io = new Server(server, {
   cors: {
