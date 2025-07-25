@@ -1,11 +1,12 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loader from "./Loader";
 import FreelancerNavbar from "./FreelancerNavbar";
 import { Cart, Star, TimeSharp, Eye, PencilSharp } from "react-ionicons";
 import { PaperAirplaneIcon, PencilSquareIcon } from "@heroicons/react/24/solid";
 import Pricing from "../components/Pricing";
+import Success from "../assets/images/Success.gif";
 import ClientNavbar from "./ClientNavbar";
 const PostedgigDetails = () => {
   const [data, setData] = useState([]);
@@ -13,6 +14,10 @@ const PostedgigDetails = () => {
   const [isActivePrice, setActivePrice] = useState("Basic");
   const [creatordata, setcreatorData] = useState([]);
   const [clientData, setclientData] = useState();
+  const [showOrder, setShowOrder] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
+
   const location = useLocation();
   const navigation = useNavigate();
   const getId = () => {
@@ -56,6 +61,7 @@ const PostedgigDetails = () => {
       setLoading(false);
       return;
     }
+
     try {
       const fetchUser = await axios.post(
         `${process.env.REACT_APP_BACKEND_URI}/profile/creator`,
@@ -71,6 +77,13 @@ const PostedgigDetails = () => {
       setLoading(false);
     }
   };
+
+  const handlePlaceOrder = async () => {
+    setShowOrder(false);
+    setShowConfirmation(true);
+    console.log("place order");
+  };
+
   const getUser = async (userId) => {
     setLoading(true);
 
@@ -130,6 +143,27 @@ const PostedgigDetails = () => {
     navigation(`/messages?id=${userId}`);
   };
 
+  const handleOrders = () => {
+    console.log(data.pricing[isActivePrice.toLowerCase()]);
+    setShowOrder(true);
+  };
+
+  useEffect(() => {
+    if (showConfirmation) {
+      const timer = setTimeout(() => {
+        setShowConfirmation(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [showConfirmation]);
+
+  useEffect(() => {
+    const messageTimer = setTimeout(() => {
+      setShowMessage(true);
+    }, 3000);
+    return () => clearTimeout(messageTimer);
+  }, [showConfirmation]);
+
   return (
     <div className="w-full min-h-screen">
       {loading && <Loader />}
@@ -139,6 +173,68 @@ const PostedgigDetails = () => {
       ) : (
         <ClientNavbar isVisible={true} />
       )}
+
+      {showConfirmation && (
+        <div className="w-full min-h-full md:h-screen flex justify-center items-center bg-black/60 fixed top-0 left-0 z-50 p-5 ">
+          <div className="w-full max-w-md bg-white rounded-2xl p-6 shadow-xl">
+            <img
+              src={Success}
+              alt="Success"
+              className="w-[150px] h-[150px] mx-auto"
+            />
+            {showMessage && (
+              <p className="text-lg font-medium mx-auto text-center">
+                Your order has been successfully placed
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {showOrder && (
+        <div>
+          <div className="w-full min-h-full md:h-screen flex justify-center items-center bg-black/60 fixed top-0 left-0 z-50 p-5 ">
+            <div className="w-full max-w-md bg-white rounded-2xl p-6 shadow-xl">
+              <p className="text-xl font-bold text-gray-800 mb-4">
+                Confirm Your Order
+              </p>
+
+              <div className="border  rounded-xl p-4 mb-6">
+                <h2 className="text-lg font-semibold text-lime-700 mb-2">
+                  {data.pricing[isActivePrice.toLowerCase()].priceTitle}
+                </h2>
+                <p className="text-sm text-gray-600 mb-1">
+                  Price: {data.pricing[isActivePrice.toLowerCase()].price}
+                </p>
+                <p className="text-sm text-gray-600 mb-1">
+                  Delivery Time:
+                  {data.pricing[isActivePrice.toLowerCase()].deliveryTime} days
+                </p>
+                <p className="text-sm text-gray-600 mb-1">
+                  Features:&nbsp;
+                  {data.pricing[isActivePrice.toLowerCase()].priceFeatures} days
+                </p>
+              </div>
+
+              <div className="flex justify-end gap-4">
+                <button
+                  onClick={() => setShowOrder(false)}
+                  className="px-4 py-2 rounded-lg border border-gray-400 text-gray-700 hover:bg-gray-100 transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handlePlaceOrder()}
+                  className="px-4 py-2 rounded-lg bg-lime-700 text-white hover:bg-lime-800 transition text-sm md:text-md cursor-pointer"
+                >
+                  Confirm Order
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="w-full min-h-screen flex flex-col  bg-[#F4F2EE] p-2 md:p-8 ">
         <div className="w-full flex flex-row justify-between pr-5">
           <div className="flex flex-col  gap-5">
@@ -269,40 +365,24 @@ const PostedgigDetails = () => {
               </div>
             </div>
           </div>
-          <div className="w-full md:w-1/3 max-w-[700px] h-auto max-h-[500px] md:sticky top-5 flex flex-col bg-white rounded-2xl p-2 md:p-6">
-            <div className="w-full flex flex-row justify-between mt-3 border-b-2 border-gray-300">
-              <div
-                className={`font-semibold cursor-pointer  ${
-                  isActivePrice === "Basic"
-                    ? "text-lime-800 border-b-3"
-                    : "text-black"
-                }`}
-                onClick={() => setActivePrice("Basic")}
-              >
-                Basic
-              </div>
-              <div
-                className={`font-semibold cursor-pointer ${
-                  isActivePrice === "Standard"
-                    ? "text-lime-800 border-b-3"
-                    : "text-black"
-                }`}
-                onClick={() => setActivePrice("Standard")}
-              >
-                Standard
-              </div>
-              <div
-                className={`font-semibold cursor-pointer ${
-                  isActivePrice === "Premium"
-                    ? "text-lime-800 border-b-3"
-                    : "text-black"
-                }`}
-                onClick={() => setActivePrice("Premium")}
-              >
-                Premium
-              </div>
+          <div className="w-full md:w-1/3 max-w-[700px] h-auto max-h-[500px] md:sticky top-5 flex flex-col bg-white rounded-2xl p-4 shadow-lg">
+            <div className="w-full flex justify-between border-b border-gray-300 pb-2">
+              {["Basic", "Standard", "Premium"].map((plan) => (
+                <div
+                  key={plan}
+                  className={`text-sm md:text-base font-semibold pb-2 px-1 cursor-pointer transition-all duration-200 ${
+                    isActivePrice === plan
+                      ? "text-lime-700 border-b-4 border-lime-700"
+                      : "text-gray-700 hover:text-lime-700"
+                  }`}
+                  onClick={() => setActivePrice(plan)}
+                >
+                  {plan}
+                </div>
+              ))}
             </div>
-            <div className="mt-5">
+
+            <div className="mt-6">
               {data?.pricing?.basic ? (
                 <Pricing
                   title={data.pricing[isActivePrice.toLowerCase()].priceTitle}
@@ -315,16 +395,26 @@ const PostedgigDetails = () => {
                   }
                 />
               ) : (
-                <p>Loading price info...</p>
+                <p className="text-center text-gray-500">
+                  Loading price info...
+                </p>
               )}
             </div>
-            <div
-              className=" flex flex-row items-end h-auto mt-5 md:h-full   text-center"
-              onClick={() => handleContact(creatordata?.fetchUser?.userId)}
-            >
-              <button className="w-full mb-5 rounded-2xl flex flex-row items-center justify-center gap-3  p-3 bg-lime-700 text-white active:scale-95 cursor-pointer">
-                Message me
-                <PaperAirplaneIcon className="size-5 text-white -rotate-50" />
+
+            <div className="mt-6 space-y-4">
+              <button
+                onClick={() => handleOrders(isActivePrice)}
+                className="w-full flex items-center justify-center gap-2 px-5 py-3 cursor-pointer  rounded-xl bg-lime-700 text-white text-sm md:text-base font-medium hover:bg-lime-800 active:scale-95 transition-all"
+              >
+                Place Order
+              </button>
+
+              <button
+                onClick={() => handleContact(creatordata?.fetchUser?.userId)}
+                className="w-full flex items-center justify-center gap-2 px-5 py-3 cursor-pointer rounded-xl bg-white border border-lime-700 text-lime-700 font-medium hover:bg-lime-50 active:scale-95 transition-all"
+              >
+                Message Me
+                <PaperAirplaneIcon className="size-5 -rotate-45 text-lime-700" />
               </button>
             </div>
           </div>

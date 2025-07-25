@@ -1,4 +1,3 @@
-// server.js or index.js
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -21,32 +20,23 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const server = http.createServer(app);
 
-// DB connection
 connectDB();
 
-// CORS setup
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://gigconnect.vercel.app",
-  process.env.FRONTEND_URL,
-].filter(Boolean);
+const allowedOrigins = ["http://localhost:5173"];
 
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Static file serving
 app.use("/profilePics", express.static(path.join(__dirname, "profilePics")));
 app.use("/thumbnails", express.static(path.join(__dirname, "thumbnails")));
 
-// Routes
 app.use("/", authRoute);
 app.use("/profile", profileRoute);
 app.use("/gig", gigRoute);
 app.use("/messages", messageRoute);
 
-// Socket.io setup
 const io = new Server(server, {
   cors: {
     origin: allowedOrigins,
@@ -57,7 +47,6 @@ const io = new Server(server, {
   pingInterval: 25000,
 });
 
-// In-memory maps
 const users = new Map();
 const userRooms = new Map();
 const onlineUsers = new Set();
@@ -94,8 +83,6 @@ io.on("connection", (socket) => {
     socket.userId = userId;
     onlineUsers.add(userId);
 
-    console.log(`✅ ${userId} connected with socket ${socket.id}`);
-
     socket.emit("userRegistered", { userId, socketId: socket.id });
     broadcastUserStatus(userId, "online");
   });
@@ -117,7 +104,6 @@ io.on("connection", (socket) => {
     if (status === "online") onlineUsers.add(userId);
     else onlineUsers.delete(userId);
 
-    console.log(`📊 ${userId} is now ${status}`);
     broadcastUserStatus(userId, status);
   });
 
@@ -260,8 +246,6 @@ io.on("connection", (socket) => {
         });
         userRooms.delete(userId);
       }
-
-      console.log(`❌ ${userId} disconnected`);
     }
   });
 
@@ -270,14 +254,10 @@ io.on("connection", (socket) => {
   });
 });
 
-// Graceful shutdown
 process.on("SIGTERM", () => {
-  server.close(() => {
-    console.log("🔴 Server closed on SIGTERM");
-  });
+  server.close(() => {});
 });
 
-// Start the server
 const port = process.env.PORT_NUMBER || 5000;
 server.listen(port, () => {
   console.log(`🚀 Server running on port ${port}`);
