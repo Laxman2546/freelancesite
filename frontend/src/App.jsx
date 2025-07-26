@@ -14,6 +14,7 @@ import Gigupdate from "./pages/freelancePages/Gigupdate.jsx";
 import PostedgigDetails from "./components/PostedgigDetails.jsx";
 import SearchResults from "./pages/clientPages/SearchResults.jsx";
 import Messenger from "./components/Meesenger.jsx";
+import OrderDetails from "./pages/freelancePages/OrderDetails.jsx";
 gsap.registerPlugin(useGSAP);
 
 const App = () => {
@@ -31,6 +32,7 @@ const App = () => {
       <Route path="/postdetails" element={<PostedgigDetails />} />
       <Route path="/searchresults" element={<SearchResults />} />
       <Route path="/messages" element={<Messenger />} />
+      <Route path="/orderdetails" element={<OrderDetails />} />
     </Routes>
   );
 };

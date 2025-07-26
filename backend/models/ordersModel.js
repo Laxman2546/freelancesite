@@ -8,9 +8,11 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
     freelancerId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
       required: true,
     },
+
     clientId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
