@@ -18,11 +18,15 @@ const Orders = () => {
   );
 
   const navigate = useNavigate();
+  useEffect(() => {
+    checkAuth(); 
+  }, []);
 
   useEffect(() => {
-    checkAuth();
-    getOrders();
-  }, []);
+    if (user) {
+      getOrders(user); 
+    }
+  }, [user]);
   useEffect(() => {
     if (!showError) return;
     const timer = setTimeout(() => {
@@ -31,11 +35,15 @@ const Orders = () => {
     return () => clearTimeout(timer);
   }, [showError, error]);
 
-  const getOrders = async () => {
+  const getOrders = async (user) => {
     setLoading(true);
+    const userrole = user?.role;
+    console.log(userrole);
     try {
       const userOrders = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URI}/orders/getorders`,
+        `${process.env.REACT_APP_BACKEND_URI}/orders/${
+          userrole === "freelancer" ? "getfreelancerorders" : "getorders"
+        }`,
         {
           withCredentials: true,
         }

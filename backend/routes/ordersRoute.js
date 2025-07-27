@@ -2,10 +2,17 @@ import express from "express";
 const router = express.Router();
 
 import isloggedin from "../middelware/isloggedIn.js";
-import { createOrder, getOrders, getOne } from "../controllers/orders.js";
+import {
+  createOrder,
+  getOrders,
+  getOne,
+  getFreelancerOrders,
+  updateorderData,
+} from "../controllers/orders.js";
 
 router.post("/", isloggedin, createOrder);
 router.post("/getone", isloggedin, getOne);
 router.get("/getorders", isloggedin, getOrders);
-
+router.get("/getfreelancerorders", isloggedin, getFreelancerOrders);
+router.post("/update", isloggedin, updateorderData);
 export default router;

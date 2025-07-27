@@ -416,7 +416,15 @@ const PostedgigDetails = () => {
               )}
             </div>
 
-            <div className="mt-6 space-y-4">
+            <div
+              className={`mt-6 space-y-4
+              ${
+                clientData?.fetchUser?.role === "freelancer"
+                  ? "hidden"
+                  : "block"
+              }
+              `}
+            >
               <button
                 onClick={() => handleOrders(isActivePrice)}
                 className="w-full flex items-center justify-center gap-2 px-5 py-3 cursor-pointer  rounded-xl bg-lime-700 text-white text-sm md:text-base font-medium hover:bg-lime-800 active:scale-95 transition-all"

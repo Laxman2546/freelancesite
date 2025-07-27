@@ -68,14 +68,13 @@ export const getOne = async (req, res) => {
   try {
     const { userId } = req.user;
     const { orderId } = req.body;
-    console.log(orderId);
     if (!userId) {
       return res.status(400).json({ error: "Please login again" });
     }
     if (!orderId) {
       return res.status(400).json({ error: "no order id found" });
     }
-    const getOrders = await orderModel.findById( orderId );
+    const getOrders = await orderModel.findById(orderId);
     return res.status(200).json({ getOrders });
   } catch (e) {
     console.log(e);
@@ -83,5 +82,44 @@ export const getOne = async (req, res) => {
       error: "something went wrong while getting orders",
       e,
     });
+  }
+};
+
+export const getFreelancerOrders = async (req, res) => {
+  try {
+    const { userId } = req.user;
+    if (!userId) {
+      return res.status(400).json({ error: "Please login again" });
+    }
+    const getOrders = await orderModel
+      .find({ freelancerId: userId })
+      .populate("gigId");
+    return res.status(200).json({ getOrders });
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({
+      error: "something went wrong while getting orders",
+      e,
+    });
+  }
+};
+
+export const updateorderData = async (req, res) => {
+  try {
+    const { requirements } = req.body;
+    const { orderId } = req.body;
+    if (!orderId) {
+      return res.status(400).json({ error: "no order id found" });
+    }
+    const orderUpdate = orderModel.findByIdAndUpdate(
+      orderId,
+      { requirements },
+      { new: true }
+    );
+    console.log(orderUpdate);
+    return res.status(200).json({ orderUpdate });
+  } catch (e) {
+    console.log("error in the update", e);
+    return res.status(500).json({ error: "something went wrong" });
   }
 };
