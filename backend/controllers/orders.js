@@ -111,7 +111,7 @@ export const updateorderData = async (req, res) => {
     if (!orderId) {
       return res.status(400).json({ error: "no order id found" });
     }
-    const orderUpdate = orderModel.findByIdAndUpdate(
+    const orderUpdate = await orderModel.findByIdAndUpdate(
       orderId,
       { requirements },
       { new: true }
@@ -120,6 +120,6 @@ export const updateorderData = async (req, res) => {
     return res.status(200).json({ orderUpdate });
   } catch (e) {
     console.log("error in the update", e);
-    return res.status(500).json({ error: "something went wrong" });
+    return res.status(500).json({ error: "something went wrong", e });
   }
 };

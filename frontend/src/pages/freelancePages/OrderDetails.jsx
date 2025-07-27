@@ -66,16 +66,25 @@ const OrderDetails = () => {
     }
   };
 
-  // const handleTextUpdate = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const updateRequirements = axios.post
-  //   } catch (e) {
-  //     console.error("Failed to update specs:", e);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  const handleTextUpdate = async () => {
+    try {
+      setLoading(true);
+      const updateRequirements = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URI}/orders/update`,
+        {
+          requirements: specsText,
+          orderId: fetchId("order"),
+        },
+        { withCredentials: true }
+      );
+      fetchOrder();
+      setspecsText("");
+    } catch (e) {
+      console.error("Failed to update specs:", e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchOrder();
@@ -296,7 +305,7 @@ const OrderDetails = () => {
                 ) : (
                   <div className=" p-3 sm:p-4 rounded-lg flex flex-col gap-5 relative">
                     <input
-                      className="text-black w-full p-3 rounded-lg outline-none border-1 border-gray-400"
+                      className="text-black w-full p-3 pr-14 rounded-lg outline-none border-1 border-gray-400"
                       type="text"
                       placeholder="Enter your specifications"
                       value={specsText}
