@@ -5,6 +5,7 @@ import FreelancerNavbar from "../../components/FreelancerNavbar";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { SaveSharp } from "react-ionicons";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
 const OrderDetails = () => {
   const { user } = useAuth();
@@ -168,6 +169,7 @@ const OrderDetails = () => {
       const res = await axios.post(
         `${process.env.REACT_APP_BACKEND_URI}/orders/update`,
         {
+          status: "delivered",
           files: files,
           orderId: fetchId("order"),
         },
@@ -177,6 +179,28 @@ const OrderDetails = () => {
       fetchOrder();
     } catch (e) {
       console.error("Failed to update delivery:", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const removeLink = async (linkToRemove) => {
+    try {
+      setLoading(true);
+      const updatedFiles = orderData.delivery.files.filter(
+        (file) => file !== linkToRemove
+      );
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_URI}/orders/update`,
+        {
+          files: updatedFiles,
+          orderId: fetchId("order"),
+        },
+        { withCredentials: true }
+      );
+      fetchOrder();
+    } catch (e) {
+      console.error("Failed to remove link:", e);
     } finally {
       setLoading(false);
     }
@@ -404,8 +428,9 @@ const OrderDetails = () => {
                   Delivery
                 </h2>
 
-                {user?.role === "freelancer" &&
-                  orderData.status === "accepted" && (
+                {(user?.role === "freelancer" &&
+                  orderData.status === "accepted") ||
+                  ("delivered" && (
                     <div className="p-3 relative">
                       <input
                         type="text"
@@ -423,7 +448,7 @@ const OrderDetails = () => {
                         </div>
                       )}
                     </div>
-                  )}
+                  ))}
 
                 {orderData?.delivery?.files?.length > 0 ? (
                   <div className="space-y-2 mt-4">
@@ -446,6 +471,12 @@ const OrderDetails = () => {
                         <span className="text-gray-700 text-sm sm:text-base break-all">
                           {file}
                         </span>
+                        {user?.role === "freelancer" && (
+                          <XMarkIcon
+                            className="size-5 text-black font-bold cursor-pointer"
+                            onClick={() => removeLink(file)}
+                          />
+                        )}
                       </div>
                     ))}
                   </div>

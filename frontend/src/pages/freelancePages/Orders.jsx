@@ -204,11 +204,12 @@ const Orders = () => {
                             : ""
                         }  cursor-pointer`}
                       >
-                        {order.status === "pending"
+                        {order.status === "pending" ||
+                        ("cancelled" && order.status !== "delivered")
                           ? "Accept Order"
                           : order.status === "accepted"
                           ? "Cancel Order"
-                          : "Accept Order"}
+                          : ""}
                       </button>
                     </div>
                   )}
