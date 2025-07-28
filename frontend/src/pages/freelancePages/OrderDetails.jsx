@@ -11,6 +11,8 @@ const OrderDetails = () => {
   const [loading, setLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
   const [clientData, setClientData] = useState([]);
+  const [deliveryFiles, setDeliveryFiles] = useState([]);
+  const [deliveryLinks, setDeliveryLinks] = useState("");
   const [specsText, setspecsText] = useState("");
   const location = useLocation();
 
@@ -151,6 +153,35 @@ const OrderDetails = () => {
     }
   };
 
+  const handleSaveLink = () => {
+    if (!deliveryLinks.trim()) return;
+    const updatedFiles = [...deliveryFiles, deliveryLinks];
+    setDeliveryFiles(updatedFiles);
+    setDeliveryLinks("");
+    handleDelivery(updatedFiles);
+  };
+
+  const handleDelivery = async (files) => {
+    console.log("these are delivery files", files);
+    try {
+      setLoading(true);
+      const res = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URI}/orders/update`,
+        {
+          files: files,
+          orderId: fetchId("order"),
+        },
+        { withCredentials: true }
+      );
+      console.log(res);
+      fetchOrder();
+    } catch (e) {
+      console.error("Failed to update delivery:", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -180,7 +211,6 @@ const OrderDetails = () => {
       </div>
     );
   }
-
   return (
     <div>
       {user?.role === "freelancer" ? (
@@ -373,10 +403,30 @@ const OrderDetails = () => {
                 <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
                   Delivery
                 </h2>
-                {orderData.delivery &&
-                orderData.delivery.files &&
-                orderData.delivery.files.length > 0 ? (
-                  <div className="space-y-2">
+
+                {user?.role === "freelancer" &&
+                  orderData.status === "accepted" && (
+                    <div className="p-3 relative">
+                      <input
+                        type="text"
+                        placeholder="Add the delivery link"
+                        className="p-3 bg-gray-200 outline-none rounded-lg w-full pr-14 text-sm md:text-md"
+                        onChange={(e) => setDeliveryLinks(e.target.value)}
+                        value={deliveryLinks}
+                      />
+                      {deliveryLinks.length > 0 && (
+                        <div
+                          className="absolute right-8 top-7 cursor-pointer"
+                          onClick={handleSaveLink}
+                        >
+                          <SaveSharp width="20px" height="20px" color="#333" />
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                {orderData?.delivery?.files?.length > 0 ? (
+                  <div className="space-y-2 mt-4">
                     {orderData.delivery.files.map((file, index) => (
                       <div
                         key={index}
