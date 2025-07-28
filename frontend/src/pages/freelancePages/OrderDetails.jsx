@@ -190,11 +190,17 @@ const OrderDetails = () => {
       const updatedFiles = orderData.delivery.files.filter(
         (file) => file !== linkToRemove
       );
+      if (deliveryFiles.length < 0) {
+        const updateStatus = "accepted";
+      } else {
+        const updateStatus = "delivered";
+      }
       await axios.post(
         `${process.env.REACT_APP_BACKEND_URI}/orders/update`,
         {
           files: updatedFiles,
           orderId: fetchId("order"),
+          status: updateStatus,
         },
         { withCredentials: true }
       );
