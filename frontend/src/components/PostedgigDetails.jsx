@@ -17,7 +17,7 @@ const PostedgigDetails = () => {
   const [showOrder, setShowOrder] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
-
+  const [isOrder, setisOrder] = useState([]);
   const location = useLocation();
   const navigation = useNavigate();
   const getId = () => {
@@ -79,8 +79,6 @@ const PostedgigDetails = () => {
 
   const handlePlaceOrder = async () => {
     handleOrder();
-
-    console.log("place order");
   };
 
   const getUser = async (userId) => {
@@ -126,6 +124,7 @@ const PostedgigDetails = () => {
   useEffect(() => {
     getGigs();
     getClientDet();
+    clientOrder();
   }, []);
   const countDays = (date) => {
     const givenDate = new Date(date);
@@ -178,6 +177,23 @@ const PostedgigDetails = () => {
 
     return () => clearTimeout(messageTimer);
   }, [showConfirmation]);
+
+  const clientOrder = async () => {
+    try {
+      setLoading(true);
+      const clientOrders = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URI}/orders/clientorder`,
+        { gigId: getId() },
+        { withCredentials: true }
+      );
+      console.log("this i sclient orders", clientOrders);
+      setisOrder(clientOrders.data.getOrders);
+    } catch (e) {
+      console.log("this i sckient order error", e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="w-full min-h-screen">
@@ -427,9 +443,13 @@ const PostedgigDetails = () => {
             >
               <button
                 onClick={() => handleOrders(isActivePrice)}
-                className="w-full flex items-center justify-center gap-2 px-5 py-3 cursor-pointer  rounded-xl bg-lime-700 text-white text-sm md:text-base font-medium hover:bg-lime-800 active:scale-95 transition-all"
+                className={`w-full flex items-center justify-center gap-2 px-5 py-3 cursor-pointer  rounded-xl text-sm md:text-base font-medium  active:scale-95 transition-all ${
+                  isOrder.length > 0
+                    ? "bg-lime-700 text-white hover:bg-lime-800"
+                    : "bg-gray-400 text-white"
+                }`}
               >
-                Place Order
+                {isOrder.length > 0 ? "Place Order" : "Order Placed"}
               </button>
 
               <button

@@ -38,7 +38,6 @@ const Orders = () => {
   const getOrders = async (user) => {
     setLoading(true);
     const userrole = user?.role;
-    console.log(userrole);
     try {
       const userOrders = await axios.get(
         `${process.env.REACT_APP_BACKEND_URI}/orders/${
@@ -57,11 +56,16 @@ const Orders = () => {
     }
   };
 
-  const handleOrder = (data) => {
-    navigate(`/orderdetails?id=${data?._id}&freelance=${data?.freelancerId}`);
+  const handleOrder = (data, user) => {
+    const userRole = user?.role;
+    navigate(
+      `/orderdetails?id=${data?._id}&freelance=${
+        userRole === "freelancer" ? data?.clientId : data?.freelancerId
+      }`
+    );
   };
 
-  const handleAcceptOrder = async (order) => {
+  const handleAcceptOrder = async (order, type) => {
     try {
       setLoading(true);
       const res = await axios.post(
@@ -71,6 +75,8 @@ const Orders = () => {
           status:
             order?.status === "cancelled"
               ? "accepted"
+              : order.status === "pending" && type === "client"
+              ? "cancelled"
               : order.status === "pending"
               ? "accepted"
               : "cancelled",
@@ -102,120 +108,145 @@ const Orders = () => {
             </h1>
           </div>
           <div className="w-full flex flex-col mt-5 gap-5">
-            {ordersData.map((order, index) => (
-              <div
-                key={index}
-                className="w-full flex flex-col bg-white shadow-2xs p-4 rounded-xl cursor-pointer hover:bg-gray-100 transition pr-3 md:pr-14"
-                onClick={() => handleOrder(order)}
-              >
-                <div className="w-full flex flex-col md:flex-row justify-between items-center">
-                  <div className="w-full flex flex-col md:flex-row gap-4 items-center">
-                    <img
-                      src={`${process.env.REACT_APP_BACKEND_URI}/thumbnails/${order?.gigId?.thumbnail}`}
-                      alt="gig"
-                      className="w-full sm:w-[350px] sm:h-[250px]  md:w-35 md:h-25 object-cover rounded-md"
-                    />
-                    <div>
-                      <h1 className="text-lg md:text-xl font-semibold ">
-                        {order?.gigId?.title}
-                      </h1>
-                      <p className="pt-3 pb-3 text-gray-500">
-                        Orderd on: {order?.createdAt.split("T")[0]}
-                      </p>
-                      <div className="relative">
-                        <span
-                          className={`text-sm  capitalize  p-2 pl-5 rounded-xl  text-center ${
-                            order?.status === "pending"
-                              ? "bg-amber-200 text-amber-700"
-                              : order?.status === "accepted"
-                              ? "bg-green-200 text-green-700"
-                              : order?.status === "delivered"
-                              ? "bg-lime-200 text-lime-900 font-medium pl-8"
-                              : order?.status === "in progress"
-                              ? "bg-blue-200 text-blue-700 pl-8"
-                              : order?.status === "cancelled"
-                              ? "bg-red-200 text-red-700 "
-                              : "bg-text-gray-200 text-gray-700"
-                          }`}
-                        >
-                          {order?.status}
-                        </span>
-                        {order?.status === "delivered" ? (
-                          <>
-                            <span
-                              className={`absolute inline-flex size-5 rounded-full left-2 -top-1`}
-                            >
-                              <TruckIcon className="size-8 text-lime-800" />
-                            </span>
-                          </>
-                        ) : order?.status === "in progress" ? (
-                          <>
-                            <span
-                              className={`absolute inline-flex size-5 rounded-full left-2 top-1`}
-                            >
-                              <HourglassSharp
-                                width={"17px"}
-                                height={"17px"}
-                                color={"#1d4ed8"}
-                              />
-                            </span>
-                          </>
-                        ) : (
-                          <>
-                            <span
-                              className={`absolute inline-flex size-2 rounded-full ${
-                                order?.status === "pending"
-                                  ? "bg-amber-400"
-                                  : order?.status === "accepted"
-                                  ? "bg-green-400"
-                                  : order?.status === "in progress"
-                                  ? "bg-blue-400"
-                                  : order?.status === "cancelled"
-                                  ? "bg-red-400"
-                                  : "bg-lime-400"
-                              }  left-2 top-2`}
-                            ></span>
-                            <span
-                              className={`absolute  w-[25px] h-[25px] animate-ping rounded-full ${
-                                order?.status === "pending"
-                                  ? "bg-amber-400"
-                                  : ""
-                              } opacity-75 left-0`}
-                            ></span>
-                          </>
-                        )}
+            {ordersData
+              .sort((a, b) => {
+                const dateA = new Date(a.createdAt);
+                const dateB = new Date(b.createdAt);
+                return dateB - dateA;
+              })
+              .map((order, index) => (
+                <div
+                  key={index}
+                  className="w-full flex flex-col bg-white shadow-2xs p-4 rounded-xl cursor-pointer hover:bg-gray-100 transition pr-3 md:pr-14"
+                  onClick={() => handleOrder(order, user)}
+                >
+                  <div className="w-full flex flex-col md:flex-row justify-between items-center">
+                    <div className="w-full flex flex-col md:flex-row gap-4 items-center">
+                      <img
+                        src={`${process.env.REACT_APP_BACKEND_URI}/thumbnails/${order?.gigId?.thumbnail}`}
+                        alt="gig"
+                        className="w-full sm:w-[350px] sm:h-[250px]  md:w-35 md:h-25 object-cover rounded-md"
+                      />
+                      <div>
+                        <h1 className="text-lg md:text-xl font-semibold">
+                          {order?.gigId?.title}
+                        </h1>
+                        <p className="pt-3 pb-3 text-gray-500">
+                          Orderd on: {order?.createdAt.split("T")[0]}
+                        </p>
+                        <div className="relative">
+                          <span
+                            className={`text-sm  capitalize  p-2 pl-5 rounded-xl  text-center ${
+                              order?.status === "pending"
+                                ? "bg-amber-200 text-amber-700"
+                                : order?.status === "accepted"
+                                ? "bg-green-200 text-green-700"
+                                : order?.status === "delivered"
+                                ? "bg-lime-200 text-lime-900 font-medium pl-8"
+                                : order?.status === "in progress"
+                                ? "bg-blue-200 text-blue-700 pl-8"
+                                : order?.status === "cancelled"
+                                ? "bg-red-200 text-red-700 "
+                                : "bg-text-gray-200 text-gray-700"
+                            }`}
+                          >
+                            {order?.status}
+                          </span>
+                          {order?.status === "delivered" ? (
+                            <>
+                              <span
+                                className={`absolute inline-flex size-5 rounded-full left-2 -top-1`}
+                              >
+                                <TruckIcon className="size-8 text-lime-800" />
+                              </span>
+                            </>
+                          ) : order?.status === "in progress" ? (
+                            <>
+                              <span
+                                className={`absolute inline-flex size-5 rounded-full left-2 top-1`}
+                              >
+                                <HourglassSharp
+                                  width={"17px"}
+                                  height={"17px"}
+                                  color={"#1d4ed8"}
+                                />
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <span
+                                className={`absolute inline-flex size-2 rounded-full ${
+                                  order?.status === "pending"
+                                    ? "bg-amber-400"
+                                    : order?.status === "accepted"
+                                    ? "bg-green-400"
+                                    : order?.status === "in progress"
+                                    ? "bg-blue-400"
+                                    : order?.status === "cancelled"
+                                    ? "bg-red-400"
+                                    : "bg-lime-400"
+                                }  left-2 top-2`}
+                              ></span>
+                              <span
+                                className={`absolute  w-[25px] h-[25px] animate-ping rounded-full ${
+                                  order?.status === "pending"
+                                    ? "bg-amber-400"
+                                    : ""
+                                } opacity-75 left-0`}
+                              ></span>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  {user.role === "freelancer" && (
-                    <div
-                      className="flex items-center mt-10 md:mt-0"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleAcceptOrder(order);
-                      }}
-                    >
-                      <button
-                        className={`p-3 pl-8 pr-8 text-nowrap font-medium text-sm md:text-md ${
-                          order.status === "cancelled"
-                            ? "bg-green-500 text-white rounded-md hover:bg-green-600 transition"
-                            : order.status === "accepted"
-                            ? "bg-red-500 text-white rounded-md hover:bg-red-600 transition"
-                            : ""
-                        }  cursor-pointer`}
+                    {user.role === "client" && (
+                      <div
+                        className="flex items-center mt-10 md:mt-0"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAcceptOrder(order, "client");
+                        }}
                       >
-                        {order.status === "pending" ||
-                        ("cancelled" && order.status !== "delivered")
-                          ? "Accept Order"
-                          : order.status === "accepted"
-                          ? "Cancel Order"
-                          : ""}
-                      </button>
-                    </div>
-                  )}
+                        <button
+                          className={`p-3 pl-8 pr-8 text-nowrap font-medium text-sm md:text-md ${
+                            order.status === "pending"
+                              ? "bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+                              : ""
+                          }  cursor-pointer`}
+                        >
+                          {order.status === "pending" ? "Cancel Order" : ""}
+                        </button>
+                      </div>
+                    )}
+                    {user.role === "freelancer" && (
+                      <div
+                        className="flex items-center mt-10 md:mt-0"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAcceptOrder(order);
+                        }}
+                      >
+                        <button
+                          className={`p-3 pl-8 pr-8 text-nowrap font-medium text-sm md:text-md ${
+                            order.status === "pending"
+                              ? "bg-green-500 text-white rounded-md hover:bg-green-600 transition"
+                              : order.status === "accepted"
+                              ? "bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+                              : ""
+                          }  cursor-pointer`}
+                        >
+                          {order.status === ("pending" || "cancelled") &&
+                          order.status !== "delivered"
+                            ? "Accept Order"
+                            : order.status === "accepted"
+                            ? "Cancel Order"
+                            : ""}
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       ) : (

@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import ClientNavbar from "../../components/ClientNavbar";
 import FreelancerNavbar from "../../components/FreelancerNavbar";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { SaveSharp } from "react-ionicons";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-
+import clientImage from "../../assets/images/client.png";
+import freelancerImage from "../../assets/images/freelancer.png";
 const OrderDetails = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -16,7 +17,7 @@ const OrderDetails = () => {
   const [deliveryLinks, setDeliveryLinks] = useState("");
   const [specsText, setspecsText] = useState("");
   const location = useLocation();
-
+  const navigate = useNavigate();
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
@@ -67,6 +68,17 @@ const OrderDetails = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleMessages = () => {
+    const userRole = user.role;
+    navigate(
+      `/messages?id=${
+        userRole === "freelancer"
+          ? orderData?.clientId
+          : orderData?.freelancerId
+      }`
+    );
   };
 
   const handleTextUpdate = async () => {
@@ -190,11 +202,7 @@ const OrderDetails = () => {
       const updatedFiles = orderData.delivery.files.filter(
         (file) => file !== linkToRemove
       );
-      if (deliveryFiles.length < 0) {
-        const updateStatus = "accepted";
-      } else {
-        const updateStatus = "delivered";
-      }
+      const updateStatus = updatedFiles.length === 0 ? "accepted" : "delivered";
       await axios.post(
         `${process.env.REACT_APP_BACKEND_URI}/orders/update`,
         {
@@ -434,9 +442,8 @@ const OrderDetails = () => {
                   Delivery
                 </h2>
 
-                {(user?.role === "freelancer" &&
-                  orderData.status === "accepted") ||
-                  ("delivered" && (
+                {user?.role === "freelancer" &&
+                  (orderData.status === "accepted" || "delivered") && (
                     <div className="p-3 relative">
                       <input
                         type="text"
@@ -454,7 +461,7 @@ const OrderDetails = () => {
                         </div>
                       )}
                     </div>
-                  ))}
+                  )}
 
                 {orderData?.delivery?.files?.length > 0 ? (
                   <div className="space-y-2 mt-4">
@@ -516,7 +523,10 @@ const OrderDetails = () => {
                   <div className="text-center mb-4 sm:mb-6">
                     {clientData.profile?.profilePic ? (
                       <img
-                        src={`${process.env.REACT_APP_BACKEND_URI}/profilePics/${clientData.profile.profilePic}`}
+                        src={
+                          `${process.env.REACT_APP_BACKEND_URI}/profilePics/${clientData.profile.profilePic}` ||
+                          freelancerImage
+                        }
                         alt={clientData.fetchUser?.userName}
                         className="w-16 h-16 sm:w-20 sm:h-20 rounded-full mx-auto mb-3 object-cover border-4 border-lime-100"
                       />
@@ -594,6 +604,112 @@ const OrderDetails = () => {
                       </span>
                     </div>
                   </div>
+                  <button
+                    onClick={handleMessages}
+                    className="mt-5 w-full p-2 md:p-3 rounded-2xl bg-lime-700 flex  items-center justify-center text-sm md:text-md text-white font-medium  cursor-pointer hover:bg-lime-800 transition "
+                  >
+                    Message me
+                  </button>
+                </div>
+              </div>
+            )}
+            {user?.role === "freelancer" && (
+              <div className="xl:col-span-1">
+                <div className="bg-white rounded-xl shadow-sm border border-lime-100 p-4 sm:p-6 xl:sticky xl:top-6">
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 sm:mb-6">
+                    Client Profile
+                  </h2>
+
+                  <div className="text-center mb-4 sm:mb-6">
+                    {clientData.profile?.profilePic ? (
+                      <img
+                        src={
+                          `${process.env.REACT_APP_BACKEND_URI}/profilePics/${clientData.profile.profilePic}` ||
+                          clientImage
+                        }
+                        alt={clientData.fetchUser?.userName}
+                        className="w-16 h-16 sm:w-20 sm:h-20 rounded-full mx-auto mb-3 object-cover border-4 border-lime-100"
+                      />
+                    ) : (
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full mx-auto mb-3 bg-lime-100 flex items-center justify-center">
+                        <svg
+                          className="w-6 sm:w-8 h-6 sm:h-8 text-lime-600"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                    )}
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-800 break-words">
+                      {clientData.fetchUser?.userName || "Unknown User"}
+                    </h3>
+                    <p className="text-lime-600 font-medium text-sm sm:text-base">
+                      {clientData.profile?.job || "Client"}
+                    </p>
+                  </div>
+                  <div className="space-y-3 mb-4 sm:mb-6">
+                    <div className="flex items-start gap-3 text-gray-600">
+                      <svg
+                        className="w-4 h-4 mt-0.5 flex-shrink-0"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z" />
+                        <path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z" />
+                      </svg>
+                      <span className="text-xs sm:text-sm break-all">
+                        {clientData.fetchUser?.emailId}
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-3 text-gray-600">
+                      <svg
+                        className="w-4 h-4 mt-0.5 flex-shrink-0"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span className="text-xs sm:text-sm break-words">
+                        {clientData.profile?.avaliability || "Not specified"}
+                      </span>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-gray-800 mb-2 text-sm sm:text-base">
+                      Experience
+                    </h4>
+                    <div className="flex items-center gap-2">
+                      <svg
+                        className="w-4 h-4 text-yellow-500 flex-shrink-0"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span className="text-xs sm:text-sm text-gray-600">
+                        {clientData.profile?.experience || 0} years
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleMessages}
+                    className="mt-5 w-full p-2 md:p-3 rounded-2xl bg-lime-700 flex  items-center justify-center text-sm md:text-md text-white font-medium  cursor-pointer hover:bg-lime-800 transition "
+                  >
+                    Message me
+                  </button>
                 </div>
               </div>
             )}

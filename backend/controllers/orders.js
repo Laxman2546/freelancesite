@@ -103,6 +103,27 @@ export const getFreelancerOrders = async (req, res) => {
     });
   }
 };
+export const getClientOrders = async (req, res) => {
+  try {
+    const { userId } = req.user;
+    const { gigId } = req.body;
+    if (!userId) {
+      return res.status(400).json({ error: "Please login again" });
+    }
+    const getOrders = await orderModel.findOne({
+      clientId: userId,
+      gigId: gigId,
+    });
+
+    return res.status(200).json({ getOrders });
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({
+      error: "something went wrong while getting client orders",
+      e,
+    });
+  }
+};
 
 export const updateOrderData = async (req, res) => {
   try {
