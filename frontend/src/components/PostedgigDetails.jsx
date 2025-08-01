@@ -48,7 +48,6 @@ const PostedgigDetails = () => {
   const getUserid = () => {
     const searchUserId = new URLSearchParams(location.search);
     const userId = searchUserId.get("userid");
-    console.log(userId);
     return userId;
   };
 
@@ -165,7 +164,8 @@ const PostedgigDetails = () => {
     if (showConfirmation) {
       const timer = setTimeout(() => {
         setShowConfirmation(false);
-      }, 5000);
+        window.location.reload();
+      }, 3000);
       return () => clearTimeout(timer);
     }
   }, [showConfirmation]);
@@ -173,7 +173,7 @@ const PostedgigDetails = () => {
   useEffect(() => {
     const messageTimer = setTimeout(() => {
       setShowMessage(true);
-    }, 3000);
+    }, 5000);
 
     return () => clearTimeout(messageTimer);
   }, [showConfirmation]);
@@ -444,12 +444,12 @@ const PostedgigDetails = () => {
               <button
                 onClick={() => handleOrders(isActivePrice)}
                 className={`w-full flex items-center justify-center gap-2 px-5 py-3 cursor-pointer  rounded-xl text-sm md:text-base font-medium  active:scale-95 transition-all ${
-                  isOrder.length > 0
+                  isOrder === null
                     ? "bg-lime-700 text-white hover:bg-lime-800"
                     : "bg-gray-400 text-white"
                 }`}
               >
-                {isOrder.length > 0 ? "Place Order" : "Order Placed"}
+                {isOrder === null ? "Place Order" : "Order Placed"}
               </button>
 
               <button

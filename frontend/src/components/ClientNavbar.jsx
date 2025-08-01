@@ -39,70 +39,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
   // Refs for click outside detection
   const mobileMenuRef = useRef(null);
 
-  const recentMessages = [
-    {
-      senderName: "John Doe",
-      avatar: "/avatars/john.png",
-      message: "Hey! Are you available to work on a landing page?",
-      time: "10:45 AM",
-      isRead: false,
-      chatId: "chat123",
-    },
-    {
-      senderName: "Sarah Williams",
-      avatar: "/avatars/sarah.png",
-      message: "Can you help me with React Native?",
-      time: "Yesterday",
-      isRead: false,
-      chatId: "chat456",
-    },
-  ];
-
-  const notificationData = [
-    {
-      id: 1,
-      type: "message",
-      title: "New Message",
-      content:
-        "John Doe sent you a new message: 'Hey, I liked your profile. Are you available?'",
-      timestamp: "2025-05-26T12:30:00Z",
-      isRead: false,
-    },
-    {
-      id: 2,
-      type: "order",
-      title: "New Job Request",
-      content:
-        "You received a new job request from Sarah Williams for 'Build a Portfolio Website'.",
-      timestamp: "2025-05-25T17:45:00Z",
-      isRead: false,
-    },
-    {
-      id: 3,
-      type: "review",
-      title: "Client Review",
-      content: "Alex Smith left a 5-star review on your recent project.",
-      timestamp: "2025-05-25T08:20:00Z",
-      isRead: true,
-    },
-    {
-      id: 4,
-      type: "system",
-      title: "Withdrawal Successful",
-      content:
-        "Your ₹4,000 withdrawal to UPI ID xxxxx@okaxis has been processed.",
-      timestamp: "2025-05-24T15:05:00Z",
-      isRead: true,
-    },
-    {
-      id: 5,
-      type: "warning",
-      title: "Profile Incomplete",
-      content: "Complete your profile to appear in more search results.",
-      timestamp: "2025-05-23T11:10:00Z",
-      isRead: false,
-    },
-  ];
+  const notificationData = [];
 
   const navItems = [
     {
@@ -138,7 +75,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
 
   useEffect(() => {
     setnotifications(notificationData);
-    setMesssages(recentMessages);
+    setMesssages("");
   }, []);
 
   const handleLogout = async () => {
@@ -173,17 +110,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
   };
 
   const handleMessagesToggle = () => {
-    if (isMessageOpen) {
-      setClosingMessages(true);
-      setTimeout(() => {
-        setMessageIsOpen(false);
-        setClosingMessages(false);
-      }, 200);
-    } else {
-      setMessageIsOpen(true);
-    }
-    setNotifcationopen(false);
-    setIsOpen(false);
+    navigate("/messages");
   };
 
   const handleNotificationsToggle = () => {
@@ -200,15 +127,12 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
     setMessageIsOpen(false);
   };
 
-  // FIXED: Simplified navigation function
   const handleNavItemClick = (href) => {
     console.log("Navigation clicked:", href);
 
-    // Close menu immediately without animation for better UX
     setIsOpen(false);
     setClosingMenu(false);
 
-    // Small delay to ensure menu closes before navigation
     setTimeout(() => {
       if (href !== "#") {
         console.log("Navigating to:", href);
@@ -261,11 +185,9 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
       document.removeEventListener("mousedown", handleNotificationClose);
   }, []);
 
-  // FIXED: Click outside detection - exclude hamburger button
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target)) {
-        // Check if click is not on hamburger button
         const hamburgerButton =
           e.target.closest('[data-testid="hamburger"]') ||
           e.target.closest('button[aria-label*="menu"]');
@@ -512,72 +434,6 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
                 className="size-6 transition-colors"
                 onClick={handleMessagesToggle}
               />
-              {(isMessageOpen || closingMessages) && (
-                <div
-                  ref={closeMessage}
-                  className={`absolute right-0 top-8  bg-white rounded-lg shadow-lg border w-80 ${
-                    closingMessages ? "animate-fade-out" : "animate-fade-in"
-                  }`}
-                >
-                  {messages.length < 1 ? (
-                    <div className="flex flex-col items-center justify-center p-8 ">
-                      <img
-                        src={noMessages}
-                        alt="No messages"
-                        className="w-16 h-16 opacity-50"
-                      />
-                      <h1 className="text-center font-medium w-full text-gray-600 mt-2">
-                        No new messages
-                      </h1>
-                    </div>
-                  ) : (
-                    <div>
-                      <div className="px-4 py-3 border-b border-gray-100 text-lg font-semibold text-[#3A5B22]">
-                        💬 Messages
-                      </div>
-
-                      <ul className="messages max-h-80 overflow-y-auto">
-                        {messages.map((msg, idx) => (
-                          <li
-                            key={idx}
-                            className="flex gap-3 items-start px-4 py-3 hover:bg-green-50 cursor-pointer transition-colors"
-                            onClick={() => navigate(`/messages/${msg.chatId}`)}
-                          >
-                            <img
-                              src={msg.avatar}
-                              alt={msg.senderName}
-                              className="w-10 h-10 rounded-full object-cover"
-                            />
-                            <div className="flex-1">
-                              <p className="font-semibold text-sm text-gray-800 ">
-                                {msg.senderName}
-                              </p>
-                              <p className="text-sm text-gray-600 truncate w-[180px]">
-                                {msg.message}
-                              </p>
-                              <div className="flex justify-between items-center text-xs text-gray-400">
-                                <span>{msg.time}</span>
-                                {!msg.isRead && (
-                                  <span className="text-green-600 font-bold relative bottom-10">
-                                    ●
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-
-                      <div
-                        className="text-center py-2 border-t border-gray-100 text-sm text-[#3A5B22] hover:underline cursor-pointer"
-                        onClick={() => navigate("/messages")}
-                      >
-                        See All Messages
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
             </li>
             <li className="cursor-pointer relative">
               <BellIcon

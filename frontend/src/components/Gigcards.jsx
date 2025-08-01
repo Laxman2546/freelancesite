@@ -1,8 +1,18 @@
 import React from "react";
 
 const Gigcards = ({ data }) => {
+  const saveGigs = () => {
+    const existing = JSON.parse(localStorage.getItem("savedGigs")) || [];
+    const updated = [...existing, data];
+    localStorage.setItem("savedGigs", JSON.stringify(updated));
+    console.log("Gig added to saved list");
+  };
+
   return (
-    <div className="max-w-[280px]  sm:w-[280px] min-h-[350px] max-h-[350px] bg-white border-1 border-gray-300 p-3 rounded-2xl shadow hover:shadow-lg transition duration-300 cursor-pointer overflow-hidden">
+    <div
+      onClick={saveGigs}
+      className="max-w-[280px]  sm:w-[280px] min-h-[350px] max-h-[350px] bg-white border-1 border-gray-300 p-3 rounded-2xl shadow hover:shadow-lg transition duration-300 cursor-pointer overflow-hidden"
+    >
       <img
         src={
           `${process.env.REACT_APP_BACKEND_URI}/thumbnails/${data.thumbnail}` ||

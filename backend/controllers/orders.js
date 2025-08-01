@@ -110,6 +110,9 @@ export const getClientOrders = async (req, res) => {
     if (!userId) {
       return res.status(400).json({ error: "Please login again" });
     }
+    if (!gigId) {
+      return res.status(400).json({ error: "No gig Id" });
+    }
     const getOrders = await orderModel.findOne({
       clientId: userId,
       gigId: gigId,

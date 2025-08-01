@@ -27,6 +27,7 @@ const HomePage = () => {
   const [isVisible, setisVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const [localgigs, setlocalGigs] = useState([]);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -267,6 +268,16 @@ const HomePage = () => {
     navigate(url);
   };
 
+  const getgigsLocal = () => {
+    const getGigs = localStorage.getItem("savedGigs");
+    const setGigs = getGigs ? JSON.parse(getGigs) : [];
+    setlocalGigs(setGigs);
+  };
+
+  useEffect(() => {
+    getgigsLocal();
+  }, []);
+
   return (
     <main className="w-full min-h-screen">
       <div className="sticky top-0 z-[99999]">
@@ -345,6 +356,7 @@ const HomePage = () => {
             <img
               src="https://storage.googleapis.com/uxpilot-auth.appspot.com/e47dcc6cf7-e3e0eab7ebcb1bbd5879.png"
               className=" max-h-[400px] w-[600px] object-cover rounded-3xl"
+              loading="lazy"
             />
           </div>
         </div>
@@ -409,6 +421,7 @@ const HomePage = () => {
                 <img
                   src={Professional.image}
                   className="w-[100px] h-[100px] rounded-full object-center"
+                  loading="lazy"
                 />
               </div>
               <div className="flex flex-col items-center text-center">
@@ -434,7 +447,7 @@ const HomePage = () => {
         <h1 className="text-xl md:text-3xl font-semibold">Recently Viewed</h1>
         <div className="mt-6 overflow-hidden">
           <Slider {...settings}>
-            {gigs.map((data) => (
+            {localgigs.map((data) => (
               <div key={data.title}>
                 <Gigcards data={data} />
               </div>
