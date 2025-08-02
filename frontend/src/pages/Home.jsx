@@ -161,6 +161,10 @@ const FreelanceMarketplace = () => {
       success.current.scrollIntoView({ behavior: "smooth" });
     }
   };
+  const handleRegister = () => {
+    navigate("/login?register=true");
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <nav
@@ -217,7 +221,7 @@ const FreelanceMarketplace = () => {
               </button>
 
               <button
-                onClick={() => navigate("/login?register=true")}
+                onClick={handleRegister}
                 className=" cursor-pointer bg-lime-800 text-white font-medium  px-3 py-2 rounded-lg hover:from-lime-800 hover:to-lime-900 transition-all duration-300 transform active:scale-90 shadow-lg"
               >
                 Sign Up
