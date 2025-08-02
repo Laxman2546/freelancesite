@@ -31,69 +31,6 @@ const HomePage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const gigs = [
-    {
-      thumbnail:
-        "https://images.unsplash.com/photo-1583508915901-b5f84c1dcde1?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Professional Logo Design",
-      category: "Graphic Design",
-      pricing: {
-        basic: { price: "₹499" },
-        premium: { price: "₹2499" },
-      },
-    },
-    {
-      thumbnail:
-        "https://plus.unsplash.com/premium_photo-1663050633633-2856e875dcc7?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "E-Commerce Store Setup",
-      category: "Web Development",
-      pricing: {
-        basic: { price: "₹1999" },
-        premium: { price: "₹7999" },
-      },
-    },
-    {
-      thumbnail:
-        "https://images.unsplash.com/photo-1730130054404-c2bd8e7038c2?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Instagram Reels Editing",
-      category: "Video Editing",
-      pricing: {
-        basic: { price: "₹299" },
-        premium: { price: "₹1499" },
-      },
-    },
-    {
-      thumbnail:
-        "https://images.unsplash.com/photo-1730130054404-c2bd8e7038c2?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Instagram Reels Editing",
-      category: "Video Editing",
-      pricing: {
-        basic: { price: "₹299" },
-        premium: { price: "₹1499" },
-      },
-    },
-    {
-      thumbnail:
-        "https://images.unsplash.com/photo-1730130054404-c2bd8e7038c2?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Instagram Reels Editing",
-      category: "Video Editing",
-      pricing: {
-        basic: { price: "₹299" },
-        premium: { price: "₹1499" },
-      },
-    },
-    {
-      thumbnail:
-        "https://images.unsplash.com/photo-1730130054404-c2bd8e7038c2?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Instagram Reels Editing",
-      category: "Video Editing",
-      pricing: {
-        basic: { price: "₹299" },
-        premium: { price: "₹1499" },
-      },
-    },
-  ];
-
   function SampleNextArrow(props) {
     const { onClick } = props;
     return (
@@ -188,28 +125,32 @@ const HomePage = () => {
 
   const professionals = [
     {
+      id: "6839339b23b266df8a9771f1",
       name: "Lakshman",
-      role: "Fullstack Developer",
-      image: "https://randomuser.me/api/portraits/men/31.jpg",
-      rating: 4.3,
+      role: "Web Developer",
+      image: "https://i.ibb.co/20z06dcw/1754118619006-1752901626610-user.png",
+      rating: 4.9,
     },
     {
-      name: "Ram",
-      role: "UI/UX Designer",
-      image: "https://randomuser.me/api/portraits/men/20.jpg",
-      rating: 5,
+      id: "685b8b1707418405a9313f8e",
+      name: "Rishitha",
+      role: "Graphics Designer",
+      image: "https://i.ibb.co/XrsbMmRT/1750834025456-images.png",
+      rating: 5.0,
     },
     {
-      name: "Sita",
-      role: "Content Writer",
-      image: "https://randomuser.me/api/portraits/women/71.jpg",
-      rating: 5,
-    },
-    {
-      name: "Hanuman",
+      id: "687b2f548a74195d7a77f65d",
+      name: "Alex",
       role: "Data Analyst",
-      image: "https://randomuser.me/api/portraits/men/40.jpg",
+      image: "https://i.ibb.co/k27mKRzJ/1752903730334-85.png",
       rating: 4.8,
+    },
+    {
+      id: "687b32938a74195d7a77f84d",
+      name: "Saraha",
+      role: "Data Entry",
+      image: "https://i.ibb.co/bMnHFHT9/1752904854116-43.png",
+      rating: 4.9,
     },
   ];
 
@@ -361,15 +302,15 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-      <div className="w-full px-4 md:px-8 py-6">
+      <div className="w-full px-2 md:px-8 py-6">
         <h1 className="text-lg md:text-2xl font-semibold ">
           Popular on {activeBtn}
         </h1>
-        <div className="mt-6">
+        <div className="w-full ml-0 overflow-hidden mt-6">
           <Slider {...settings}>
-            {data.map((data) => (
-              <div key={data.title} onClick={() => handleGigdets(data._id)}>
-                <Gigcards data={data} />
+            {data.map((item) => (
+              <div key={item._id} onClick={() => handleGigdets(item._id)}>
+                <Gigcards data={item} />
               </div>
             ))}
           </Slider>
@@ -436,8 +377,11 @@ const HomePage = () => {
                 ))}
                 <h1 className="text-md">({Professional.rating})</h1>
               </div>
-              <button className="p-3 w-full bg-lime-800 text-white rounded-xl cursor-pointer">
-                View Services
+              <button
+                onClick={() => navigate(`/profile?id=${Professional.id}`)}
+                className="p-3 w-full bg-lime-800 text-white rounded-xl cursor-pointer"
+              >
+                View Profile
               </button>
             </div>
           ))}
@@ -449,7 +393,7 @@ const HomePage = () => {
           <div className="mt-6 overflow-hidden">
             <Slider {...settings}>
               {localgigs.map((data) => (
-                <div key={data.title}>
+                <div key={data.title} onClick={() => handleGigdets(data._id)}>
                   <Gigcards data={data} />
                 </div>
               ))}

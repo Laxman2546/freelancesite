@@ -69,7 +69,7 @@ const Messenger = () => {
     setRole(targetRole);
 
     if (freelancerId) {
-      getUserList(null, freelancerId); 
+      getUserList(null, freelancerId);
     } else {
       getUserList(targetRole);
     }
@@ -470,12 +470,6 @@ const Messenger = () => {
               </div>
 
               <div className="flex-1 flex flex-col p-3 md:p-5 overflow-hidden">
-                <div className="w-full text-center sticky top-0 z-10">
-                  <span className="p-1 pl-3 pr-3 text-sm bg-gray-200 text-gray-600 rounded-2xl">
-                    Today
-                  </span>
-                </div>
-
                 <div className="message w-full flex flex-col mt-5 gap-5 overflow-y-auto flex-1 mb-5">
                   {messages.map((message, index) => (
                     <div className="w-full" key={message.messageId || index}>

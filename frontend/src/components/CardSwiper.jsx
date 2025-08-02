@@ -16,7 +16,7 @@ const dummyGigs = [
     title: "Complete website development",
     rating: "4.9",
     reviews: 245,
-    price: "₹350",
+    price: "₹3500",
     deliveryTime: "5 days",
     category: "Development",
   },
@@ -102,7 +102,6 @@ const CardSwiper = () => {
           {dummyGigs.map((gig, index) => (
             <SwiperSlide key={index}>
               <div
-                onClick={navigate("/login")}
                 className={`relative bg-gradient-to-br ₹{
                   cardGradients[index % cardGradients.length]
                 } backdrop-blur-sm border border-white/20 rounded-3xl shadow-xl hover:shadow-2xl p-6 h-full transition-all duration-300 hover:scale-[1.02] bg-white`}

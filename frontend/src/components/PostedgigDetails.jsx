@@ -364,37 +364,7 @@ const PostedgigDetails = () => {
               </h1>
               <h1>{data.description} </h1>
             </div>
-            <div className="flex flex-col mt-3 p-5 gap-5">
-              <div className="flex ">
-                <h1 className="text-xl font-semibold">
-                  Customer Reviews (150)
-                </h1>
-              </div>
-              <div className="flex flex-col pl-1 md:pl-8 gap-5">
-                <div className=" flex flex-row items-center gap-3">
-                  <div>
-                    <img
-                      className="w-[50px] h-[50px] rounded-full"
-                      src={`${process.env.REACT_APP_BACKEND_URI}/thumbnails/${data.thumbnail}`}
-                    />
-                  </div>
-                  <div>
-                    <h1 className="text-lg font-medium">Sarah Jhon</h1>
-                    <h1 className="text-gray-400 text-sm font-normal">
-                      2 days ago
-                    </h1>
-                  </div>
-                </div>
-                <div className="pl-3 md:pl-15">
-                  <h1>
-                    Absolutely amazing work! The designer understood exactly
-                    what I was looking for and delivered a logo that perfectly
-                    represents my brand. Fast delivery and excellent
-                    communication throughout the process.
-                  </h1>
-                </div>
-              </div>
-            </div>
+    
           </div>
           <div className="w-full md:w-1/3 max-w-[700px] h-auto max-h-[500px] md:sticky top-5 flex flex-col bg-white rounded-2xl p-4 shadow-lg">
             <div className="w-full flex justify-between border-b border-gray-300 pb-2">

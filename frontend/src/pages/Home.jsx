@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Menu,
   X,
@@ -6,34 +6,28 @@ import {
   Star,
   MessageCircle,
   Package,
-  Eye,
   Truck,
-  Users,
   ArrowRight,
-  Check,
   Quote,
-  Sparkles,
   Zap,
   Crown,
 } from "lucide-react";
 import {
+  Link,
   LogoFacebook,
   LogoGithub,
   LogoLinkedin,
   LogoTwitter,
 } from "react-ionicons";
 import Logo from "../assets/images/logo.svg";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/effect-cards";
-import { EffectCards } from "swiper/modules";
 import CardSwiper from "../components/CardSwiper";
+import { useNavigate } from "react-router-dom";
 
 const FreelanceMarketplace = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState("All");
   const [isScrolled, setIsScrolled] = useState(false);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -46,110 +40,127 @@ const FreelanceMarketplace = () => {
     {
       icon: <Package className="w-8 h-8" />,
       title: "Post Gigs Easily",
-      description:
-        "Freelancers can showcase their skills through customizable gig pages with stunning portfolios",
+      description: "Freelancers can showcase their skills",
     },
     {
       icon: <Search className="w-8 h-8" />,
-      title: "Smart Gig Discovery",
-      description:
-        "AI-powered search helps clients find the perfect match by category, skill, and rating",
+      title: "Gig Discovery",
+      description: "Find the right talent or gig instantly",
     },
     {
       icon: <MessageCircle className="w-8 h-8" />,
       title: "Built-in Messaging",
-      description:
-        "Real-time secure communication with file sharing and video calls",
+      description: "Chat, collaborate, and track work in one place",
     },
     {
       icon: <Truck className="w-8 h-8" />,
       title: "Order Tracking",
-      description:
-        "Advanced milestone tracking with automated notifications and updates",
+      description: "Track status and updates clearly",
     },
   ];
 
   const popularGigs = [
     {
       id: 1,
-      title: "Professional Logo Design",
-      freelancer: "Sarah Johnson",
+      title: "Complete website development",
+      freelancer: "Lakshman",
       rating: 4.9,
-      reviews: 127,
-      price: 75,
+      reviews: 245,
+      price: 3500,
       image:
-        "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=300&h=200&fit=crop",
-      category: "Design",
+        "https://i.ibb.co/rKFJNxXm/1752902551827-7c11893a5c56233d9c7d3d1a6762b3a2.png",
+      category: "Development",
     },
     {
       id: 2,
-      title: "Custom Website Development",
-      freelancer: "Mike Chen",
+      title: "Custom posters designs",
+      freelancer: "Rishitha",
       rating: 5.0,
-      reviews: 89,
-      price: 499,
+      reviews: 187,
+      price: 1200,
       image:
-        "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=300&h=200&fit=crop",
-      category: "Web Dev",
+        "https://i.ibb.co/KcCDNQFg/1752902807896-3764a6693ca47d8bb5071c28e65089f4.png",
+      category: "Design",
     },
     {
       id: 3,
-      title: "SEO Content Writing",
-      freelancer: "Emma Davis",
+      title: "Premium Data dashboards",
+      freelancer: "Alex",
       rating: 4.8,
-      reviews: 203,
-      price: 35,
+      reviews: 156,
+      price: 2800,
       image:
-        "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=300&h=200&fit=crop",
-      category: "Writing",
+        "https://i.ibb.co/xKTLz94G/1752904052863-design-monthly-financial-budget.png",
+      category: "Data Analysis",
     },
     {
       id: 4,
-      title: "Social Media Management",
-      freelancer: "Alex Rivera",
+      title: "Data Entry Services",
+      freelancer: "Saraha",
       rating: 4.9,
-      reviews: 156,
-      price: 150,
+      reviews: 203,
+      price: 450,
       image:
-        "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=300&h=200&fit=crop",
-      category: "Marketing",
+        "https://i.ibb.co/rfsTyc13/1752905300125-enter-data-extremely-fast-and-fl.png",
+      category: "Data Entry",
     },
   ];
 
   const testimonials = [
     {
-      name: "Jennifer Walsh",
-      role: "Startup Founder",
+      name: "Lakshman",
+      role: "Web Developer",
       content:
-        "The quality of talent here is extraordinary! Found my dream designer in minutes and the collaboration was seamless.",
-      avatar:
-        "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=60&h=60&fit=crop&crop=face",
+        "Building complete websites for clients has been so rewarding here. This platform helped me reach more clients than ever before!",
+      avatar: "https://i.ibb.co/20z06dcw/1754118619006-1752901626610-user.png",
     },
     {
-      name: "David Park",
-      role: "Freelance Developer",
+      name: "Rishitha",
+      role: "Graphics Designer",
       content:
-        "This platform transformed my career. Growing my client base by 300% was just the beginning of my success story.",
-      avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop&crop=face",
+        "I love the exposure I get for my poster designs. Clients are clear, communication is smooth, and payments are always on time.",
+      avatar: "https://i.ibb.co/XrsbMmRT/1750834025456-images.png",
     },
     {
-      name: "Lisa Thompson",
-      role: "Marketing Director",
+      name: "Alex",
+      role: "Data Analyst",
       content:
-        "The built-in tools are game-changing. Project management has never been this intuitive and collaborative.",
-      avatar:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=60&h=60&fit=crop&crop=face",
+        "This platform made showcasing my dashboards easy. Clients now trust me with large data projects, all thanks to the visibility here.",
+      avatar: "https://i.ibb.co/k27mKRzJ/1752903730334-85.png",
     },
   ];
 
-  const categories = ["All", "Design", "Web Dev", "Writing", "Marketing"];
+  const categories = [
+    "All",
+    "Design",
+    "Development",
+    "Data Entry",
+    "Data Analysis",
+  ];
 
   const filteredGigs =
     activeFilter === "All"
       ? popularGigs
       : popularGigs.filter((gig) => gig.category === activeFilter);
 
+  const workRef = useRef(null);
+  const popularRef = useRef(null);
+  const success = useRef(null);
+  const ScrollWork = () => {
+    if (workRef.current) {
+      workRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+  const ScrollPopular = () => {
+    if (popularRef) {
+      popularRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+  const ScrollSucess = () => {
+    if (success) {
+      success.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
   return (
     <div className="min-h-screen bg-white">
       <nav
@@ -160,7 +171,7 @@ const FreelanceMarketplace = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8  rounded-lg flex items-center justify-center shadow-lg">
+              <div className="w-8 h-8  rounded-full flex items-center justify-center shadow-lg">
                 <img src={Logo} />
               </div>
               <h1 className="text-lg xsm:text-lg sm:text-xl md:text-2xl font-bold text-center text-lime-800">
@@ -177,31 +188,38 @@ const FreelanceMarketplace = () => {
                   Home
                 </a>
                 <a
-                  href="#"
+                  onClick={ScrollPopular}
                   className="text-gray-600 hover:text-lime-700 transition-colors"
                 >
-                  Explore Gigs
+                  Popular Gigs
                 </a>
                 <a
-                  href="#"
+                  onClick={ScrollWork}
                   className="text-gray-600 hover:text-lime-700 transition-colors"
                 >
                   How It Works
                 </a>
                 <a
-                  href="#"
+                  onClick={ScrollSucess}
                   className="text-gray-600 hover:text-lime-700 transition-colors"
                 >
-                  Help
+                  Stories
                 </a>
               </div>
             </div>
 
-            <div className="hidden md:flex items-center space-x-4">
-              <button className="text-gray-600 hover:text-gray-900 transition-colors">
+            <div
+              className="hidden md:flex items-center space-x-4"
+              onClick={() => navigate("/login")}
+            >
+              <button className="p-2 pl-5 pr-5 border-1 border-[#d7d7d7] font-medium text-center hover:bg-lime-700 hover:text-white text-black rounded-lg cursor-pointer">
                 Login
               </button>
-              <button className="bg-gradient-to-r from-lime-700 to-lime-800 text-white px-6 py-2 rounded-lg hover:from-lime-800 hover:to-lime-900 transition-all duration-300 transform hover:scale-105 shadow-lg">
+
+              <button
+                onClick={() => navigate("/login?register=true")}
+                className=" cursor-pointer bg-lime-800 text-white font-medium  px-3 py-2 rounded-lg hover:from-lime-800 hover:to-lime-900 transition-all duration-300 transform active:scale-90 shadow-lg"
+              >
                 Sign Up
               </button>
             </div>
@@ -229,20 +247,44 @@ const FreelanceMarketplace = () => {
                 >
                   Home
                 </a>
-                <a href="#" className="block px-3 py-2 text-gray-600">
-                  Explore Gigs
+                <a
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    ScrollPopular();
+                  }}
+                  className="block px-3 py-2 text-gray-600"
+                >
+                  Popular Gigs
                 </a>
-                <a href="#" className="block px-3 py-2 text-gray-600">
+                <a
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    ScrollWork();
+                  }}
+                  className="block px-3 py-2 text-gray-600"
+                >
                   How It Works
                 </a>
-                <a href="#" className="block px-3 py-2 text-gray-600">
-                  Help
+                <a
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    ScrollSucess();
+                  }}
+                  className="block px-3 py-2 text-gray-600"
+                >
+                  Stories
                 </a>
                 <div className="px-3 py-2 space-y-2">
-                  <button className="w-full text-left text-gray-600">
+                  <button
+                    className="w-full text-left text-gray-600"
+                    onClick={() => navigate("/login")}
+                  >
                     Login
                   </button>
-                  <button className="w-full bg-lime-700 text-white px-4 py-2 rounded-lg">
+                  <button
+                    onClick={() => navigate("/login?register=true")}
+                    className="w-full bg-lime-700 text-white px-4 py-2 rounded-lg"
+                  >
                     Sign Up
                   </button>
                 </div>
@@ -280,11 +322,17 @@ const FreelanceMarketplace = () => {
                 stories begin.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <button className="bg-gradient-to-r from-lime-700 to-lime-800 text-white px-8 py-4 rounded-xl hover:from-lime-800 hover:to-lime-900 transition-all duration-300 transform hover:scale-105 shadow-lg font-semibold text-lg flex items-center justify-center space-x-2">
+                <button
+                  onClick={ScrollPopular}
+                  className="bg-gradient-to-r from-lime-700 to-lime-800 text-white px-5 py-3 cursor-pointer rounded-xl hover:from-lime-800 hover:to-lime-900 transition-all duration-300 transform hover:scale-105 shadow-lg font-semibold text-lg flex items-center justify-center space-x-2"
+                >
                   <Zap className="w-5 h-5" />
                   <span>Explore Gigs</span>
                 </button>
-                <button className="border-2 border-lime-700 text-lime-700 px-8 py-4 rounded-xl hover:bg-lime-50 transition-all duration-300 font-semibold text-lg">
+                <button
+                  onClick={() => navigate("/login?register=true")}
+                  className="border-2 border-lime-700 text-lime-700 px-5 py-3 rounded-xl cursor-pointer hover:bg-lime-50 transition-all duration-300 font-semibold text-lg"
+                >
                   Start Selling
                 </button>
               </div>
@@ -326,7 +374,10 @@ const FreelanceMarketplace = () => {
         </div>
       </section>
 
-      <section className="py-20 bg-gradient-to-br from-slate-50 to-lime-50">
+      <section
+        className="py-20 bg-gradient-to-br from-slate-50 to-lime-50"
+        ref={workRef}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
@@ -370,7 +421,7 @@ const FreelanceMarketplace = () => {
                   "Track progress and receive results",
                 ].map((step, index) => (
                   <div key={index} className="flex items-center space-x-4">
-                    <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full flex items-center justify-center font-bold text-sm shadow-md">
+                    <div className="w-8 h-8 bg-gradient-to-r from-lime-500 to-lime-600 text-white rounded-full flex items-center justify-center font-bold text-sm shadow-md">
                       {index + 1}
                     </div>
                     <span className="text-lg text-gray-700">{step}</span>
@@ -381,8 +432,7 @@ const FreelanceMarketplace = () => {
           </div>
         </div>
       </section>
-
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white" ref={popularRef}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
@@ -412,6 +462,7 @@ const FreelanceMarketplace = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {filteredGigs.map((gig) => (
               <div
+                onClick={() => navigate("/login?register=true")}
                 key={gig.id}
                 className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group hover:scale-105 border border-gray-100"
               >
@@ -451,7 +502,10 @@ const FreelanceMarketplace = () => {
         </div>
       </section>
 
-      <section className="py-20 bg-gradient-to-br from-lime-50 to-green-50">
+      <section
+        className="py-20 bg-gradient-to-br from-lime-50 to-green-50"
+        ref={success}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
@@ -502,7 +556,10 @@ const FreelanceMarketplace = () => {
             Join our thriving community where talent meets opportunity and
             dreams become reality
           </p>
-          <button className="bg-white text-lime-700 px-8 py-4 rounded-xl hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 shadow-lg font-semibold text-lg inline-flex items-center space-x-2">
+          <button
+            onClick={() => navigate("/login?register=true")}
+            className="bg-white text-lime-700 px-8 py-4 rounded-xl hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 shadow-lg font-semibold text-lg inline-flex items-center space-x-2"
+          >
             <span>Start Your Journey</span>
             <ArrowRight className="w-5 h-5" />
           </button>
@@ -514,7 +571,7 @@ const FreelanceMarketplace = () => {
           <div className="grid md:grid-cols-3 gap-8">
             <div className="col-span-2">
               <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-lime-700 to-lime-800 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8  rounded-full flex items-center justify-center">
                   <div className="w-8 h-8 flex items-center justify-center ">
                     <img src={Logo} />
                   </div>

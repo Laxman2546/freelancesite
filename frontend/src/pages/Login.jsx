@@ -1,5 +1,11 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Link, Navigate, Router, useNavigate } from "react-router-dom";
+import {
+  Link,
+  Navigate,
+  Router,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import loginImage from "../assets/images/loginImage.png";
 import { themeColors } from "../hooks/theme.js";
 import Errors from "../components/Errors.jsx";
@@ -20,6 +26,18 @@ const Login = () => {
   const [isChecked, setisChecked] = useState(false);
   const imageRef = useRef(null);
   const Navigate = useNavigate();
+  const location = useLocation();
+
+  const getisRegister = () => {
+    const searchParams = new URLSearchParams(location.search);
+    const isRegister = searchParams.get("register");
+    if (isRegister) {
+      setRegisterOpen(true);
+    }
+  };
+  useEffect(() => {
+    getisRegister();
+  }, []);
   useGSAP(() => {
     if (imageRef.current) {
       gsap.fromTo(
@@ -291,14 +309,6 @@ const Login = () => {
                 />
               )}
             </label>
-            <div className="w-[90%] md:w-[70%] flex justify-end select-none">
-              <button
-                className="cursor-pointer"
-                style={{ color: themeColors.text.secondary }}
-              >
-                forgot password
-              </button>
-            </div>
             <Button
               type="submit"
               styles="w-[90%] md:w-[70%] bg-[#3A5B22] p-3 rounded-2xl font-bold text-white cursor-pointer"

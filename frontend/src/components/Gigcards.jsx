@@ -3,9 +3,16 @@ import React from "react";
 const Gigcards = ({ data }) => {
   const saveGigs = () => {
     const existing = JSON.parse(localStorage.getItem("savedGigs")) || [];
-    const updated = [...existing, data];
-    localStorage.setItem("savedGigs", JSON.stringify(updated));
-    console.log("Gig added to saved list");
+
+    const isDuplicate = existing.some((gig) => gig._id === data._id);
+
+    if (!isDuplicate) {
+      const updated = [...existing, data];
+      localStorage.setItem("savedGigs", JSON.stringify(updated));
+      console.log("Gig added to saved list");
+    } else {
+      console.log("Gig already exists in saved list");
+    }
   };
 
   return (
