@@ -1,8 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import {
   Link,
-  Navigate,
-  Router,
   useLocation,
   useNavigate,
 } from "react-router-dom";
