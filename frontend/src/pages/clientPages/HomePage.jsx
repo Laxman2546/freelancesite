@@ -443,18 +443,20 @@ const HomePage = () => {
           ))}
         </div>
       </div>
-      <div className="w-full p-3 md:p-8">
-        <h1 className="text-xl md:text-3xl font-semibold">Recently Viewed</h1>
-        <div className="mt-6 overflow-hidden">
-          <Slider {...settings}>
-            {localgigs.map((data) => (
-              <div key={data.title}>
-                <Gigcards data={data} />
-              </div>
-            ))}
-          </Slider>
+      {localgigs.length > 0 && localgigs != [] && (
+        <div className="w-full p-3 md:p-8">
+          <h1 className="text-xl md:text-3xl font-semibold">Recently Viewed</h1>
+          <div className="mt-6 overflow-hidden">
+            <Slider {...settings}>
+              {localgigs.map((data) => (
+                <div key={data.title}>
+                  <Gigcards data={data} />
+                </div>
+              ))}
+            </Slider>
+          </div>
         </div>
-      </div>
+      )}
       <div className="w-full ">
         <Footer />
       </div>
