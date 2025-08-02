@@ -19,9 +19,13 @@ import Search from "./Search";
 
 const ClientNavbar = ({ isUpdated, isVisible }) => {
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
+
+  // SEPARATE STATES FOR DIFFERENT MENUS
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isMessageOpen, setMessageIsOpen] = useState(false);
   const [isnotificationopen, setNotifcationopen] = useState(false);
+
   const [notifications, setnotifications] = useState([]);
   const [messages, setMesssages] = useState([]);
   const [isError, setisError] = useState(false);
@@ -32,15 +36,17 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
   const [closingMenu, setClosingMenu] = useState(false);
   const [closingMessages, setClosingMessages] = useState(false);
   const [closingNotifications, setClosingNotifications] = useState(false);
+  const [closingProfileDropdown, setClosingProfileDropdown] = useState(false);
   const [isSearchvisible, setSearchvisible] = useState(false);
   const [userName, setuserName] = useState("");
   const location = useLocation();
 
-  // Refs for click outside detection
   const mobileMenuRef = useRef(null);
+  const profileDropdownRef = useRef(null);
 
   const notificationData = [];
 
+  // FIXED NAV ITEMS - CONSISTENT ROUTES
   const navItems = [
     {
       label: "Explore",
@@ -48,7 +54,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
     },
     {
       label: "Orders",
-      href: "/postgig",
+      href: "/orders", // Made consistent with desktop nav
     },
   ];
 
@@ -71,7 +77,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
 
   useEffect(() => {
     requestData();
-  }, [isUpdated]);
+  }, [isUpdated, requestData]);
 
   useEffect(() => {
     setnotifications(notificationData);
@@ -94,17 +100,38 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
     return () => clearTimeout(ShowError);
   }, [error]);
 
-  const handleMenuToggle = () => {
-    if (isOpen) {
+  // SEPARATE MOBILE MENU TOGGLE
+  const handleMobileMenuToggle = () => {
+    if (isMobileMenuOpen) {
       setClosingMenu(true);
       setTimeout(() => {
-        setIsOpen(false);
+        setIsMobileMenuOpen(false);
         setClosingMenu(false);
       }, 200);
     } else {
-      setIsOpen(true);
+      setIsMobileMenuOpen(true);
     }
 
+    // Close other menus
+    setMessageIsOpen(false);
+    setNotifcationopen(false);
+    setIsProfileDropdownOpen(false);
+  };
+
+  // SEPARATE PROFILE DROPDOWN TOGGLE
+  const handleProfileDropdownToggle = () => {
+    if (isProfileDropdownOpen) {
+      setClosingProfileDropdown(true);
+      setTimeout(() => {
+        setIsProfileDropdownOpen(false);
+        setClosingProfileDropdown(false);
+      }, 200);
+    } else {
+      setIsProfileDropdownOpen(true);
+    }
+
+    // Close other menus
+    setIsMobileMenuOpen(false);
     setMessageIsOpen(false);
     setNotifcationopen(false);
   };
@@ -123,22 +150,9 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
     } else {
       setNotifcationopen(true);
     }
-    setIsOpen(false);
+    setIsMobileMenuOpen(false);
     setMessageIsOpen(false);
-  };
-
-  const handleNavItemClick = (href) => {
-    console.log("Navigation clicked:", href);
-
-    setIsOpen(false);
-    setClosingMenu(false);
-
-    setTimeout(() => {
-      if (href !== "#") {
-        console.log("Navigating to:", href);
-        navigate(href);
-      }
-    }, 50);
+    setIsProfileDropdownOpen(false);
   };
 
   const isVisble = () => {
@@ -159,7 +173,6 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
 
   const closeMessage = useRef(null);
   const closeNotification = useRef(null);
-  const profileClose = useRef(null);
 
   useEffect(() => {
     const handleMessgageClose = (e) => {
@@ -185,6 +198,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
       document.removeEventListener("mousedown", handleNotificationClose);
   }, []);
 
+  // FIXED MOBILE MENU CLICK OUTSIDE
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target)) {
@@ -192,32 +206,46 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
           e.target.closest('[data-testid="hamburger"]') ||
           e.target.closest('button[aria-label*="menu"]');
 
-        if (!hamburgerButton && isOpen) {
+        if (!hamburgerButton && isMobileMenuOpen) {
           setClosingMenu(true);
           setTimeout(() => {
-            setIsOpen(false);
+            setIsMobileMenuOpen(false);
             setClosingMenu(false);
           }, 200);
         }
       }
     };
 
-    if (isOpen) {
+    if (isMobileMenuOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen]);
+  }, [isMobileMenuOpen]);
 
+  // PROFILE DROPDOWN CLICK OUTSIDE
   useEffect(() => {
-    const handleProfilecolse = (e) => {
-      if (profileClose.current && !profileClose.current.contains(e.target)) {
-        setIsOpen(false);
+    const handleProfileClose = (e) => {
+      if (
+        profileDropdownRef.current &&
+        !profileDropdownRef.current.contains(e.target)
+      ) {
+        if (isProfileDropdownOpen) {
+          setClosingProfileDropdown(true);
+          setTimeout(() => {
+            setIsProfileDropdownOpen(false);
+            setClosingProfileDropdown(false);
+          }, 200);
+        }
       }
     };
-    document.addEventListener("mousedown", handleProfilecolse);
-    return () => document.removeEventListener("mousedown", handleProfilecolse);
-  }, []);
+
+    if (isProfileDropdownOpen) {
+      document.addEventListener("mousedown", handleProfileClose);
+    }
+
+    return () => document.removeEventListener("mousedown", handleProfileClose);
+  }, [isProfileDropdownOpen]);
 
   return (
     <header className="w-full h-full flex flex-col items-center relative bg-white shadow-gray-400 shadow-sm z-[9999999]">
@@ -227,7 +255,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
         errorStyles={"absolute top-25 z-50 "}
       />
 
-      {(isOpen || closingMenu) && (
+      {(isMobileMenuOpen || closingMenu) && (
         <div
           className={`fixed inset-0 bg-[#00000080] bg-opacity-50 md:hidden ${
             closingMenu ? "animate-fade-out" : "animate-fade-in"
@@ -239,22 +267,22 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
         <div className="flex flex-col mr-[20px] md:hidden">
           <Hamburger
             easing="ease-in"
-            toggled={isOpen}
-            onToggle={handleMenuToggle}
+            toggled={isMobileMenuOpen}
+            onToggle={handleMobileMenuToggle}
             color="#3A5B22"
             size={24}
           />
 
-          {isOpen && (
+          {isMobileMenuOpen && (
             <div
               ref={mobileMenuRef}
-              className="fixed top-0 left-0 w-[280px] bg-white  h-full shadow-xl overflow-scroll animate-slideIn"
+              className="fixed top-0 left-0 w-[280px] bg-white h-full shadow-xl overflow-scroll animate-slideIn"
             >
               <div className="absolute top-5 left-3">
                 <Hamburger
                   easing="ease-in"
-                  toggled={isOpen}
-                  onToggle={handleMenuToggle}
+                  toggled={isMobileMenuOpen}
+                  onToggle={handleMobileMenuToggle}
                   color="#3A5B22"
                   size={24}
                 />
@@ -284,9 +312,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
                       <li key={index}>
                         <Link
                           to={item.href}
-                          onClick={() => {
-                            setIsOpen(false);
-                          }}
+                          onClick={() => setIsMobileMenuOpen(false)}
                           className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium"
                         >
                           {item.label}
@@ -296,12 +322,11 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
                   </ul>
 
                   <div className="border-t border-gray-200 my-6 mx-4"></div>
-
                   <ul className="space-y-2 px-4">
                     <li>
                       <Link
                         to="/messages"
-                        onClick={() => setIsOpen(false)}
+                        onClick={() => setIsMobileMenuOpen(false)}
                         className="flex items-center gap-3 w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium"
                       >
                         <EnvelopeIcon className="size-5" />
@@ -311,7 +336,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
                     <li>
                       <Link
                         to="/notifications"
-                        onClick={() => setIsOpen(false)}
+                        onClick={() => setIsMobileMenuOpen(false)}
                         className="flex items-center gap-3 w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium"
                       >
                         <BellIcon className="size-5" />
@@ -321,7 +346,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
                     <li>
                       <Link
                         to="/profile"
-                        onClick={() => setIsOpen(false)}
+                        onClick={() => setIsMobileMenuOpen(false)}
                         className="flex items-center gap-3 w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium"
                       >
                         {userPic ? (
@@ -341,10 +366,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
                     <li>
                       <Link
                         to="/profileupdate"
-                        onClick={() => {
-                          console.log("clicked profile update");
-                          setIsOpen(false);
-                        }}
+                        onClick={() => setIsMobileMenuOpen(false)}
                         className="flex items-center gap-3 w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium"
                       >
                         <PencilSquareIcon className="size-5" />
@@ -357,7 +379,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
                 <div className="p-4 border-t border-gray-200">
                   <button
                     onClick={() => {
-                      setIsOpen(false);
+                      setIsMobileMenuOpen(false);
                       setTimeout(() => handleLogout(), 50);
                     }}
                     className="w-full px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200 font-medium text-left"
@@ -402,7 +424,8 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
           onClick={() => {
             setMessageIsOpen(false);
             setNotifcationopen(false);
-            setIsOpen(false);
+            setIsMobileMenuOpen(false);
+            setIsProfileDropdownOpen(false);
           }}
         >
           <ul className="hidden w-3/4 flex-row gap-8 md:flex items-center relative">
@@ -422,7 +445,7 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
           <ul className="flex flex-row gap-5 items-center">
             <Link to={"/orders"}>
               <li
-                className={`font-medium text-lg p-3 rounded-xl cursor-pointer ${
+                className={`font-medium text-lg p-3 rounded-xl cursor-pointer hover:bg-green-50 hover:text-[#3A5B22] transition-colors ${
                   activeNav === "Orders" && `bg-[#3A5B22] text-white`
                 }`}
               >
@@ -431,13 +454,13 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
             </Link>
             <li className="cursor-pointer relative">
               <EnvelopeIcon
-                className="size-6 transition-colors"
+                className="size-6 transition-colors hover:text-[#3A5B22]"
                 onClick={handleMessagesToggle}
               />
             </li>
             <li className="cursor-pointer relative">
               <BellIcon
-                className="size-6 transition-colors"
+                className="size-6 transition-colors hover:text-[#3A5B22]"
                 onClick={handleNotificationsToggle}
                 ref={closeNotification}
               />
@@ -488,29 +511,37 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
                 </div>
               )}
             </li>
-            <li className="cursor-pointer relative" ref={profileClose}>
+            <li className="cursor-pointer relative" ref={profileDropdownRef}>
               {userPic ? (
-                <div className="w-[25px] h-[25px]" onClick={handleMenuToggle}>
+                <div
+                  className="w-[25px] h-[25px]"
+                  onClick={handleProfileDropdownToggle}
+                >
                   <img
                     src={userPic}
-                    className="w-[25px] h-[25px] rounded-full object-cover"
+                    className="w-[25px] h-[25px] rounded-full object-cover hover:ring-2 hover:ring-[#3A5B22] transition-all"
                     alt="Profile"
                   />
                 </div>
               ) : (
                 <UserCircleIcon
-                  className="size-6 transition-colors"
-                  onClick={handleMenuToggle}
+                  className="size-6 transition-colors hover:text-[#3A5B22]"
+                  onClick={handleProfileDropdownToggle}
                 />
               )}
-              {(isOpen || closingMenu) && (
+              {(isProfileDropdownOpen || closingProfileDropdown) && (
                 <div
                   className={`absolute right-0 top-8  bg-white rounded-lg shadow-lg border w-48 ${
-                    closingMenu ? "animate-fade-out" : "animate-fade-in"
+                    closingProfileDropdown
+                      ? "animate-fade-out"
+                      : "animate-fade-in"
                   }`}
                 >
                   <ul className="flex flex-col py-2">
-                    <Link to={"/profile"}>
+                    <Link
+                      to={"/profile"}
+                      onClick={() => setIsProfileDropdownOpen(false)}
+                    >
                       <li className="px-4 py-2 transition-colors cursor-pointer hover:bg-gray-100">
                         <span className="font-medium cursor-pointer">
                           Profile
@@ -520,7 +551,10 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
                         </div>
                       </li>
                     </Link>
-                    <Link to={"/profileupdate"}>
+                    <Link
+                      to={"/profileupdate"}
+                      onClick={() => setIsProfileDropdownOpen(false)}
+                    >
                       <li className="px-4 py-2 transition-colors cursor-pointer hover:bg-gray-100">
                         <span className="font-medium cursor-pointer">
                           Update Profile
@@ -530,7 +564,10 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
                         </div>
                       </li>
                     </Link>
-                    <Link to={"/account"}>
+                    <Link
+                      to={"/account"}
+                      onClick={() => setIsProfileDropdownOpen(false)}
+                    >
                       <li className="hover:bg-gray-100 px-4 py-2 transition-colors cursor-pointer">
                         <span className="font-medium">Account Settings</span>
                         <div className="text-xs text-gray-500">
@@ -540,7 +577,10 @@ const ClientNavbar = ({ isUpdated, isVisible }) => {
                     </Link>
                     <li
                       className="hover:bg-gray-100 px-4 py-2 rounded-b transition-colors cursor-pointer text-red-600"
-                      onClick={handleLogout}
+                      onClick={() => {
+                        setIsProfileDropdownOpen(false);
+                        handleLogout();
+                      }}
                     >
                       Logout
                     </li>

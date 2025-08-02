@@ -13,11 +13,16 @@ import noMessages from "../assets/images/messages.svg";
 import axios from "axios";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+
 const FreelancerNavbar = ({ isUpdated }) => {
   const Navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
+
+  // SEPARATE STATES FOR DIFFERENT MENUS
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isMessageOpen, setMessageIsOpen] = useState(false);
   const [isnotificationopen, setNotifcationopen] = useState(false);
+
   const [notifications, setnotifications] = useState([]);
   const [messages, setMesssages] = useState([]);
   const [isError, setisError] = useState(false);
@@ -28,8 +33,12 @@ const FreelancerNavbar = ({ isUpdated }) => {
   const [closingMenu, setClosingMenu] = useState(false);
   const [closingMessages, setClosingMessages] = useState(false);
   const [closingNotifications, setClosingNotifications] = useState(false);
+  const [closingProfileDropdown, setClosingProfileDropdown] = useState(false);
   const [userName, setuserName] = useState("");
   const location = useLocation();
+
+  const mobileMenuRef = useRef(null);
+  const profileDropdownRef = useRef(null);
 
   const recentMessages = [
     {
@@ -127,9 +136,10 @@ const FreelancerNavbar = ({ isUpdated }) => {
       console.warn(e, "error while fetching user profile data");
     }
   }, []);
+
   useEffect(() => {
     requestData();
-  }, [isUpdated]);
+  }, [isUpdated, requestData]);
 
   useEffect(() => {
     setnotifications(notificationData);
@@ -152,16 +162,34 @@ const FreelancerNavbar = ({ isUpdated }) => {
     return () => clearTimeout(ShowError);
   }, [error]);
 
-  const handleMenuToggle = () => {
-    if (isOpen) {
+  // SEPARATE MOBILE MENU TOGGLE
+  const handleMobileMenuToggle = () => {
+    if (isMobileMenuOpen) {
       setClosingMenu(true);
       setTimeout(() => {
-        setIsOpen(false);
+        setIsMobileMenuOpen(false);
         setClosingMenu(false);
       }, 200);
     } else {
-      setIsOpen(true);
+      setIsMobileMenuOpen(true);
     }
+    setMessageIsOpen(false);
+    setNotifcationopen(false);
+    setIsProfileDropdownOpen(false);
+  };
+
+  // SEPARATE PROFILE DROPDOWN TOGGLE
+  const handleProfileDropdownToggle = () => {
+    if (isProfileDropdownOpen) {
+      setClosingProfileDropdown(true);
+      setTimeout(() => {
+        setIsProfileDropdownOpen(false);
+        setClosingProfileDropdown(false);
+      }, 200);
+    } else {
+      setIsProfileDropdownOpen(true);
+    }
+    setIsMobileMenuOpen(false);
     setMessageIsOpen(false);
     setNotifcationopen(false);
   };
@@ -177,8 +205,10 @@ const FreelancerNavbar = ({ isUpdated }) => {
       setMessageIsOpen(true);
     }
     setNotifcationopen(false);
-    setIsOpen(false);
+    setIsMobileMenuOpen(false);
+    setIsProfileDropdownOpen(false);
   };
+
   const handleNotificationsToggle = () => {
     if (isnotificationopen) {
       setClosingNotifications(true);
@@ -189,13 +219,14 @@ const FreelancerNavbar = ({ isUpdated }) => {
     } else {
       setNotifcationopen(true);
     }
-    setIsOpen(false);
+    setIsMobileMenuOpen(false);
     setMessageIsOpen(false);
+    setIsProfileDropdownOpen(false);
   };
 
   const closeMessage = useRef(null);
   const closeNotification = useRef(null);
-  const profileClose = useRef(null);
+
   useEffect(() => {
     const handleMessgageClose = (e) => {
       if (closeMessage.current && !closeMessage.current.contains(e.target)) {
@@ -219,32 +250,56 @@ const FreelancerNavbar = ({ isUpdated }) => {
     return () =>
       document.removeEventListener("mousedown", handleNotificationClose);
   }, []);
+
+  // MOBILE MENU CLICK OUTSIDE
   useEffect(() => {
-    const handleProfilecolse = (e) => {
-      if (profileClose.current && !profileClose.current.contains(e.target)) {
-        setIsOpen(false);
+    const handleClickOutside = (e) => {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target)) {
+        const hamburgerButton =
+          e.target.closest('[data-testid="hamburger"]') ||
+          e.target.closest('button[aria-label*="menu"]');
+
+        if (!hamburgerButton && isMobileMenuOpen) {
+          setClosingMenu(true);
+          setTimeout(() => {
+            setIsMobileMenuOpen(false);
+            setClosingMenu(false);
+          }, 200);
+        }
       }
     };
-    document.addEventListener("mousedown", handleProfilecolse);
-    return () => document.removeEventListener("mousedown", handleProfilecolse);
-  }, []);
 
-  const handleNavItemClick = (href, isMobileNav = false) => {
-    if (!isMobileNav) {
-      setClosingMenu(true);
-      setTimeout(() => {
-        setIsOpen(false);
-        setClosingMenu(false);
-        if (href !== "#") {
-          Navigate(href);
-        }
-      }, 200);
-    } else {
-      if (href !== "#") {
-        Navigate(href);
-      }
+    if (isMobileMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
     }
-  };
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isMobileMenuOpen]);
+
+  // PROFILE DROPDOWN CLICK OUTSIDE
+  useEffect(() => {
+    const handleProfileClose = (e) => {
+      if (
+        profileDropdownRef.current &&
+        !profileDropdownRef.current.contains(e.target)
+      ) {
+        if (isProfileDropdownOpen) {
+          setClosingProfileDropdown(true);
+          setTimeout(() => {
+            setIsProfileDropdownOpen(false);
+            setClosingProfileDropdown(false);
+          }, 200);
+        }
+      }
+    };
+
+    if (isProfileDropdownOpen) {
+      document.addEventListener("mousedown", handleProfileClose);
+    }
+
+    return () => document.removeEventListener("mousedown", handleProfileClose);
+  }, [isProfileDropdownOpen]);
+
   useEffect(() => {
     if (location.pathname.includes("userhome")) {
       setActiveNav("MyGigs");
@@ -254,42 +309,44 @@ const FreelancerNavbar = ({ isUpdated }) => {
       setActiveNav("Orders");
     }
   }, [location.pathname]);
+
   return (
-    <header className="w-full h-full flex flex-col items-center relative">
+    <header className="w-full h-full flex flex-col items-center relative bg-white shadow-gray-400 shadow-sm z-[9999999]">
       <Errors
         errorText={error}
         isError={isError}
         errorStyles={"absolute top-25 z-50"}
       />
-      {(isOpen || closingMenu) && (
+      {(isMobileMenuOpen || closingMenu) && (
         <div
           className={`fixed inset-0 bg-[#00000080] bg-opacity-50 z-30 md:hidden ${
             closingMenu ? "animate-fade-out" : "animate-fade-in"
           }`}
-          onClick={handleMenuToggle}
+          onClick={handleMobileMenuToggle}
         />
       )}
 
       <nav className="w-full p-5 pl-0 md:p-5 flex flex-row md:flex-row items-center justify-center md:justify-between relative z-40">
-        <div className="absoulte z-[80] flex flex-col mr-[20px] md:hidden">
+        <div className=" z-[80] flex flex-col mr-[20px] md:hidden">
           <Hamburger
             easing="ease-in"
-            toggled={isOpen}
-            onToggle={handleMenuToggle}
+            toggled={isMobileMenuOpen}
+            onToggle={handleMobileMenuToggle}
             color="#3A5B22"
             size={24}
           />
-          {(isOpen || closingMenu) && (
+          {(isMobileMenuOpen || closingMenu) && (
             <div
-              className={`fixed top-0 left-0 w-[280px]  bg-white h-full shadow-xl overflow-scroll  z-40 mr-[40px] ${
+              ref={mobileMenuRef}
+              className={`fixed top-0 left-0 max-w-[280px] bg-white h-full shadow-xl overflow-scroll z-40 ${
                 closingMenu ? "animate-slideOut" : "animate-slideIn"
               }`}
             >
-              <div className="absolute top-5">
+              <div className="absolute top-5 left-3">
                 <Hamburger
                   easing="ease-in"
-                  toggled={isOpen}
-                  onToggle={handleMenuToggle}
+                  toggled={isMobileMenuOpen}
+                  onToggle={handleMobileMenuToggle}
                   color="#3A5B22"
                   size={24}
                 />
@@ -300,14 +357,12 @@ const FreelancerNavbar = ({ isUpdated }) => {
                     <div className="w-[25px] h-[25px]">
                       <img
                         src={userPic}
-                        className="w-[50px] h-[25px] rounded-full"
+                        className="w-[25px] h-[25px] rounded-full object-cover"
+                        alt="Profile"
                       />
                     </div>
                   ) : (
-                    <UserCircleIcon
-                      className="size-6  transition-colors"
-                      onClick={handleMenuToggle}
-                    />
+                    <UserCircleIcon className="size-6 transition-colors" />
                   )}
                   <h1 className="text-lg font-semibold text-gray-800">
                     {userName}
@@ -316,101 +371,85 @@ const FreelancerNavbar = ({ isUpdated }) => {
 
                 <div className="flex-1 py-6">
                   <ul className="space-y-2 px-4">
-                    <li>
-                      <button
-                        onClick={() => handleNavItemClick("/userhome", true)}
-                        className={`w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium ${
-                          activeNav === "MyGigs"
-                            ? "bg-[#3A5B22] text-white"
-                            : ""
-                        }`}
-                      >
-                        MyGigs
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                        onClick={() => handleNavItemClick("/postgig", true)}
-                        className={`w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium ${
-                          activeNav === "Post a Gig"
-                            ? "bg-[#3A5B22] text-white"
-                            : ""
-                        }`}
-                      >
-                        Post a Gig
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                        onClick={() => handleNavItemClick("/orders", true)}
-                        className={`w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium ${
-                          activeNav === "Orders"
-                            ? "bg-[#3A5B22] text-white"
-                            : ""
-                        }`}
-                      >
-                        Orders
-                      </button>
-                    </li>
+                    {navItems.map((item, index) => (
+                      <li key={index}>
+                        <Link
+                          to={item.href}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className={`block text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium ${
+                            activeNav === item.label
+                              ? "bg-[#3A5B22] text-white"
+                              : ""
+                          }`}
+                        >
+                          {item.label}
+                        </Link>
+                      </li>
+                    ))}
                   </ul>
 
                   <div className="border-t border-gray-200 my-6 mx-4"></div>
 
                   <ul className="space-y-2 px-4">
                     <li>
-                      <button
-                        onClick={() => handleNavItemClick("/messages")}
-                        className="w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium flex items-center gap-3"
+                      <Link
+                        to="/messages"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-3 w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium"
                       >
                         <EnvelopeIcon className="size-5" />
                         Messages
-                      </button>
+                      </Link>
                     </li>
                     <li>
-                      <button
-                        onClick={() => handleNavItemClick("/notifications")}
-                        className="w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium flex items-center gap-3"
+                      <Link
+                        to="/notifications"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-3 w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium"
                       >
                         <BellIcon className="size-5" />
                         Notifications
-                      </button>
+                      </Link>
                     </li>
                     <li>
-                      <button
-                        onClick={() => handleNavItemClick("/profile")}
-                        className="w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium flex items-center gap-3"
+                      <Link
+                        to="/profile"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-3 w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium"
                       >
                         {userPic ? (
                           <div className="w-[25px] h-[25px]">
                             <img
                               src={userPic}
-                              className="w-[50px] h-[25px] rounded-full"
+                              className="w-[25px] h-[25px] rounded-full object-cover"
+                              alt="Profile"
                             />
                           </div>
                         ) : (
-                          <UserCircleIcon
-                            className="size-6  transition-colors"
-                            onClick={handleMenuToggle}
-                          />
+                          <UserCircleIcon className="size-5 transition-colors" />
                         )}
                         Profile
-                      </button>
+                      </Link>
                     </li>
                     <li>
-                      <button
-                        onClick={() => handleNavItemClick("/profileupdate")}
-                        className="w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium flex items-center gap-3"
+                      <Link
+                        to="/profileupdate"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-3 w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-[#3A5B22] rounded-lg transition-colors duration-200 font-medium"
                       >
                         <PencilSquareIcon className="size-5" />
                         Update Profile
-                      </button>
+                      </Link>
                     </li>
                   </ul>
                 </div>
 
                 <div className="p-4 border-t border-gray-200">
                   <button
-                    onClick={handleLogout}
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      setTimeout(() => handleLogout(), 50);
+                    }}
                     className="w-full px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200 font-medium text-left"
                   >
                     Logout
@@ -425,7 +464,8 @@ const FreelancerNavbar = ({ isUpdated }) => {
           onClick={() => {
             setMessageIsOpen(false);
             setNotifcationopen(false);
-            setIsOpen(false);
+            setIsMobileMenuOpen(false);
+            setIsProfileDropdownOpen(false);
           }}
         >
           <Link to={"/userhome"}>
@@ -440,33 +480,17 @@ const FreelancerNavbar = ({ isUpdated }) => {
 
         <div className="w-full flex items-center justify-center">
           <ul className="hidden flex-row gap-8 md:flex">
-            <Link to={"/userhome"}>
-              <li
-                className={`font-medium text-lg p-3  rounded-xl cursor-pointer ${
-                  activeNav === "MyGigs" && `bg-[#3A5B22] text-white`
-                }`}
-              >
-                MyGigs
-              </li>
-            </Link>
-            <Link to={"/postgig"}>
-              <li
-                className={`font-medium text-lg p-3  rounded-xl cursor-pointer ${
-                  activeNav === "Post a Gig" && `bg-[#3A5B22] text-white`
-                }`}
-              >
-                Post a Gig
-              </li>
-            </Link>
-            <Link to={"/orders"}>
-              <li
-                className={`font-medium text-lg p-3  rounded-xl cursor-pointer ${
-                  activeNav === "Orders" && `bg-[#3A5B22] text-white`
-                }`}
-              >
-                Orders
-              </li>
-            </Link>
+            {navItems.map((item, index) => (
+              <Link key={index} to={item.href}>
+                <li
+                  className={`font-medium text-lg p-3 rounded-xl cursor-pointer hover:bg-green-50 hover:text-[#3A5B22] transition-colors ${
+                    activeNav === item.label ? "bg-[#3A5B22] text-white" : ""
+                  }`}
+                >
+                  {item.label}
+                </li>
+              </Link>
+            ))}
           </ul>
         </div>
 
@@ -474,7 +498,7 @@ const FreelancerNavbar = ({ isUpdated }) => {
           <ul className="flex flex-row gap-5">
             <li className="cursor-pointer relative" ref={closeMessage}>
               <EnvelopeIcon
-                className="size-6  transition-colors"
+                className="size-6 transition-colors hover:text-[#3A5B22]"
                 onClick={handleMessagesToggle}
               />
               {(isMessageOpen || closingMessages) && (
@@ -484,7 +508,7 @@ const FreelancerNavbar = ({ isUpdated }) => {
                   }`}
                 >
                   {messages.length < 1 ? (
-                    <div className="flex flex-col items-center justify-center p-8 ">
+                    <div className="flex flex-col items-center justify-center p-8">
                       <img
                         src={noMessages}
                         alt="No messages"
@@ -511,9 +535,12 @@ const FreelancerNavbar = ({ isUpdated }) => {
                               src={msg.avatar}
                               alt={msg.senderName}
                               className="w-10 h-10 rounded-full object-cover"
+                              onError={(e) => {
+                                e.target.style.display = "none";
+                              }}
                             />
                             <div className="flex-1">
-                              <p className="font-semibold text-sm text-gray-800 ">
+                              <p className="font-semibold text-sm text-gray-800">
                                 {msg.senderName}
                               </p>
                               <p className="text-sm text-gray-600 truncate w-[180px]">
@@ -545,7 +572,7 @@ const FreelancerNavbar = ({ isUpdated }) => {
             </li>
             <li className="cursor-pointer relative" ref={closeNotification}>
               <BellIcon
-                className="size-6  transition-colors"
+                className="size-6 transition-colors hover:text-[#3A5B22]"
                 onClick={handleNotificationsToggle}
               />
               {(isnotificationopen || closingNotifications) && (
@@ -595,29 +622,38 @@ const FreelancerNavbar = ({ isUpdated }) => {
                 </div>
               )}
             </li>
-            <li className="cursor-pointer relative" ref={profileClose}>
+            <li className="cursor-pointer relative" ref={profileDropdownRef}>
               {userPic ? (
-                <div className="w-[25px] h-[25px] " onClick={handleMenuToggle}>
+                <div
+                  className="w-[25px] h-[25px]"
+                  onClick={handleProfileDropdownToggle}
+                >
                   <img
                     src={userPic}
-                    className="w-[50px] h-[25px] rounded-full"
+                    className="w-[25px] h-[25px] rounded-full object-cover hover:ring-2 hover:ring-[#3A5B22] transition-all"
+                    alt="Profile"
                   />
                 </div>
               ) : (
                 <UserCircleIcon
-                  className="size-6  transition-colors"
-                  onClick={handleMenuToggle}
+                  className="size-6 transition-colors hover:text-[#3A5B22]"
+                  onClick={handleProfileDropdownToggle}
                 />
               )}
-              {(isOpen || closingMenu) && (
+              {(isProfileDropdownOpen || closingProfileDropdown) && (
                 <div
                   className={`absolute right-0 top-8 z-20 bg-white rounded-lg shadow-lg border w-48 ${
-                    closingMenu ? "animate-fade-out" : "animate-fade-in"
+                    closingProfileDropdown
+                      ? "animate-fade-out"
+                      : "animate-fade-in"
                   }`}
                 >
                   <ul className="flex flex-col py-2">
-                    <Link to={"/profile"}>
-                      <li className=" px-4 py-2 transition-colors cursor-pointer hover:bg-gray-100">
+                    <Link
+                      to="/profile"
+                      onClick={() => setIsProfileDropdownOpen(false)}
+                    >
+                      <li className="px-4 py-2 transition-colors cursor-pointer hover:bg-gray-100">
                         <span className="font-medium cursor-pointer">
                           Profile
                         </span>
@@ -626,8 +662,11 @@ const FreelancerNavbar = ({ isUpdated }) => {
                         </div>
                       </li>
                     </Link>
-                    <Link to={"/profileupdate"}>
-                      <li className=" px-4 py-2 transition-colors cursor-pointer hover:bg-gray-100">
+                    <Link
+                      to="/profileupdate"
+                      onClick={() => setIsProfileDropdownOpen(false)}
+                    >
+                      <li className="px-4 py-2 transition-colors cursor-pointer hover:bg-gray-100">
                         <span className="font-medium cursor-pointer">
                           Update Profile
                         </span>
@@ -636,7 +675,10 @@ const FreelancerNavbar = ({ isUpdated }) => {
                         </div>
                       </li>
                     </Link>
-                    <Link to={"/account"}>
+                    <Link
+                      to="/account"
+                      onClick={() => setIsProfileDropdownOpen(false)}
+                    >
                       <li className="hover:bg-gray-100 px-4 py-2 transition-colors cursor-pointer">
                         <span className="font-medium">Account Settings</span>
                         <div className="text-xs text-gray-500">
@@ -646,7 +688,10 @@ const FreelancerNavbar = ({ isUpdated }) => {
                     </Link>
                     <li
                       className="hover:bg-gray-100 px-4 py-2 rounded-b transition-colors cursor-pointer text-red-600"
-                      onClick={handleLogout}
+                      onClick={() => {
+                        setIsProfileDropdownOpen(false);
+                        handleLogout();
+                      }}
                     >
                       Logout
                     </li>
