@@ -100,6 +100,9 @@ REACT_APP_BACKEND_URI = "http://localhost:3000"
 ```
 npm run dev
 ```
+
+---
+
 ### ✨Future Features
 
 Cloudinary Integration(image storage)
@@ -112,11 +115,17 @@ Gig ratings and reviews
 
 Email & push notifications
 
+---
+
 🤝 Contributing
 Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
 
+---
+
 💡 Inspiration
 GigConnect was built with the idea of making freelancing accessible, elegant, and effective — especially in a world where remote work is the new normal.
+
+---
 
 📄 License
 This project is licensed under the MIT License.
