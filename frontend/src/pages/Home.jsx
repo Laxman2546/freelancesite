@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, use } from "react";
 import {
   Menu,
   X,
@@ -22,12 +22,24 @@ import {
 import Logo from "../assets/images/logo.svg";
 import CardSwiper from "../components/CardSwiper";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const FreelanceMarketplace = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState("All");
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
+  const wakingBackend = async () => {
+    try {
+      await axios.get(`${process.env.REACT_APP_BACKEND_URI}/ping`);
+    } catch (e) {
+      console.log("error while waking backend", e);
+    }
+  };
+
+  useEffect(() => {
+    wakingBackend();
+  }, []);
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);

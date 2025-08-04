@@ -40,70 +40,9 @@ const FreelancerNavbar = ({ isUpdated }) => {
   const mobileMenuRef = useRef(null);
   const profileDropdownRef = useRef(null);
 
-  const recentMessages = [
-    {
-      senderName: "John Doe",
-      avatar: "/avatars/john.png",
-      message: "Hey! Are you available to work on a landing page?",
-      time: "10:45 AM",
-      isRead: false,
-      chatId: "chat123",
-    },
-    {
-      senderName: "Sarah Williams",
-      avatar: "/avatars/sarah.png",
-      message: "Can you help me with React Native?",
-      time: "Yesterday",
-      isRead: true,
-      chatId: "chat456",
-    },
-  ];
+  const recentMessages = [];
 
-  const notificationData = [
-    {
-      id: 1,
-      type: "message",
-      title: "New Message",
-      content:
-        "John Doe sent you a new message: 'Hey, I liked your profile. Are you available?'",
-      timestamp: "2025-05-26T12:30:00Z",
-      isRead: false,
-    },
-    {
-      id: 2,
-      type: "order",
-      title: "New Job Request",
-      content:
-        "You received a new job request from Sarah Williams for 'Build a Portfolio Website'.",
-      timestamp: "2025-05-25T17:45:00Z",
-      isRead: false,
-    },
-    {
-      id: 3,
-      type: "review",
-      title: "Client Review",
-      content: "Alex Smith left a 5-star review on your recent project.",
-      timestamp: "2025-05-25T08:20:00Z",
-      isRead: true,
-    },
-    {
-      id: 4,
-      type: "system",
-      title: "Withdrawal Successful",
-      content:
-        "Your ₹4,000 withdrawal to UPI ID xxxxx@okaxis has been processed.",
-      timestamp: "2025-05-24T15:05:00Z",
-      isRead: true,
-    },
-    {
-      id: 5,
-      type: "warning",
-      title: "Profile Incomplete",
-      content: "Complete your profile to appear in more search results.",
-      timestamp: "2025-05-23T11:10:00Z",
-      isRead: false,
-    },
-  ];
+  const notificationData = [];
 
   const navItems = [
     {
@@ -276,7 +215,6 @@ const FreelancerNavbar = ({ isUpdated }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMobileMenuOpen]);
 
-  // PROFILE DROPDOWN CLICK OUTSIDE
   useEffect(() => {
     const handleProfileClose = (e) => {
       if (
@@ -517,6 +455,9 @@ const FreelancerNavbar = ({ isUpdated }) => {
                       <h1 className="text-center font-medium w-full text-gray-600 mt-2">
                         No new messages
                       </h1>
+                      <a href="/messages" className="text-lime-800 underline">
+                        start a new conversation
+                      </a>
                     </div>
                   ) : (
                     <div>

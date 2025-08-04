@@ -42,6 +42,10 @@ app.use("/gig", gigRoute);
 app.use("/messages", messageRoute);
 app.use("/orders", orderRoute);
 
+app.get("/ping", (req, res) => {
+  res.status(200).send("pong");
+});
+
 const io = new Server(server, {
   cors: {
     origin: allowedOrigins,

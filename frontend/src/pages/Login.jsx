@@ -176,7 +176,7 @@ const Login = () => {
             <label className="w-[90%] md:w-[70%] flex flex-col gap-2 font-medium">
               Email address
               <input
-                type="text"
+                type="email"
                 name="emailId"
                 placeholder="Enter your email"
                 value={email}

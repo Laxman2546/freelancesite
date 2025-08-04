@@ -34,6 +34,7 @@ const Profile = () => {
   const [showError, setshowError] = useState(false);
   const [error, setError] = useState("something went wrong");
   const [fetchedUser, setFetchedUser] = useState([]);
+  const [isId, setisId] = useState(false);
   const { user, checkAuth } = useAuth();
   const location = useLocation();
   useEffect(() => {
@@ -42,8 +43,10 @@ const Profile = () => {
     const id = search.get("id");
     if (id) {
       getUser(id);
+      setisId(true);
     } else {
       userProfile();
+      setisId(false);
     }
   }, [location.search]);
 
@@ -180,7 +183,7 @@ const Profile = () => {
 
         {showUpdate && (
           <div className="w-full min-h-full md:h-screen flex justify-center items-start bg-black/30 absolute top-0 left-0 z-50 p-5">
-            {user?.userId === fetchedUser?.userId ? (
+            {!isId ? (
               <div className="bg-white rounded-xl shadow-xl p-6 max-w-md w-full flex flex-col items-center text-center gap-4">
                 <h1 className="text-2xl font-semibold text-lime-800">
                   Oops! looks like Your profile isn’t complete.
@@ -200,12 +203,12 @@ const Profile = () => {
               <div className="bg-white rounded-xl shadow-xl p-6 max-w-md w-full flex flex-col items-center text-center gap-4">
                 <h1 className="text-2xl font-semibold text-lime-800">
                   Oops! looks like{" "}
-                  {user.role === "client" ? "freelancer" : "client"} not updated
-                  profile
+                  {user?.role === "client" ? "freelancer" : "client"} not
+                  updated profile
                 </h1>
                 <p className="text-gray-700">
                   We couldn’t find enough information to show like{" "}
-                  {user.role === "client" ? "freelancer" : "client"} profile.
+                  {user?.role === "client" ? "freelancer" : "client"} profile.
                 </p>
                 <button
                   onClick={() => handleUpdate("home")}
