@@ -1,9 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import {
-  Link,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import loginImage from "../assets/images/loginImage.png";
 import { themeColors } from "../hooks/theme.js";
 import Errors from "../components/Errors.jsx";
@@ -115,8 +111,6 @@ const Login = () => {
     console.log(submitData);
   };
 
-  console.log(process.env.REACT_APP_BACKEND_URI);
-
   const handelLoginSubmit = (e) => {
     e.preventDefault();
     if (checkFields()) return;
@@ -146,7 +140,6 @@ const Login = () => {
         }
         console.log(e);
       });
-    console.log(submitData);
   };
 
   const handlePageshift = () => {

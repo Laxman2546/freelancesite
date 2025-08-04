@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import Search from "../../components/Search";
 import Gigcards from "../../components/Gigcards.jsx";
 import Slider from "react-slick";
@@ -22,11 +22,12 @@ import ClientNavbar from "../../components/ClientNavbar.jsx";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
+import CardSlider from "../../components/CardsSlider.jsx";
 const HomePage = () => {
   const [activeBtn, setactivebtn] = useState("Web Development");
   const [isVisible, setisVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
+  const [gigsdata, setgigsData] = useState([]);
   const [localgigs, setlocalGigs] = useState([]);
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -85,6 +86,7 @@ const HomePage = () => {
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
+          useTransform: false,
         },
       },
     ],
@@ -163,7 +165,7 @@ const HomePage = () => {
         { searchQuery: activeBtn },
         { withCredentials: true }
       );
-      setData(gigResult.data.gigs);
+      setgigsData(gigResult.data.gigs);
     } catch (e) {
       console.log("something went wrong whiler searching", e);
     } finally {
@@ -218,7 +220,6 @@ const HomePage = () => {
   useEffect(() => {
     getgigsLocal();
   }, []);
-
   return (
     <main className="w-full min-h-screen">
       <div className="sticky top-0 z-[99999]">
@@ -306,14 +307,14 @@ const HomePage = () => {
         <h1 className="text-lg md:text-2xl font-semibold ">
           Popular on {activeBtn}
         </h1>
-        <div className="w-full ml-0 overflow-hidden mt-6">
-          <Slider {...settings}>
-            {data.map((item) => (
-              <div key={item._id} onClick={() => handleGigdets(item._id)}>
-                <Gigcards data={item} />
+        <div className="mt-6 overflow-hidden">
+          <CardSlider {...settings}>
+            {gigsdata.map((data) => (
+              <div key={data.title} onClick={() => handleGigdets(data._id)}>
+                <Gigcards data={data} />
               </div>
             ))}
-          </Slider>
+          </CardSlider>
         </div>
       </div>
       <div className="w-full flex flex-col items-center justify-center p-3 md:p-8 ">
@@ -391,13 +392,13 @@ const HomePage = () => {
         <div className="w-full p-3 md:p-8">
           <h1 className="text-xl md:text-3xl font-semibold">Recently Viewed</h1>
           <div className="mt-6 overflow-hidden">
-            <Slider {...settings}>
+            <CardSlider {...settings}>
               {localgigs.map((data) => (
                 <div key={data.title} onClick={() => handleGigdets(data._id)}>
                   <Gigcards data={data} />
                 </div>
               ))}
-            </Slider>
+            </CardSlider>
           </div>
         </div>
       )}
