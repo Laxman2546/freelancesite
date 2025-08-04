@@ -74,8 +74,7 @@
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/gigconnect.git
-cd gigconnect
+git clone https://github.com/Laxman2546/freelancesite.git
 ```
 
 cd backend
@@ -84,9 +83,11 @@ npx nodemon
 
 # Create .envsample
 
+```bash
 MONGODB_URI="mongodb+srv://<username>@cluster0.yf6a6yh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 SECRET_KEY = "sjadkagddasjdggfakdjfdjkasdflaskdfgsakdgfcxnmzgdskdjfgk"
 PORT_NUMBER = 3000
+```
 
 # frontend
 
@@ -95,7 +96,9 @@ npm install
 
 # Create .envsample
 
+```bash
 REACT_APP_BACKEND_URI = "http://localhost:3000"
+```
 
 npm run dev
 
