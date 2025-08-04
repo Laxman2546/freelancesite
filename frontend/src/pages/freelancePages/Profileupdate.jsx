@@ -445,7 +445,7 @@ const profileUpdate = () => {
                   ))}
                 </div>
               )}
-            <div className="w-full md:w-3/4 flex flex-col gap-3">
+            <div className="w-full  flex flex-col gap-3">
               <label>Social links</label>
               <div className="relative w-full">
                 <input
@@ -481,16 +481,16 @@ const profileUpdate = () => {
             {socialLinks.length > 0 &&
               socialLinks != "[]" &&
               socialLinks != [] && (
-                <div className="w-full md:w-3/4 bg-slate-200 rounded-2xl p-2">
+                <div className="max-w-fit rounded-2xl p-2">
                   {socialLinks.map((links, idx) => (
                     <span
                       key={idx}
-                      className="flex items-center text-blue-500 px-3 py-2 rounded-full text-sm mr-2 outline-none"
+                      className="flex items-center bg-blue-100 mt-2 text-blue-500 px-3 py-2 rounded-full text-sm mr-2 outline-none"
                     >
                       {links}
                       <button
                         type="button"
-                        className="ml-2 text-[#84C318] hover:text-red-600 cursor-pointer"
+                        className="text-wrap max-w-fit ml-2 text-[#84C318] hover:text-red-600 cursor-pointer"
                         onClick={() =>
                           setsocialLinks(socialLinks.filter((l) => l !== links))
                         }

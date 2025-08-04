@@ -303,7 +303,7 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-      <div className="w-full px-2 md:px-8 py-6">
+      <div className="w-full px-5  md:px-8 py-6">
         <h1 className="text-lg md:text-2xl font-semibold ">
           Popular on {activeBtn}
         </h1>
@@ -350,14 +350,14 @@ const HomePage = () => {
         <h1 className="text-xl md:text-3xl font-semibold">
           Top-Rated Freelancers
         </h1>
-        <h1 className="text-md md:text-lg text-gray-500">
+        <h1 className="text-md pl-3 md:text-lg text-gray-500">
           Work with the best professionals in their fields
         </h1>
         <div className="flex flex-row flex-wrap items-center justify-center gap-12 mt-8">
           {professionals.map((Professional, index) => (
             <div
               key={index}
-              className="group p-13 pb-10 pt-10 bg-white shadow-xl  rounded-xl flex flex-col items-center gap-4 transition"
+              className="group w-full md:w-[260px] p-13 pb-10 pt-10 bg-white shadow-xl  rounded-xl flex flex-col items-center gap-4 transition"
             >
               <div>
                 <img
@@ -380,7 +380,7 @@ const HomePage = () => {
               </div>
               <button
                 onClick={() => navigate(`/profile?id=${Professional.id}`)}
-                className="p-3 w-full bg-lime-800 text-white rounded-xl cursor-pointer"
+                className="p-3 bg-lime-800 text-white rounded-xl cursor-pointer"
               >
                 View Profile
               </button>

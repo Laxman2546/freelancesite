@@ -21,7 +21,7 @@ const Footer = () => {
               </div>
               <span className="text-xl font-bold">Gigconnect</span>
             </div>
-            <p className="text-gray-400 mb-6 max-w-md text-wrap">
+            <p className="text-gray-400 mb-6  text-wrap">
               The ultimate freelance marketplace connecting talented
               professionals with clients worldwide, creating opportunities that
               transform careers.

@@ -285,29 +285,6 @@ const PostedgigDetails = () => {
               </h1>
             </div>
             <div className="w-full flex flex-col md:flex-row gap-5">
-              <div className=" flex flex-row   gap-1 items-center">
-                <div className="flex flex-row items-start mb-1">
-                  <Star width={"18px"} height={"19px"} color={"#ffc550"} />
-                  <Star width={"18px"} height={"19px"} color={"#ffc550"} />
-                  <Star width={"18px"} height={"19px"} color={"#ffc550"} />
-                  <Star width={"18px"} height={"19px"} color={"#ffc550"} />
-                  <Star width={"18px"} height={"19px"} color={"#ffc550"} />
-                </div>
-                <span className="text-md  text-gray-600">
-                  4.8 (
-                  <span className="underline cursor-pointer">127 reviews</span>)
-                </span>
-              </div>
-              <div className=" hidden md:flex flex-row gap-1 items-center">
-                <Eye width={"18px"} height={"18px"} />
-                <span className="text-md  text-gray-600">2,425 views</span>
-              </div>
-              <div className=" hidden md:flex flex-row gap-1 items-center">
-                <Cart width={"18px"} height={"18px"} />
-                <span className="text-md  text-gray-600">
-                  250 orders in queue
-                </span>
-              </div>
               <div className=" flex flex-row gap-1 items-center">
                 <TimeSharp width={"18px"} height={"18px"} />
                 <span className="text-md text-gray-600">
@@ -364,7 +341,6 @@ const PostedgigDetails = () => {
               </h1>
               <h1>{data.description} </h1>
             </div>
-    
           </div>
           <div className="w-full md:w-1/3 max-w-[700px] h-auto max-h-[500px] md:sticky top-5 flex flex-col bg-white rounded-2xl p-4 shadow-lg">
             <div className="w-full flex justify-between border-b border-gray-300 pb-2">
