@@ -2,7 +2,7 @@
 
 **GigConnect** is a modern and elegant freelance marketplace platform where **freelancers** can post their gigs and **clients** can explore and purchase those gigs with ease. Designed with a sleek UI and responsive design, GigConnect bridges the gap between talented individuals and those seeking their skills.
 
-![GigConnect Logo](./logo.svg)
+![GigConnect Logo](./frontend/src/assets/images/logo.svg)
 
 ---
 
