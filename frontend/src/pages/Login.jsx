@@ -15,6 +15,7 @@ const Login = () => {
   const [showError, setshowError] = useState(false);
   const [error, setError] = useState("");
   const [username, setuserName] = useState("");
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setpassword] = useState("");
   const [isChecked, setisChecked] = useState(false);
@@ -83,8 +84,8 @@ const Login = () => {
     const type = "Register";
     e.preventDefault();
     if (checkFields(type)) return;
-    const submitData = axios
-      .post(
+    try {
+      const submitData = axios.post(
         `${process.env.REACT_APP_BACKEND_URI}/create`,
         {
           emailId: email,
@@ -94,28 +95,29 @@ const Login = () => {
         {
           withCredentials: true,
         }
-      )
-      .then((result) => {
-        console.log(result);
-        if (result.status === 200) {
-          Navigate("/userhome");
-        }
-      })
-      .catch((e) => {
-        if (e.status === 400) {
-          setError(e.response.data.error);
-          setshowError(true);
-        }
-        console.log(e);
-      });
-    console.log(submitData);
+      );
+
+      if (result.status === 200) {
+        Navigate("/userhome");
+      }
+      console.log(submitData);
+    } catch (e) {
+      if (e.status === 400) {
+        setError(e.response.data.error);
+        setshowError(true);
+      }
+      console.log(e, "error while registering");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handelLoginSubmit = (e) => {
     e.preventDefault();
     if (checkFields()) return;
-    const submitData = axios
-      .post(
+    try {
+      setLoading(true);
+      const submitData = axios.post(
         `${process.env.REACT_APP_BACKEND_URI}/login`,
         {
           emailId: email,
@@ -124,22 +126,21 @@ const Login = () => {
         {
           withCredentials: true,
         }
-      )
-      .then((result) => {
-        if (result.status === 200) {
-          Navigate("/userhome");
-        } else if (result.status === 400) {
-          setError(result.data.error);
-          setshowError(true);
-        }
-      })
-      .catch((e) => {
-        if (e.status === 400) {
-          setError(e.response.data.error);
-          setshowError(true);
-        }
-        console.log(e);
-      });
+      );
+      if (result.status === 200) {
+        Navigate("/userhome");
+      } else if (result.status === 400) {
+        setError(result.data.error);
+        setshowError(true);
+      }
+    } catch (e) {
+      if (e.status === 400) {
+        setError(e.response.data.error);
+        setshowError(true);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handlePageshift = () => {
@@ -225,11 +226,19 @@ const Login = () => {
                 </Link>
               </p>
             </div>
-            <Button
-              type="submit"
-              styles="w-[90%] md:w-[70%] bg-[#3A5B22] p-3 rounded-2xl font-bold text-white cursor-pointer"
-              text="Signup"
-            />
+            {loading ? (
+              <Button
+                type="submit"
+                styles="w-[90%] md:w-[70%] bg-[#3A5B22] p-3 rounded-2xl font-bold text-white cursor-pointer"
+                text="Creating your account..."
+              />
+            ) : (
+              <Button
+                type="submit"
+                styles="w-[90%] md:w-[70%] bg-[#3A5B22] p-3 rounded-2xl font-bold text-white cursor-pointer"
+                text="Signup"
+              />
+            )}
           </form>
           <div className="mt-5">
             <p>
@@ -300,11 +309,19 @@ const Login = () => {
                 />
               )}
             </label>
-            <Button
-              type="submit"
-              styles="w-[90%] md:w-[70%] bg-[#3A5B22] p-3 rounded-2xl font-bold text-white cursor-pointer"
-              text="Login"
-            />
+            {loading ? (
+              <Button
+                type="submit"
+                styles="w-[90%] md:w-[70%] bg-[#3A5B22] p-3 rounded-2xl font-bold text-white cursor-pointer"
+                text="Fetching your account..."
+              />
+            ) : (
+              <Button
+                type="submit"
+                styles="w-[90%] md:w-[70%] bg-[#3A5B22] p-3 rounded-2xl font-bold text-white cursor-pointer"
+                text="Login"
+              />
+            )}
           </form>
           <div className="mt-5">
             <p>

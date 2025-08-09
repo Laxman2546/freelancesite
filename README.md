@@ -75,6 +75,10 @@
 
 ```bash
 git clone https://github.com/Laxman2546/freelancesite.git
+<<<<<<< HEAD
+=======
+cd gigconnect
+>>>>>>> dc6261ea6bf15b1ce8065695633ebc0f3771218b
 ```
 
 cd backend
