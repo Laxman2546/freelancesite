@@ -75,30 +75,37 @@
 
 ```bash
 git clone https://github.com/Laxman2546/freelancesite.git
-<<<<<<< HEAD
 =======
 cd gigconnect
 ```
+
 ```
 cd backend
 npm install
 npx nodemon
 ```
+
 # Create .envsample
+
 ```bash
 MONGODB_URI="mongodb+srv://<username>@cluster0.yf6a6yh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 SECRET_KEY = "sjadkagddasjdggfakdjfdjkasdflaskdfgsakdgfcxnmzgdskdjfgk"
 PORT_NUMBER = 3000
 ```
+
 # frontend
+
 ```bash
 cd frontend
 npm install
 ```
+
 # Create .envsample
+
 ```bash
 REACT_APP_BACKEND_URI = "http://localhost:3000"
 ```
+
 ```
 npm run dev
 ```
