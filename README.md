@@ -78,33 +78,32 @@ git clone https://github.com/Laxman2546/freelancesite.git
 <<<<<<< HEAD
 =======
 cd gigconnect
->>>>>>> dc6261ea6bf15b1ce8065695633ebc0f3771218b
 ```
-
+```
 cd backend
 npm install
 npx nodemon
-
+```
 # Create .envsample
-
 ```bash
 MONGODB_URI="mongodb+srv://<username>@cluster0.yf6a6yh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 SECRET_KEY = "sjadkagddasjdggfakdjfdjkasdflaskdfgsakdgfcxnmzgdskdjfgk"
 PORT_NUMBER = 3000
 ```
-
 # frontend
-
+```bash
 cd frontend
 npm install
-
+```
 # Create .envsample
-
 ```bash
 REACT_APP_BACKEND_URI = "http://localhost:3000"
 ```
-
+```
 npm run dev
+```
+
+---
 
 ### ✨Future Features
 
@@ -118,11 +117,17 @@ Gig ratings and reviews
 
 Email & push notifications
 
+---
+
 🤝 Contributing
 Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
 
+---
+
 💡 Inspiration
 GigConnect was built with the idea of making freelancing accessible, elegant, and effective — especially in a world where remote work is the new normal.
+
+---
 
 📄 License
 This project is licensed under the MIT License.
