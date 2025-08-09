@@ -80,12 +80,13 @@ const Login = () => {
     }
     return false;
   };
-  const handelRegisterSubmit = (e) => {
+  const handelRegisterSubmit = async (e) => {
     const type = "Register";
     e.preventDefault();
     if (checkFields(type)) return;
     try {
-      const submitData = axios.post(
+      setLoading(true);
+      const submitData = await axios.post(
         `${process.env.REACT_APP_BACKEND_URI}/create`,
         {
           emailId: email,
@@ -96,11 +97,10 @@ const Login = () => {
           withCredentials: true,
         }
       );
-
-      if (result.status === 200) {
+      console.log(submitData);
+      if (submitData.status === 200) {
         Navigate("/userhome");
       }
-      console.log(submitData);
     } catch (e) {
       if (e.status === 400) {
         setError(e.response.data.error);
@@ -112,12 +112,12 @@ const Login = () => {
     }
   };
 
-  const handelLoginSubmit = (e) => {
+  const handelLoginSubmit = async (e) => {
     e.preventDefault();
     if (checkFields()) return;
     try {
       setLoading(true);
-      const submitData = axios.post(
+      const submitData = await axios.post(
         `${process.env.REACT_APP_BACKEND_URI}/login`,
         {
           emailId: email,
@@ -127,10 +127,11 @@ const Login = () => {
           withCredentials: true,
         }
       );
-      if (result.status === 200) {
+      console.log(submitData);
+      if (submitData.status === 200) {
         Navigate("/userhome");
-      } else if (result.status === 400) {
-        setError(result.data.error);
+      } else if (submitData.status === 400) {
+        setError(submitData.data.error);
         setshowError(true);
       }
     } catch (e) {
@@ -138,6 +139,7 @@ const Login = () => {
         setError(e.response.data.error);
         setshowError(true);
       }
+      console.log(e);
     } finally {
       setLoading(false);
     }
@@ -228,8 +230,8 @@ const Login = () => {
             </div>
             {loading ? (
               <Button
-                type="submit"
-                styles="w-[90%] md:w-[70%] bg-[#3A5B22] p-3 rounded-2xl font-bold text-white cursor-pointer"
+                type="button"
+                styles="w-[90%] md:w-[70%] bg-[#3A5B22] p-3 rounded-2xl  text-white cursor-not-allowed"
                 text="Creating your account..."
               />
             ) : (
@@ -312,7 +314,7 @@ const Login = () => {
             {loading ? (
               <Button
                 type="submit"
-                styles="w-[90%] md:w-[70%] bg-[#3A5B22] p-3 rounded-2xl font-bold text-white cursor-pointer"
+                styles="w-[90%] md:w-[70%] bg-[#3A5B22] p-3 rounded-2xl  text-white cursor-not-allowed"
                 text="Fetching your account..."
               />
             ) : (
